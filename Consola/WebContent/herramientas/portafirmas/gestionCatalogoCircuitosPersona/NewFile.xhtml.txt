@@ -1,0 +1,105 @@
+	<!-- PANEL DE EDICIÓN -->
+			<h:panelGroup rendered="#{menuSessionOption.enabledPanel('E')}">
+				<br />
+				<div class="text-info container-fluid formulario " id="Formulario para editar Circuito de Firma">
+
+					<div class="row">
+						<div class="col-11">
+							<h:outputLabel value="Descripción" class="text-warning" />
+							<h:inputText class="form-control" type="text" a:placeholder="Nombre" value="#{pF_FlujosMB.selectedPF_Flujo.descripcion}">
+								<f:validateLength maximum="255" />
+							</h:inputText>
+						</div>
+						<div class="col-1">
+							<span class="text-warning">ID: </span> &#160;
+							<h:outputText class="h6 text-dark-blue" value="#{pF_FlujosMB.selectedPF_Flujo.flujo_id}" />
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="col">
+							<h:outputLabel value="Fecha de Creación:" class="text-warning" />
+							<h:inputText class="form-control" type="text" a:placeholder="Nombre" value="#{pF_FlujosMB.selectedPF_Flujo.fechaCreacion}" readonly="true">
+								<f:validateLength maximum="25" />
+							</h:inputText>
+						</div>
+						<br />
+						<div class="col">
+							<h:outputLabel value="Activo:" class="text-warning" />
+							<h:inputText class="form-control" type="text" a:placeholder="Nombre" value="#{pF_FlujosMB.selectedPF_Flujo.ordenActivo}" readonly="true">
+								<f:validateLength maximum="25" />
+							</h:inputText>
+						</div>
+						<div class="col">
+							<h:outputLabel value="Tipo:" class="text-warning" />
+							<h:inputText class="form-control" type="text" a:placeholder="Nombre" value="#{pF_FlujosMB.descriptionOfTipoFlujo()}" readonly="true">
+								<f:validateLength maximum="25" />
+							</h:inputText>
+						</div>
+					</div>
+					<br />
+						<h:dataTable name="Tabla de Firmantes" value="#{pF_FlujosMB.selectedPF_Flujo.listOfGroups}"
+							var="L_GR" styleClass="table table-striped rounded text-dark" rowClasses="table-info" headerClass="table-dark"
+							rendered="#{pF_FlujosMB.selectedPF_Flujo.listOfGroups != null}" columnClasses=",align-middle,,">
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Firmante / Validador" />
+								</f:facet>
+								<h:selectOneMenu  value="#{L_GR.firmante.idFirmante}" class="form-control" valueChangeListener="#{pF_FlujosMB.updateSigner}" onchange="submit()">
+									<f:attribute name="ordenAttribute" value="#{L_GR.ORDEN}"/>
+									<f:selectItems value="#{pF_FlujosMB.listOfSigners}" var="Signer" itemLabel="#{Signer.nombre} #{Signer.apellido} #{Signer.apellido2}" itemValue="#{Signer.idFirmante}"/>
+								</h:selectOneMenu>
+								<!-- <h:outputLabel value="#{L_GR.firmante.nombre} #{L_GR.firmante.apellido} #{L_GR.firmante.apellido2}" /> -->
+							</h:column>
+							<h:column  >
+								<f:facet name="header">
+									<h:outputText value="Orden" />
+								</f:facet>
+								<h:outputLabel value="#{L_GR.ORDEN}" styleClass="text-center" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Acción" />
+								</f:facet>
+								<h:selectOneRadio value="#{L_GR.ID_TIPO_GRUPO}" styleClass="selectOneRadio"  id="selectChange">
+										<f:selectItem itemValue="2" itemLabel="&#160;Firmar" itemDisabled="#{!L_GR.firmante.esFirmanteCheckBox}"/>
+										<f:selectItem itemValue="1" itemLabel="&#160;Validar" itemDisabled="#{!L_GR.firmante.esValidadorCheckBox}"/>
+								</h:selectOneRadio>
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<div class="text-right">
+										<h:commandLink action="#{pF_FlujosMB.addNewSigner()}" value="">
+											<img src="icons/add_blue.png" title="Añadir Firmante." />
+										</h:commandLink>
+									</div>
+								</f:facet>
+									<div class=" text-right">
+									<h:panelGroup rendered="#{L_GR.ORDEN != pF_FlujosMB.selectedPF_Flujo.listOfGroups.size()}">
+										<h:commandLink action="#{pF_FlujosMB.changeOrderOfSigners(L_GR.ORDEN, 'DOWN')}" value="" onclick="loading()">
+											<img src="icons/down_blue.png" title="Asciende en el orden."/>
+										</h:commandLink>
+									</h:panelGroup>
+									<h:panelGroup rendered="#{L_GR.ORDEN != 1}">
+										<h:commandLink action="#{pF_FlujosMB.changeOrderOfSigners(L_GR.ORDEN, 'UP')}" value="" onclick="loading()">
+											<img src="icons/up_blue.png" title="Desciende en el orden."/>
+										</h:commandLink>
+									</h:panelGroup>
+									<h:commandLink action="#{pF_FlujosMB.deleteSigner(L_GR)}" value="" onclick="loading()" >
+										<img src="icons/ko_blue.png" title="Eliminar Firmante del Circuito."/>
+									</h:commandLink>
+								</div>
+							</h:column>
+						</h:dataTable>
+					</div>
+
+
+				<div class="row">
+					<div class="col text-right">
+						<h:commandButton type="submit" class="btn btn-consola" action="#{pF_FlujosMB.saveAction()}" value="Guardar" onclick="loading()" />
+						&#160;&#160;
+						<h:commandButton type="submit" class="btn btn-consola" action="#{pF_FlujosMB.returnAction()}" value="Volver" onclick="loading()" />
+					</div>
+				</div>
+			</h:panelGroup>
+		

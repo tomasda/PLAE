@@ -1,0 +1,145 @@
+<!DOCTYPE html >
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- Bootstrap -->
+	<link href="../../../css/bootstrap.css" rel="stylesheet" />
+	<link href="../../../css/main.css" rel="stylesheet" />
+</h:head>
+<h:body>
+	<h:form>
+		<f:view>
+			<div>
+				<ui:include src="#{alert.alertaURL}" />
+			</div>
+			<div class="row">
+				<div class="col-lg-12  form-opciones_m">
+					<div class="row">
+						<div class="col-10 text-center">
+							<h:outputLabel class="h2 text-warning" value="Usuarios / Permisos / Roles" />
+						</div>
+					</div>
+				</div>
+				<!-- 	BLOQUE DE OPCIONES -->
+				<div class="col-lg-2  form-opciones_o">
+					<div class="text-center">
+						<h:outputText value="Opciones" class="text-opciones" />
+					</div>
+					<br />
+					<div class=" row text-center">
+						<div class="col-4">
+							<h:outputLabel value="Descarga" class="text-warning" />
+						</div>
+						<div class="col-3">
+							<h:commandLink action="#{lDAPMB.exportToXML('USERS')}" value="" class="btn btn-consola" title="Descarga en formato XML">
+								<img src="icons/download.png" />
+							</h:commandLink>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-10">
+					<div class="form" id="Formulario de búsqueda">
+						<br />
+						<div class="form-group row">
+							<label for="idUsuario" class="col-2 col-form-label text-warning">Nombre de Usuario</label>
+							<div class="col-5">
+								<h:inputText type="text" class="form-control" id="idUsuario" a:placeholder="Nombre de usuario" value="#{menuSessionOption.searchOption}" />
+							</div>
+							<label for="nifUsuario" class="col-1 col-form-label text-warning">NIF</label>
+							<div class="col-2">
+								<h:inputText type="text" class="form-control" id="nifUsuario" a:placeholder="NIF" value="#{menuSessionOption.searchOption4}" />
+							</div>
+						</div>
+						<div class="from-group row">
+							<h:outputLabel value="Departamento" for="department" class="col-2 col-form-label text-warning" />
+							<div class="col-8">
+								<h:selectOneMenu value="#{menuSessionOption.searchOption2}" onchange="loadingsubmit()" id="department" class="pull-right form-control">
+									<f:selectItem itemValue="" itemLabel="Todos" />
+									<f:selectItems value="#{departamentosMB.getListaDepartamentos('ALF')}" var="L_D" itemValue="#{L_D.ID_}" itemLabel="#{L_D.DESCRIPTION_}" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+						<br />
+						<div class="from-group row">
+							<h:outputLabel value="Grupo de Alfresco" for="alfGroup" class="col-2 col-form-label text-warning" />
+							<div class="col-8">
+								<h:selectOneMenu value="#{menuSessionOption.searchOption3}" onchange="loadingsubmit()" id="alfGroup" class="pull-right form-control">
+									<f:selectItem itemValue="" itemLabel="Todos" />
+									<f:selectItems value="#{lDAPManager.findLDAPAlfrescoGroups('(cn>=ALF)')}" var="L_ALF" itemValue="#{L_ALF.cn}" itemLabel="#{L_ALF.description}" />
+								</h:selectOneMenu>
+							</div>
+							<div class="col">
+								<h:commandButton class="btn btn-consola" action="#{lDAPMB.findUsers()}" value="Buscar" onclick="loading()" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br />
+			<div class="row">
+				<h:dataTable name="Tabla de Usuarios" value="#{lDAPMB.userList}" var="L_LDAP_USER" styleClass="table table-striped rounded text-dark"
+					rowClasses="table-info" headerClass="table-dark h4 text-danger" rendered="#{lDAPMB.userList != null}" columnClasses="h6 text-info,h6 text-info,h8">
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Detalle de Usuario" />
+						</f:facet>
+						<h:outputText value="#{L_LDAP_USER.cn}" class="h4 text-dark-blue" />
+						<br />
+						<h:outputText value="NIF " class="text-dark" />
+						<h:outputText value="#{L_LDAP_USER.carLicense}" />
+						<br />
+						<h:outputText value="Departamento " class="text-dark" />
+						<h:outputText value="#{L_LDAP_USER.department}" />
+						<br />
+						<h:outputText value="Descripción " class="text-dark" />
+						<h:outputText value="#{L_LDAP_USER.description}" />
+						<br />
+						<h:outputText value="Titulo " class="text-dark" />
+						<h:outputText value="#{L_LDAP_USER.title}" />
+						<br />
+						<h:outputText value="Cuenta " class="text-dark" />
+						<h:outputText value="#{L_LDAP_USER.sAMAccountName}" />
+						<br />
+						<h:outputText value="Tfno " class="text-dark" />
+						<h:outputText value="#{L_LDAP_USER.telephoneNumber}" />
+						<br />
+						<h:outputText value="E-Mail " class="text-dark" />
+						<h:outputText value="#{L_LDAP_USER.mail}" />
+						<br />
+						<h:outputText value="Postal-Code " class="text-dark" />
+						<h:outputText value="#{L_LDAP_USER.postalCode}" />
+						<br />
+						<h:outputText value="Restricciones de envío de alertas." styleClass="text-danger"/>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Roles de usuario" />
+						</f:facet>
+						<ui:repeat var="L_B" value="#{L_LDAP_USER.bussinessCategory}">
+							<h:outputText value="#{L_B}" />
+							<br />
+						</ui:repeat>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Grupos de Alfresco" />
+						</f:facet>
+						<div class=" text-right">
+							<ui:repeat var="L_M" value="#{L_LDAP_USER.memberOf}">
+								<h:panelGroup rendered="#{L_M.contains('CN=ALF')}">
+									<h:outputText value="#{L_M}" />
+									<br />
+								</h:panelGroup>
+							</ui:repeat>
+						</div>
+					</h:column>
+				</h:dataTable>
+
+			</div>
+			<br />
+		</f:view>
+	</h:form>
+</h:body>
+</html>

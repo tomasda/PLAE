@@ -1,0 +1,280 @@
+<!DOCTYPE html >
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- Bootstrap -->
+	<link href="../../../css/bootstrap.css" rel="stylesheet" />
+	<link href="../../../css/main.css" rel="stylesheet" />
+</h:head>
+<h:body>
+	<h:form>
+		<f:view>
+			<div>
+				<ui:include src="#{alert.alertaURL}" />
+			</div>
+			<div class="row">
+				<div class="col-lg-12  form-opciones_m">
+					<h2 align="center" class="text-warning">GESTIÓN DE PERSONAS QUE PUEDEN ENVIAR DOCUMENTOS A UN CIRCUITOS</h2>
+				</div>
+				<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+				<div class="col-lg-2  form-opciones_o">
+					<div class="text-center">
+						<h:outputText value="Opciones" class="text-opciones" />
+					</div>
+					<br />
+					<div class="text-center"></div>
+					<br />
+				</div>
+				</h:panelGroup>
+				<div class="col-lg-10">
+					<br />
+					<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+						<div class="row">
+							<div class="col-2">
+								<div class="form-group">
+									<h:outputLabel value="Id" class="text-warning" />
+									<h:inputText type="text" class="form-control" id="id" a:placeholder="1" value="#{menuSessionOption.searchOption}" />
+								</div>
+							</div>
+							<div class="col-6">
+								<div class="form-group">
+									<h:outputLabel value="Descripción" class="text-warning" />
+									<h:inputText type="text" class="form-control" id="description" a:placeholder="Firma ... / Validación ..." value="#{menuSessionOption.searchOption2}" />
+								</div>
+							</div>
+							<div class="col-4 text-lg-right">
+								<br /> <br />
+								<h:commandButton type="submit" class="btn btn-consola" action="#{pF_FlujosMB.findAction()}" value="Buscar" onclick="loading()" tabindex="1" />
+							</div>
+						</div>
+				</h:panelGroup>
+				</div>
+			</div>
+			<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+			<br/>
+				<div class="row">
+					<br />
+					<div class="table-responsive container-fluid table" id="Tabla de resultados de la búsqueda">
+						<div class="table">
+							<h:dataTable value="#{pF_FlujosMB.listOf}" var="L_C" styleClass="table table-striped" headerClass="table-dark h4 text-danger"
+								rendered="#{pF_FlujosMB.listOf != null}" columnClasses="widht_70,widht_20,widht_10">
+								<h:column>
+									<f:facet name="header">Circuitos de Firma</f:facet>
+									<div class="row">
+										<div class="col-sm-12">
+											<h:outputText class="h5" value="#{L_C.descripcion}" />
+										</div>
+									</div>
+									<br />
+									<div class="row">
+										<div class="col-2">
+											<div class="row">
+												<div class="col-12">
+													<span class="text-orange">ID: </span> &#160;
+													<h:outputText class="h6 text-dark-blue" value="#{L_C.flujo_id}" />
+												</div>	
+											</div>
+											<div class="row">
+												<div class="col-12">
+													<span class="text-dark h7">Fecha:</span> &#160;
+													<h:outputText class="h7 text-dark-blue" value="#{L_C.fechaCreacion}" />
+												</div>		
+											</div>
+										</div>
+										<div class="col-5">
+											<div class="row">
+												<div class="col-12">
+													<span class="text-dark text-underline">Detalle: </span>
+													<ui:repeat value="#{L_C.listOfGroups}" var="L_of_Groups">
+														<div class="row form-check-label">
+															&#160;&#160;
+															<h:outputText value="#{L_of_Groups.ORDEN} " class="text-dark" />
+															&#160;
+															<h:outputText value="#{L_of_Groups.TIPO_GRUPO}  " class="text-grey" rendered="#{L_of_Groups.ID_TIPO_GRUPO == 1}" />
+															<h:outputText value="#{L_of_Groups.TIPO_GRUPO}  " class="text-success" rendered="#{L_of_Groups.ID_TIPO_GRUPO == 2}" />
+															&#160;&#160;
+															<h:outputText value="#{L_of_Groups.firmante.nombre} #{L_of_Groups.firmante.apellido} #{L_of_Groups.firmante.apellido2}" class="text-dark-blue" />
+														</div>
+													</ui:repeat>
+												</div>
+											</div>
+										</div>
+										<div class="col-5">
+											<span class="text-dark text-underline">Personas Autorizadas: </span>
+											<h:panelGroup rendered="#{L_C.listOfPersonas == null}">
+												<div class="row form-check-label">
+													<h:outputText value="No tiene personas autorizadas" class="text-danger h7"/>
+												</div>
+											</h:panelGroup>
+											<ui:repeat var="L_of_Person" value="#{L_C.listOfPersonas}">
+												<div class="row form-check-label">
+													<h:outputText value="#{L_of_Person.cn}" class="text-dark-blue" />
+												</div>
+											</ui:repeat>
+										</div>
+									</div>
+								</h:column>
+
+								<h:column>
+									<div class="text-right">
+										<h:commandLink value="" action="#{pF_FlujosMB.editAction(L_C.flujo_id)}" onclick="loading()">
+											<img src="icons/edit_blue.png" title="Editar" />
+										</h:commandLink>
+									</div>
+								</h:column>
+							</h:dataTable>
+						</div>
+					</div>
+				</div>
+			</h:panelGroup>
+			
+			<!-- EDICIÓN  -->
+			<h:panelGroup rendered="#{menuSessionOption.enabledPanel('E')}">
+				<div class="form-opciones_e">
+					<div class="row">
+						<div class="col-9">
+							<div class="row">
+								<div class="col">
+									<h:outputLabel value="Descripción:" class="text-warning" />
+									&#160;&#160;
+									<h:outputText class="text-dark-blue" value="#{pF_FlujosMB.selectedPF_Flujo.descripcion}"/>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col formulario">
+									<!--  Personas Autorizadas -->
+									<h:outputLabel value="Personas Autorizadas:" class="text-warning" />
+									&#160;&#160;
+									<ui:repeat var="L_of_Person" value="#{pF_FlujosMB.selectedPF_Flujo.listOfPersonas}">
+										<div class="row ">
+											<div class="col-10 text-dark-blue form-check-label">
+												<h:outputLabel value="#{L_of_Person.cn}" />&#160;&#160;
+												<h:outputLabel value="#{L_of_Person.carLicense}" />&#160;&#160;
+												<h:outputLabel value="#{L_of_Person.mail}" />
+											</div>
+											<div class="col-2 text-right">
+												<h:commandLink action="#{pF_FlujosMB.removePersonasAction(L_of_Person.carLicense)}" value="" onclick="loading()" type="submit">
+													<img src="icons/ko_blue.png" title="Eliminar a #{L_of_Person.cn}" />
+												</h:commandLink>
+											</div>
+										</div>
+									</ui:repeat>
+								</div>
+							</div>
+							<div class="row">
+								<br/>
+								<div class="container-fluid formulario">
+									<div class="row">
+										<div class="col text-success">
+											<label>Para añadir una persona como autorizada al envío del Porta Firmas del Circuito es: </label>
+											 <br />&#160;&#160;
+											 <h:outputText value="1º Aplicar un criterio de búsqueda." />
+											 <br />&#160;&#160;
+											 <h:outputText value="2º Seleccionar una o varias personas." />
+											 <br /> &#160;&#160;
+											 <h:outputText value="3º Pulsar en el botón añadir." />
+										</div>
+									</div>
+									<br/>
+									<div class="row">
+										<div class="col-12">
+											<!-- 	BLOQUE DE BÚSQUEDAS DE PERSONAS PARA AÑADIR COMO AUTORIZADOS-->
+											<div class="text-warning form row pb-2 pt-3 m-2">
+												<div class="col-3">
+													<div class="form-group">
+														<h:outputLabel value="Nombre" class="text-warning" />
+														<h:inputText type="text" class="form-control" id="nombre_" a:placeholder="Nombre:" value="#{menuSessionOption.searchOption}" />
+													</div>
+												</div>
+												<div class="col-3">
+													<div class="form-group">
+														<h:outputLabel value="NIF" class="text-warning" />
+														<h:inputText type="text" class="form-control" id="nif_" a:placeholder="NIF:" value="#{menuSessionOption.searchOption2}" />
+													</div>
+												</div>
+												<div class="col-5">
+													<div class="form-group">
+														<h:outputLabel value="Departamento" class="text-warning" />
+														<h:selectOneMenu name="Lista de Departamentos" value="#{catalogoFirmantesPersonasMB.selectedRole}" class="form-control">
+																	<f:selectItem itemValue="999999999" itemLabel="Todos los Departamentos" />
+																	<f:selectItems value="#{catalogoRoleMB.listOfAllRoles()}" var="L_D" itemValue="#{L_D.id_}" itemLabel="#{L_D.description_}" />
+														</h:selectOneMenu>
+													</div>
+												</div>
+												<div class="col-1 ">
+													<div class="image_to_bottom">
+														<h:commandButton type="submit" class="btn btn-consola" action="#{catalogoFirmantesPersonasMB.findPersonaAction()}" value="Buscar" onclick="loading()" />
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<br/>
+									<h:panelGroup rendered="#{catalogoFirmantesPersonasMB.listOfPersonas != null and catalogoFirmantesPersonasMB.listOfPersonas.size()!=0}">
+									<div class="row formulario_border pb-2 pt-3">
+										<div class="col-11">
+											<h:selectManyCheckbox value="#{pF_FlujosMB.selectedPersons}" styleClass="table-Persons" layout="pageDirection" selectedClass="p-1 m-1 h7" unselectedClass="p-1 m-1">
+												<f:selectItems value="#{catalogoFirmantesPersonasMB.listOfPersonas}" var="LP" itemLabel="#{LP.cn}" itemValue="#{LP.carLicense}" ></f:selectItems>
+											</h:selectManyCheckbox>
+										</div>
+										<div class="col-1">
+											<span class="image_to_bottom text-right">
+												<h:commandButton value="Añadir" class="btn btn-consola " action="#{pF_FlujosMB.addPersonasAction()}" />
+											</span>
+										</div>
+									</div>
+									</h:panelGroup>
+									<h:panelGroup rendered="#{catalogoFirmantesPersonasMB.listOfPersonas.size()==0}">
+										<h:outputLabel value="No se han encontrado resultados." class="text-danger"/>
+									</h:panelGroup>
+								</div>
+							</div>
+						</div>
+						<div class="col-3">
+							<div class="row">
+								<div class="col">
+									<h:outputLabel value="ID:" class="text-warning" />
+									&#160;&#160;
+									<h:outputText class="h6 text-dark-blue" value="#{pF_FlujosMB.selectedPF_Flujo.flujo_id}" />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<h:outputLabel value="Fecha de Creación:" class="text-warning" />
+									&#160;&#160;
+									<h:outputText class="text-dark-blue" value="#{pF_FlujosMB.selectedPF_Flujo.fechaCreacion}"/>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<h:outputLabel value="Activo:" class="text-warning" />
+									&#160;&#160;
+									<h:outputText class="text-dark-blue" value="#{pF_FlujosMB.selectedPF_Flujo.ordenActivo}"/>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<h:outputLabel value="Tipo:" class="text-warning" />
+									&#160;&#160;
+									<h:outputText class="text-dark-blue" value="#{pF_FlujosMB.descriptionOfTipoFlujo()}" />
+								</div>
+							</div>	
+						</div>
+					</div>
+				</div>
+				<br/>
+				<div class="row">
+					<div class="col text-right">
+						<!--  <h:commandButton type="submit" class="btn btn-consola" action="#{pF_FlujosMB.saveAction()}" value="Guardar" onclick="loading()" />
+						&#160;&#160; -->
+						<h:commandButton type="submit" class="btn btn-consola" action="#{pF_FlujosMB.returnAction()}" value="Volver" onclick="loading()" />
+					</div>
+				</div>
+			</h:panelGroup>
+		</f:view>
+		<br/>
+	</h:form>
+</h:body>
+</html>

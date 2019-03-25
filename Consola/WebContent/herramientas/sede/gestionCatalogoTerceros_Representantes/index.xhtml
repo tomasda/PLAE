@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- Bootstrap -->
+	<link href="../../../css/bootstrap.min.css" rel="stylesheet" />
+	<link href="../../../css/main.css" rel="stylesheet" />
+</h:head>
+<h:form>
+	<div class="container-fluid">
+		<!-- Verifica si el menú esta en la Fase inicia  -->
+		#{tercerosRepresentantesMB.TercerosRepresentantesStartMenu()}
+		<!-- 
+	
+				TITULO Y OPCIONES
+	
+		 -->
+		<div class="row">
+			<div class="col-lg-12  form-opciones_m">
+				<div class="text-center">
+					<h2 class="text-warning">CATALOGO DE TERCEROS Y SUS REPRESENTANTES</h2>
+				</div>
+			</div>
+			<!-- 	BLOQUE DE OPCIONES -->
+			<div class="col-lg-2  form-opciones_o">
+				<div class="text-center">
+					<h:outputText value="Opciones" class="text-opciones" />
+				</div>
+				<br />
+				<div class="text-center">
+					<h:commandButton type="submit" class="btn btn-consola" action="#{tercerosRepresentantesMB.newAction()}" value="Nueva Relación"
+						title="Para añadir una nueva relación tanto el Interesado como el Representante deben estar dados de alta. Consultar el Catalogo de Terceros para más información."
+						onclick="loading()" />
+				</div>
+				<br />
+			</div>
+			<div class="col-lg-10 form-opciones_c">
+				<br />
+				<!-- 
+			
+					BÚSQUEDA
+			
+			 -->
+				<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+					<div class="row">
+						<!-- 	BLOQUE DE BÚSQUEDAS -->
+						<div class="col-12">
+							<div class="form row" id="Formulario de búsqueda">
+								<div class="col-6">
+									<div class="form-group">
+										<h:outputLabel value="Nombre Interesado/Representante" class="text-warning" />
+										<h:inputText type="text" class="form-control" id="idBusqueda" a:placeholder="CEPSA" value="#{menuSessionOption.searchOption}" disabled="false"></h:inputText>
+									</div>
+								</div>
+								<div class="col-2">
+									<div class="form-group">
+										<h:outputLabel value="NIF / CIF" class="text-warning" />
+										<h:inputText type="text" class="form-control" id="idBusqueda2" a:placeholder="00000000H" value="#{menuSessionOption.searchOption2}" disabled="false"></h:inputText>
+									</div>
+								</div>
+								<div class="col-2 text-right">
+									<br />
+									<h:commandButton class="btn btn-consola" action="#{tercerosRepresentantesMB.findAction()}" value="Buscar" onclick="loading()" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{menuSessionOption.enabledPanel('E')}">
+					<div class="text-info container-fluid" id="Formulario para editar Relaciones">
+						<div class="row">
+							<div class="col-12 h3 text-center text-warning ">Nueva relación</div>
+						</div>
+						<div class="row">
+							<div class="text-warning h4 col-4">Interesado</div>
+							<div class="col-8 text-white" >
+								<h:outputText value="#{tercerosRepresentantesMB.name(true)}" rendered="#{tercerosRepresentantesMB.interesado != null}" />
+								<h:outputText value="Añada un interesado" rendered="#{tercerosRepresentantesMB.interesado == null}" />
+								&#160;&#160;&#160;
+								<h:outputText value="#{tercerosRepresentantesMB.interesado.IDENTIFICACION}" rendered="#{tercerosRepresentantesMB.interesado != null}" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="text-warning h4 col-4">Representante</div>
+							<div class="col-8 text-white">
+								<h:outputText value="#{tercerosRepresentantesMB.name(false)}" rendered="#{tercerosRepresentantesMB.representante != null}" />
+								<h:outputText value="Añada un representante" rendered="#{tercerosRepresentantesMB.representante == null}" />
+								&#160;&#160;&#160;
+								<h:outputText value="#{tercerosRepresentantesMB.representante.IDENTIFICACION}" rendered="#{tercerosRepresentantesMB.representante != null}" />
+							</div>
+						</div>
+						<div class="row">
+							<div  class="col-12 text-right">
+								<h:commandButton type="submit" class="btn btn-consola" action="#{tercerosRepresentantesMB.saveAction()}" value="Guardar" onclick="loading()" rendered="#{tercerosRepresentantesMB.interesado != null and tercerosRepresentantesMB.representante != null}"/>
+								&#160;
+								<h:commandButton type="submit" class="btn btn-consola" action="#{tercerosRepresentantesMB.returnAction()}" value="Volver" onclick="loading()" />
+								&#160;
+								<h:commandButton type="submit" class="btn btn-consola" action="#{tercerosRepresentantesMB.newAction()}" value="Limpiar" onclick="loading()" />
+							</div>
+						</div>
+					</div>
+				</h:panelGroup>
+			</div>
+		</div>
+		<!-- 
+			
+					Resultado de la BÚSQUEDA
+			
+		-->
+		<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+			<h:panelGroup rendered="#{tercerosRepresentantesMB.tercerosRepresentantesList != null}">
+				<br />
+				<div class="table-responsive container-fluid table" id="Tabla de resultados de la búsqueda">
+					<div>
+						<h:dataTable value="#{tercerosRepresentantesMB.tercerosRepresentantesList}" var="li" styleClass="table table-striped"
+							headerClass="table-dark h4 text-danger">
+							<f:facet name="header">
+								<h:outputText class="h3" value="&#160;RESULTADOS DE LA BÚSQUEDA" />
+							</f:facet>
+							<h:column>
+								<f:facet name="header">Interesado</f:facet>
+								<h:outputText value="#{li.terceroName}" class="h4"/>
+								<br />
+								<h:outputText value="#{li.terceroIdentification}" class="text-dark-blue"/>
+							</h:column>
+							<h:column>
+								<f:facet name="header">Representantes</f:facet>
+								<h:dataTable value="#{li.repList}" var="repLi" styleClass="table" headerClass="table-dark" rowClasses=" table-primary table-bordered table-striped">
+									<h:column>
+										<h:outputText value="#{repLi.name_}" class="h7 text-dark-blue" />
+									</h:column>
+									<h:column>
+										<div class="text-right">
+											<h:commandLink name="eliminar" action="#{tercerosRepresentantesMB.deleteAction(repLi.regisrto_)}"
+												onclick="loading(); return confirm('Va a eliminar esta relación , esta opción no se puede deshacer. ¿Está seguro?')">
+												<img src="icons/ko_blue.png" title="Eliminar" />
+											</h:commandLink>
+										</div>
+									</h:column>
+								</h:dataTable>
+							</h:column>
+						</h:dataTable>
+					</div>
+				</div>
+			</h:panelGroup>
+		</h:panelGroup>
+
+
+
+		<!--  ************************** EDICIÓN  ************************* -->
+		<h:panelGroup rendered="#{menuSessionOption.enabledPanel('E')}">
+			<div class="text-info container-fluid" id="Formulario para editar Relaciones">
+				<br />
+				<div class="row">
+					<div class="col-12 text-center">
+						<label class="h4 text-warning">Formulario de búsqueda</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-2"></div>
+					<div class="col-4">
+						<label for="ex1">Nombre / Razón Social</label>
+						<h:inputText class="form-control" type="text" placeholder="Rosario / FRED" value="#{menuSessionOption.searchOption}" />
+					</div>
+					<div class="col-2">
+						<label for="ex2">NIF / CIF</label>
+						<h:inputText class="form-control" type="text" placeholder="A00000000" value="#{menuSessionOption.searchOption2}" />
+					</div>
+					<div class="col-2">
+						<div class="text-right">
+							<br />
+							<h:commandButton type="submit" class="btn btn-consola" action="#{tercerosRepresentantesMB.findTerceros()}" value="Buscar" onclick="loading()" />
+						</div>
+					</div>
+				</div>
+				<br />
+				<div class="row">
+					<!-- Tabla de resultado de la búsqueda de Terceros -->
+					<h:panelGroup rendered="#{tercerosRepresentantesMB.listTercerosToAdd != null}">
+						<div class="table-responsive table-hover col-12" id="Tabla de resultados de la búsqueda">
+							<div class="table">
+								<h:dataTable value="#{tercerosRepresentantesMB.listTercerosToAdd}" var="li" styleClass="table table-condensed table-striped col-12">
+									<h:column >
+										<f:facet name="header">NIF / CIF</f:facet>
+										<h:outputText value="#{li.IDENTIFICACION}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">Nombre / Razón Social</f:facet>
+										<h:outputText value="#{li.RAZON_SOCIAL}" />
+										<h:outputText value="#{li.NOMBRE} " />
+										<h:outputText value="#{li.APELLIDO_1} " />
+										<h:outputText value="#{li.APELLIDO_2}" />
+									</h:column>
+									<h:column>
+										<div class="text-right">
+											<f:facet name="header">Añadir en la relación como:</f:facet>
+											<h:commandButton value="&#160;&#160;&#160;Interesado&#160;&#160;&#160;" title="Añadir como Interesado" class="btn btn-consola"
+												action="#{tercerosRepresentantesMB.asignInteresado(li.ID)}" onclick="loading()" />
+											&#160;
+											<h:commandButton value="Representante" title="Añadir como Representante" class="btn btn-consola"
+												action="#{tercerosRepresentantesMB.asignRepresentante(li.ID)}" onclick="loading()" />
+										</div>
+									</h:column>
+								</h:dataTable>
+							</div>
+						</div>
+					</h:panelGroup>
+				</div>
+			</div>
+		</h:panelGroup>
+
+	</div>
+</h:form>
+</html>

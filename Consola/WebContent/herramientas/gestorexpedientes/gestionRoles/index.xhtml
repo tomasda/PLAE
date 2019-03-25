@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Bootstrap -->
+<link href="../../../css/bootstrap.min.css" rel="stylesheet" />
+<link href="../../../css/main.css" rel="stylesheet" />
+</head>
+<h:form>
+	<div class="container-fluid">
+		<!-- 
+	
+				TITULO Y OPCIONES
+	
+		 -->
+		<div class="row">
+			<div class="col-lg-12  form-opciones_m">
+				<div class="text-center">
+					<h2 class="text-warning">GESTIÓN DEL CATÁLOGO DE ROLES DE DEPARTAMENTO</h2>
+				</div>
+			</div>
+			<!-- 	BLOQUE DE OPCIONES -->
+			<div class="col-lg-2  form-opciones_o">
+				<div class="text-center">
+					<h:outputText value="Opciones" class="text-opciones" />
+				</div>
+				<br />
+				<div class="text-center">
+					<h:commandButton type="submit" class="btn btn-consola" action="#{catalogoRoleMB.newAction()}" value="Añadir Familia" onclick="loading()" />
+				</div>
+			</div>
+			<div class="col-lg-10">
+				<br />
+				<!-- 
+			
+					BÚSQUEDA
+			
+			 -->
+				<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+					<div class="row">
+						<!-- 	BLOQUE DE BÚSQUEDAS -->
+						<div class="col-10">
+							<div class="form" id="Formulario de búsqueda">
+								<div class="form-group row">
+									<h:outputLabel value="ID" styleClass="col-2 col-form-label text-info" for="input" />
+									<div class="col-6">
+										<h:inputText type="text" class="form-control" id="input" a:placeholder="dptSecretaria" value="#{menuSessionOption.searchOption}" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<h:outputLabel value="Descripción" styleClass="col-2 col-form-label text-info" for="inputDes" />
+									<div class="col-6">
+										<h:inputText type="text" class="form-control" id="inputDes" a:placeholder="Secretaría" value="#{menuSessionOption.searchOption2}" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<h:outputLabel value="Grupo de Alfresco" styleClass="col-2 text-info" for="inputGrp"/>
+									<div class="col-6">
+										<h:inputText type="text" class="form-control " id="inputGrp" a:placeholder="ALF_SECRETARIA" value="#{menuSessionOption.searchOption3}"></h:inputText>
+									</div>
+									<div class="col-4 text-right">
+										<h:commandButton class="btn btn-consola" action="#{catalogoRoleMB.findAction()}" value="Buscar" onclick="loading()" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</h:panelGroup>
+			</div>
+		</div>
+		<f:view>
+			<!-- 
+			
+					Resultado de la BÚSQUEDA
+			
+			 -->
+			<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+				<br />
+				<div class="table-responsive container-fluid table" id="Tabla de resultados de la búsqueda">
+					<div>
+						<h:dataTable value="#{catalogoRoleMB.listOfRoles}" var="L_F" styleClass="table table-striped" headerClass="table-dark h4 text-danger" rowClasses="employeeTableOddRow,employeeTableEvenRow"
+							rendered="#{catalogoRoleMB.listOfRoles != null}">
+							<h:column>
+								<f:facet name="header">Familia</f:facet>
+								<h:outputText value="#{L_F.id_}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">Descripción</f:facet>
+								<h:outputText value="#{L_F.description_}" />
+							</h:column>
+							<h:column>
+								<div class="text-right">
+									<h:commandLink action="#{catalogoRoleMB.editAction(L_F.id_)}" value="" onclick="loading()">
+										<img src="icons/edit_blue.png" title="Editar" />
+									</h:commandLink>
+									<h:commandLink action="#{catalogoRoleMB.deleteAction(L_F.id_)}" value="" onclick="return confirm('Va a eliminar el Rol #{L_F.id_} , esta opción no se puede deshacer. ¿Está seguro?')">
+										<img src="icons/ko_blue.png" title="Eliminar" />
+									</h:commandLink>
+								</div>
+							</h:column>
+						</h:dataTable>
+					</div>
+				</div>
+			</h:panelGroup>
+			<!-- 
+			
+					EDICIÓN
+				
+			 -->
+			<br />
+			<h:panelGroup rendered="#{menuSessionOption.enabledPanel('E')}">
+				<div class=" container-fluid formulario">
+					<br />
+					<div class="row">
+						<div class="row col-12">
+							<label for="fam" class="col-2 text-info">Familia</label>
+							<div class="form-group col-lg-2">
+								<h:inputText class="form-control" id="fam" type="text" a:placeholder="AAAA" value="#{familiasMB.fb.ID}" disabled="#{familiasMB.fb.ID != null}"></h:inputText>
+							</div>
+							<label for="des" class="col-2 text-info">Descripción</label>
+							<div class="col-lg-6">
+								<h:inputText class="form-control" id="des" type="text" a:placeholder="Departamento - Subdepartamento" value="#{familiasMB.fb.DESCRIPTION}"></h:inputText>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-6">
+							<h:outputLabel class="text-dark-blue" value="Permisos de inicio: " />
+							<h:panelGroup rendered="#{familiasMB.rolesList != null}" styleClass="">
+								<div class="table-info table-info-bordererd p-2">
+									<div class="">
+										<ui:repeat var="L_R" value="#{familiasMB.rolesList}">
+											<div class="row">
+												<div class="col-10">
+													<h:outputLabel value="#{L_R.DEPARTAMENTO_ID_}" />
+												</div>
+												<div class="col-2 text-right ">
+													<h:commandLink action="#{familiasMB.deleteFamiliaRoleAction(L_R)}" value=""
+													onclick="return confirm('Va a eliminar el permiso a #{L_R.DEPARTAMENTO_ID_}, en caso de que alguno de los procedimientos precise de estos permisos puede aplicarlos a nivel de Procedimiento. ')" >
+														<img src="icons/ko_blue.png" title="Eliminar Permiso" />
+													</h:commandLink>
+												</div>
+											</div>
+										</ui:repeat>
+									</div>
+								</div>
+							</h:panelGroup>
+						</div>
+						<div class="col-1" />
+						<div class="col-5">
+							<div class="text-success">
+								<div class="row">
+									<div class="col-12">
+										<label> El proceso para añadir un departamento es: </label> <br />&#160;&#160;
+										<h:outputText value="1º Seleccionar el Departamento a añadir" />
+										<br />&#160;&#160;
+										<h:outputText value="2º Pulsar en + para añadir el rol al procedimiento." />
+										<br /> <br />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-10">
+										<label>Departamento</label>
+										<h:selectOneMenu name="Lista de Departamentos" value="#{familiasMB.selectedDepartamento}" class="form-control">
+											<f:selectItems value="#{procedimientosMB.listaDepartamentos}" var="L_D" itemValue="#{L_D.ID_}" itemLabel="#{L_D.DESCRIPTION_}" />
+										</h:selectOneMenu>
+									</div>
+									<div class="col-1">
+										<h:commandLink action="#{familiasMB.newFamiliaRoleAction()}" value="" styleClass="image_to_bottom"
+										onclick="return confirm('Al añadir el permiso #{familiasMB.selectedDepartamento} a la Familia #{familiasMB.fb.DESCRIPTION} se eliminarán a nivel de procedimientos en caso de que existan. ')">
+											<img src="icons/add_blue.png" title="Añadir permiso de inicio" />
+										</h:commandLink>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-8">
+							<h:outputLabel class="text-dark-blue" value="Procedimientos asociados a la Familia. " />
+							<h:panelGroup styleClass="">
+								<div class="table-info table-info-bordererd p-2">
+									<ui:repeat var="L" value="#{familiasMB.procedimientosList}">
+										<h:panelGroup styleClass="#{L.activo_boolean==true? '':'text-opacity-50'}">
+											<div class="row">
+												<div class="col">
+													<h:outputText value="#{L.procedimiento}" />
+													<h:outputText value="&#160;&#160;&#160;Desactivado" rendered="#{!L.activo_boolean}" />
+												</div>
+												<div class="col">
+													<h:outputLabel value="#{L.descripcion}" class="text-dark" />
+												</div>
+											</div>
+										</h:panelGroup>
+									</ui:repeat>
+								</div>
+							</h:panelGroup>
+						</div>
+					</div>
+
+					<div class="row ">
+						<div class="col-12 text-right">
+							<h:commandButton type="submit" class="btn btn-consola" action="#{familiasMB.saveAction()}" value="Guardar" onclick="loading()" />
+							&#160;
+							<h:commandButton type="submit" class="btn btn-consola" action="#{familiasMB.returnAction()}" value="Volver" onclick="loading()" />
+						</div>
+					</div>
+				</div>
+			</h:panelGroup>
+		</f:view>
+	</div>
+</h:form>
+</html>

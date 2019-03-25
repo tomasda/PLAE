@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script>
+	function cancelar(numExpediente) {
+		var confirmacion;
+		confirmacion = confirm("Va a cancelar el expediente, esta opción no se puede deshacer. ¿Está seguro?"
+				+ numExpediente);
+		if (confirmacion == true) {
+			document.getElementById("funcion").value = "cancelar";
+		} else {
+			document.getElementById("funcion").value = "on";
+		}
+	}
+</script>
+</head>
+<body>
+	<h:form>
+		<div class="text-warning text-center h3 text-bold">
+			<label>CANCELACIÓN DE EXPEDIENTES ||</label> <label>OCULTAR DOCUMENTOS DEL EXPEDIENTE ||</label> <label>REABRIR EXPEDIENTE FINALIZADO</label>
+		</div>
+		<div class="container">
+			<ui:include src="#{alert.alertaURL}" />
+		</div>
+		<f:view>
+			<!--  ************************** BÚSQUEDA ************************* -->
+			<h:panelGroup rendered="#{flowForms.enabledPanel('B')}">
+				<div class="container text-warning" id="Formulario de búsqueda">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="text-warning">Expediente</label>
+								<h:inputText type="text" class="form-control" id="idExpediente" a:placeholder="EXFABBM-2016-12-31-00000" value="#{flowForms.searchOption}" />
+							</div>
+						</div>
+						<div hidden="true">
+							<div class="form-group">
+								<label for="text-warning">Expediente</label>
+								<h:inputText type="text" class="form-control" id="idExpediente2" a:placeholder="EXFABBM-2016-12-31-00000" value="#{flowForms.searchOption2}" />
+							</div>
+						</div>
+						<div hidden="true">
+							<div class="form-group">
+								<label for="text-warning">Expediente</label>
+								<h:inputText type="text" class="form-control" id="idExpediente3" a:placeholder="EXFABBM-2016-12-31-00000" value="#{flowForms.searchOption3}" />
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<label for="text-warning">Rango de fechas (Desde Hasta)</label>
+								<div id="reportrange" class="pull-right form-control">
+									<i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+									<h:inputTextarea value="#{flowForms.searchOption4}" class="textAreaDate" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row"></div>
+					<div class="row">
+						<div class="text-right">
+							<h:commandButton type="submit" class="btn btn-primary" action="#{gestionExpedientes.findAction}" value="Buscar" onclick="loading()" />
+						</div>
+					</div>
+					<br />
+					<div class="table-responsive" id="Tabla de resultados de la búsqueda">
+						<div class=" table">
+							<h:dataTable value="#{operacionesGestionExpedientes.liExp}" var="L_Exp" styleClass="table table-condensed table-striped"
+								rendered="#{operacionesGestionExpedientes.liExp!= null}">
+								<h:column>
+									<f:facet name="header">Numero Expediente</f:facet>
+									<h:outputText value="#{L_Exp.numeroExpediente}" class="text-nowrap"/>
+								</h:column>
+								<h:column>
+									<f:facet name="header">Descripción</f:facet>
+									<h:outputText value="#{L_Exp.asuntoExpediente}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">Asiento</f:facet>
+									<h:outputText value="#{L_Exp.asiento}" class="text-nowrap" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">Estado</f:facet>
+									<h:outputText value="#{L_Exp.estadoString}" />
+								</h:column>
+								<h:column>
+									<h:commandLink name="Edición de Expediente" action="#{gestionExpedientes.editAction(L_Exp.numeroExpediente)}" onclick="loading()">
+										<span class="glyphicon glyphicon-edit" title="Editar"></span>
+									</h:commandLink>
+								</h:column>
+							</h:dataTable>
+						</div>
+					</div>
+				</div>
+			</h:panelGroup>
+			<!--  ************************** EDICIÓN ************************* -->
+			<h:panelGroup rendered="#{flowForms.enabledPanel('E')}">
+				<div class="container">
+					<!-- ************** DATOS DEL EXPEDIENTE ****************** -->
+					<div class="row">
+						<div class="col-xs-10">
+							<label class="text-warning h3 text-bold">Expediente</label>
+						</div>
+						<div class="col-xs-2"></div>
+					</div>
+					<br />
+					<div class="row">
+						<h:panelGroup>
+							<div class="row table-bordered table-style_01">
+								<div class="row">
+									<div class="col-xs-12">
+										<div class="col-xs-4">
+											<label class="text-warning">Nº de Expediente</label>
+											<div class=" text-left">
+												<h:outputText class="text-dark-blue h4 text-bold" type="text" value="#{operacionesGestionExpedientes.expediente[0]}" disabled="true" />
+											</div>
+										</div>
+										<div class="col-xs-2">
+											<label class="text-warning">Fecha de Creación</label>
+											<div class=" text-center">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[6]}" disabled="true" />
+											</div>
+										</div>
+										<div class="col-xs-2">
+											<label class="text-warning">Fecha de Fin</label>
+											<div class="text-center">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[7]}" disabled="true" />
+											</div>
+										</div>
+										<div class="col-xs-2">
+											<label class="text-warning">Tipo de Tramitación</label>
+											<div class="text-center">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[14]}" disabled="true" />
+											</div>
+										</div>
+										<div class="col-xs-1">
+											<label class="text-warning">Estado</label>
+											<div class="text-center">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[5]}" disabled="true" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-xs-12">
+										<div class="col-xs-12">
+											<label class="text-warning">Descripción</label>
+											<h:inputText class="form-control" type="text" value="#{operacionesGestionExpedientes.expediente[8]}" disabled="false"></h:inputText>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-xs-12">
+										<div class="col-xs-6">
+											<label class="text-warning">Procedimiento</label>
+											<div class="text-left">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[10]}" disabled="true" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-xs-12">
+										<div class="col-xs-4">
+											<label class="text-warning">Departamento</label>
+											<div class="text-left">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[1]}" disabled="true" />
+											</div>
+										</div>
+										<div class="col-xs-4">
+											<label class="text-warning">Tramitador</label>
+											<div class="text-left">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[1]}" disabled="true" />
+											</div>
+										</div>
+										<div class="col-xs-4">
+											<label class="text-warning">Actividad</label>
+											<div class="text-left">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[2]}" disabled="true" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-xs-12">
+										<div class="col-xs-6">
+											<label class="text-warning">Interesado</label>
+											<div class="text-left">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[9]}" disabled="true" />
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<label class="text-warning">NIF / CIF</label>
+											<div class="text-left">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[1]}" disabled="true" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-xs-12">
+										<div class="col-xs-3">
+											<label class="text-warning">Registro de Entrada</label>
+											<div class="text-left">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[12]}" disabled="true" />
+											</div>
+										</div>
+										<div class="col-xs-7">
+											<label class="text-warning">Asunto del Registro</label>
+											<div class="text-left">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[12]}" disabled="true" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-xs-12">
+										<div class="col-xs-3">
+											<label class="text-warning">Fecha de Notificación de la Resolución</label>
+											<div class="text-center">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[15]}" disabled="true" />
+											</div>
+										</div>
+										<div class="col-xs-4">
+											<label class="text-warning">Fecha efectiva de la Notificación de la Resolución</label>
+											<div class="text-center">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[16]}" disabled="true" />
+											</div>
+										</div>
+										<div class="col-xs-3">
+											<label class="text-warning">Usuario Creador</label>
+											<div class="text-left">
+												<h:outputText class="text-dark-blue h4" type="text" value="#{operacionesGestionExpedientes.expediente[2]}" disabled="true" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<br />
+							</div>
+						</h:panelGroup>
+					</div>
+					<br />
+					<div class="row">
+						<div class="col-xs-12">
+							<div class="col-xs-10">
+								<div class="text-right">
+									<h:commandButton type="submit" class="btn btn-primary" action="#{gestionExpedientes.saveAction()}" value="Guardar" onclick="loading()" />
+									<label></label>
+									<h:commandButton type="submit" class="btn btn-primary" action="#{gestionExpedientes.returnAction()}" value="Volver" onclick="loading()" />
+								</div>
+							</div>
+							<div class="col-xs-2">
+								<input title="operacion" type="hidden" name="funcion" id="funcion" />
+								<h:commandButton type="submit" class="btn btn-success" value="Cancelar Expediente"
+									action="#{operacionesGestionExpedientes.cancelarExpediente(request,operacionesGestionExpedientes.expediente[0])}"
+									onclick="cancelar('#{operacionesGestionExpedientes.expediente[0]}')" />
+							</div>
+						</div>
+					</div>
+					<!-- ************** HISTORIAL DE TRAMITACIÓN ****************** -->
+					<div class="row">
+						<div class="col-xs-10">
+							<label class="text-warning h3 text-bold">Historial de tramitación</label>
+						</div>
+						<div class="col-xs-2"></div>
+					</div>
+					<br />
+					<div class="row">
+						<h:panelGroup id="historicoForm" rendered="#{operacionesGestionExpedientes.liTrack != null}">
+							<div class="row table-bordered table-style_01">
+								<div class="row">
+									<div class="bs-example container table" data-example-id="simple-table">
+										<h:dataTable value="#{operacionesGestionExpedientes.liTrack}" var="L_TRACK" class="table" headerClass="active">
+											<f:facet name="caption">
+												<h:outputText value="&#32;SEGUIMIENTO DEL EXPEDIENTE"></h:outputText>
+											</f:facet>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="#" class="active"></h:outputText>
+												</f:facet>
+												<h:outputText style="font-weight:bold;" value="#{L_TRACK.numReg}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Actividad"></h:outputText>
+												</f:facet>
+												<h:outputText value="#{L_TRACK.ACTIVITY_}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Propietario"></h:outputText>
+												</f:facet>
+												<h:outputText value="#{L_TRACK.OWNER_}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Departamento"></h:outputText>
+												</f:facet>
+												<h:outputText value="#{L_TRACK.ROLE_NAME_}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Fecha Inicio"></h:outputText>
+												</f:facet>
+												<h:outputText value="#{L_TRACK.START_DATE_}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Fecha Fin"></h:outputText>
+												</f:facet>
+												<h:outputText value="#{L_TRACK.END_DATE_}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Estado"></h:outputText>
+												</f:facet>
+												<h:outputText value="#{L_TRACK.estado}"></h:outputText>
+											</h:column>
+										</h:dataTable>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+					<!-- ************** DOCUMENTOS ****************** -->
+					<div class="row">
+						<div class="col-xs-10">
+							<label class="text-warning h3 text-bold">Documentos</label>
+						</div>
+						<div class="col-xs-2"></div>
+					</div>
+					<br />
+					<div class="row">
+						<h:panelGroup id="documentosForm" rendered="#{operacionesGestionExpedientes.liDoc != null}">
+							<div class="row table-bordered table-style_01">
+								<div class="row">
+									<div class="bs-example container table" data-example-id="simple-table">
+										<h:dataTable value="#{operacionesGestionExpedientes.liDoc}" var="L_DOC" class="table" headerClass="active">
+											<f:facet name="caption">
+												<h:outputText value="&#32;DOCUMENTACIÓN ADJUNTA"></h:outputText>
+											</f:facet>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="#" class="active"></h:outputText>
+												</f:facet>
+												<h:outputText style="font-weight:bold;" value="#{L_DOC.numReg}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Actividad"></h:outputText>
+												</f:facet>
+												<h:outputText value="#{L_DOC.ACTIVITY_}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Descripción"></h:outputText>
+												</f:facet>
+												<h:outputText value="#{L_DOC.DESCRIPTION_}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Asiento"></h:outputText>
+												</f:facet>
+												<h:outputText value="#{L_DOC.RECORD_NUMBER_}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Tipo"></h:outputText>
+												</f:facet>
+												<h:outputText value="#{L_DOC.TYPE_}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Fase Actual"></h:outputText>
+												</f:facet>
+												<h:outputText value="#{L_DOC.CURRENT_}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Estado"></h:outputText>
+												</f:facet>
+												<h:outputText value="#{L_DOC.STATE_}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Tipo"></h:outputText>
+												</f:facet>
+												<h:outputText value="#{L_DOC.DOCUMENT_TYPE}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Actuación Relacionada"></h:outputText>
+												</f:facet>
+												<h:outputText value="#{L_DOC.ACTUACION_ID_}"></h:outputText>
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Opciones"></h:outputText>
+												</f:facet>
+												<h:outputText value="Iconos"></h:outputText>
+											</h:column>
+										</h:dataTable>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+					<!-- ************** ACTUACIONES ****************** -->
+					<div class="row">
+						<div class="col-xs-10">
+							<label class="text-warning h3 text-bold">Actuaciones</label>
+						</div>
+						<div class="col-xs-2"></div>
+					</div>
+					<br />
+					<div class="row">
+						<h:panelGroup>
+							<div class="row table-bordered table-style_01">
+								<div class="row">
+									<div class="bs-example container table" data-example-id="simple-table">
+										<table class="table">
+											<caption>&#32;ACTUACIONES SOLICITADAS DURANTE LA TRAMITACIÓN DEL EXPEDIENTE</caption>
+											<thead>
+												<tr class="active">
+													<th>#</th>
+													<th>Actividad</th>
+													<th>Descripción</th>
+													<th>Firmantes</th>
+													<th>Fecha</th>
+													<th>Fecha E/S</th>
+													<th>Nº Actuación</th>
+													<th>Acciones</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<th scope="row">1</th>
+													<td>Mark</td>
+													<td>Otto</td>
+													<td>@mdo</td>
+												</tr>
+												<tr>
+													<th scope="row">2</th>
+													<td>Jacob</td>
+													<td>Thornton</td>
+													<td>@fat</td>
+												</tr>
+												<tr>
+													<th scope="row">3</th>
+													<td>Larry</td>
+													<td>the Bird</td>
+													<td>@twitter</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<br />
+							</div>
+						</h:panelGroup>
+					</div>
+					<!-- ************** EXPEDIENTES RELACIONADOS ****************** -->
+					<div class="row">
+						<div class="col-xs-10">
+							<label class="text-warning h3 text-bold">Expedientes Relacionados</label>
+						</div>
+						<div class="col-xs-2"></div>
+					</div>
+					<br />
+					<div class="row">
+						<h:panelGroup>
+							<div class="row table-bordered table-style_01">
+								<div class="row">
+									<div class="bs-example container table" data-example-id="simple-table">
+										<table class="table">
+											<caption>&#32;RELACIÓN ENTRE EXPEDIENTES</caption>
+											<thead>
+												<tr class="active">
+													<th>#</th>
+													<th>Actividad</th>
+													<th>Descripción</th>
+													<th>Firmantes</th>
+													<th>Fecha</th>
+													<th>Fecha E/S</th>
+													<th>Nº Actuación</th>
+													<th>Acciones</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<th scope="row">1</th>
+													<td>Mark</td>
+													<td>Otto</td>
+													<td>@mdo</td>
+												</tr>
+												<tr>
+													<th scope="row">2</th>
+													<td>Jacob</td>
+													<td>Thornton</td>
+													<td>@fat</td>
+												</tr>
+												<tr>
+													<th scope="row">3</th>
+													<td>Larry</td>
+													<td>the Bird</td>
+													<td>@twitter</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<br />
+							</div>
+						</h:panelGroup>
+					</div>
+					<br />
+					<!-- ************** BOTONES ****************** -->
+					<div class="row">
+						<div class="text-right">
+							<h:commandButton type="submit" class="btn btn-primary" action="#{gestionExpedientes.saveAction()}" value="Guardar" onclick="loading()" />
+							<label></label>
+							<h:commandButton type="submit" class="btn btn-primary" action="#{gestionExpedientes.returnAction()}" value="Volver" onclick="loading()" />
+						</div>
+					</div>
+				</div>
+			</h:panelGroup>
+
+		</f:view>
+	</h:form>
+</body>
+</html>

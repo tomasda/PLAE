@@ -1,0 +1,190 @@
+<!DOCTYPE html >
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- Bootstrap -->
+	<link href="../../../css/bootstrap.css" rel="stylesheet" />
+	<link href="../../../css/main.css" rel="stylesheet" />
+</h:head>
+<h:body>
+	<h:form>
+		<f:view>
+			<div>
+				<ui:include src="#{alert.alertaURL}" />
+			</div>
+			<div class="row">
+				<div class="col-lg-12  form-opciones_m">
+					<div class="row">
+						<div class="col-10 text-center">
+							<h:outputLabel class="h2 text-warning" value="Estructura Jerárquica" />
+						</div>
+					</div>
+				</div>
+				<!-- 	BLOQUE DE OPCIONES -->
+				<div class="col-lg-3  form-opciones_o">
+					<div class="text-center">
+						<h:outputText value="Opciones" class="text-opciones" />
+					</div>
+					<br />
+					<div class="text-center">
+						<div class="row p-1">
+							<div class="col-3">
+								<h:outputLabel value="Nivel" class="text-warning" />
+							</div>
+							<div class="col-9">
+								<h:commandButton action="#{lDAPMB.addViewGroupLevel(1)}" value="1" styleClass="btn btn-consola-a #{lDAPMB.levelSelectedStyle(1)}" title="Nilvel 1" />
+								<h:commandButton action="#{lDAPMB.addViewGroupLevel(2)}" value="2" styleClass="btn btn-consola-a #{lDAPMB.levelSelectedStyle(2)}" title="Nilvel 2" />
+								<h:commandButton action="#{lDAPMB.addViewGroupLevel(3)}" value="3" styleClass="btn btn-consola-a #{lDAPMB.levelSelectedStyle(3)}" title="Nilvel 3" />
+								<h:commandButton action="#{lDAPMB.addViewGroupLevel(4)}" value="4" styleClass="btn btn-consola-a #{lDAPMB.levelSelectedStyle(4)}" title="Nilvel 4" />
+								<h:commandButton action="#{lDAPMB.addViewGroupLevel(5)}" value="5" styleClass="btn btn-consola-a #{lDAPMB.levelSelectedStyle(5)}" title="Nilvel 5" />
+							</div>
+						</div>
+						<div class="row p-1">
+							<div class="col-4">
+								<h:outputLabel value="Tamaño de Fuente" class="text-warning" />
+							</div>
+							<div class="col-6">
+								<div class="row" style="align-items: center;">
+									<div class="col-3">
+										<h:commandButton action="#{lDAPMB.fontSize('less')}" value="&#160;-&#160;" styleClass="btn btn-consola-a" title="Disminuir Fuente" />
+									</div>
+									<div class="col-6" style="padding-left: 20px !important; padding-right: 0px !important;">
+										<div class="progress">
+											<div class="progress-bar active" role="progressbar" style="#{lDAPMB.fontPercent()}" />
+										</div>
+									</div>
+									<div class="col-3">
+										<h:commandButton action="#{lDAPMB.fontSize('add')}" value="+" styleClass="btn btn-consola-a" title="Aumentar Fuente" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row p-1">
+							<div class="col-4">
+								<h:outputLabel value="Orientación" class="text-warning" />
+							</div>
+							<div class="col-2">
+								<h:commandLink action="#{lDAPMB.orientationChange()}" value="" onclick="loading()" class="btn btn-consola">
+									<h:panelGroup rendered="#{lDAPMB.horizontal}">
+										<img src="icons/vertical.png" title="Cambiar a vista Vertical" />
+									</h:panelGroup>
+									<h:panelGroup rendered="#{!lDAPMB.horizontal}">
+										<img src="icons/horizontal.png" title="Cambiar a vista Horizontal" />
+									</h:panelGroup>
+								</h:commandLink>
+							</div>
+
+							<div class="col-3">
+								<h:outputLabel value="Descarga" class="text-warning" />
+							</div>
+							<div class="col-1">
+								<h:commandLink action="#{lDAPMB.exportToXML('ALFRESCO')}" value="" class="btn btn-consola" title="Descarga en formato XML">
+									<img src="icons/download.png" />
+								</h:commandLink>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-9 text-center p-5">
+					<h:outputLabel class="h4 text-warning" value="Grupos de 1º Nivel" />
+					<div class="row">
+						<ui:repeat var="LDAP" value="#{lDAPMB.groupList}">
+							<h:commandButton action="#{lDAPMB.groupSelected(LDAP.cn)}" value="#{LDAP.cn}" styleClass=" btn btn-consola-a h7 #{lDAPMB.groupSelectedStyle(LDAP.cn)}" />
+						</ui:repeat>
+					</div>
+				</div>
+			</div>
+			<br />
+			<div class="row">
+				<h:panelGroup rendered="#{!lDAPMB.horizontal}">
+					<div class="col-lg-1" />
+					<div class="col-lg-11">
+						<div class="easy-tree">
+							<ul>
+								<ui:repeat var="LDAP" value="#{lDAPMB.groupList}">
+									<h:panelGroup rendered="#{lDAPMB.checkGroupSelected(LDAP.cn)}">
+										<li><span class="easy-tree_lv1"><h:outputText value="#{LDAP.description}" styleClass="#{lDAPMB.fontSize()}" /></span> <h:panelGroup
+												rendered="#{lDAPMB.viewGroupLevel>1}">
+												<ul>
+													<ui:repeat var="LDAP2" value="#{LDAP.list}">
+														<li><span class="easy-tree_lv2"><h:outputText value="#{LDAP2.description}" styleClass="#{lDAPMB.fontSize()}" /> </span> <h:panelGroup
+																rendered="#{lDAPMB.viewGroupLevel>2}">
+																<ul>
+																	<ui:repeat var="LDAP3" value="#{LDAP2.list}">
+																		<li><span class="easy-tree_lv3"><h:outputText value="#{LDAP3.description}" styleClass="#{lDAPMB.fontSize()}" /> </span> <h:panelGroup
+																				rendered="#{lDAPMB.viewGroupLevel>3}">
+																				<ul>
+																					<ui:repeat var="LDAP4" value="#{LDAP3.list}">
+																						<li><span class="easy-tree_lv4"><h:outputText value="#{LDAP4.description}" styleClass="#{lDAPMB.fontSize()}" /> </span> <h:panelGroup
+																								rendered="#{lDAPMB.viewGroupLevel>4}">
+																								<ul>
+																									<ui:repeat var="LDAP5" value="#{LDAP4.list}">
+																										<li><span class="easy-tree_lv5"><h:outputText value="#{LDAP5.description}" styleClass="#{lDAPMB.fontSize()}" /> </span></li>
+																									</ui:repeat>
+																								</ul>
+																							</h:panelGroup></li>
+																					</ui:repeat>
+																				</ul>
+																			</h:panelGroup></li>
+																	</ui:repeat>
+																</ul>
+															</h:panelGroup></li>
+													</ui:repeat>
+												</ul>
+											</h:panelGroup></li>
+									</h:panelGroup>
+								</ui:repeat>
+							</ul>
+						</div>
+					</div>
+				</h:panelGroup>
+
+				<h:panelGroup rendered="#{lDAPMB.horizontal}">
+					<div class="col-lg-12 ">
+						<ui:repeat var="LDAP" value="#{lDAPMB.groupList}">
+							<h:panelGroup rendered="#{lDAPMB.checkGroupSelected(LDAP.cn)}">
+								<div class="tf tf-tree text-white row">
+									<ul>
+										<li><span class="tf-tree_lv1 tf-nc"><h:outputText value="#{LDAP.description}" styleClass="#{lDAPMB.fontSize()}" /></span> <h:panelGroup
+												rendered="#{lDAPMB.viewGroupLevel>1 and LDAP.list.size()>0}">
+												<ul>
+													<ui:repeat var="LDAP2" value="#{LDAP.list}">
+														<li><span class="tf-tree_lv2 tf-nc"><h:outputText value="#{LDAP2.description}" styleClass="#{lDAPMB.fontSize()}" /> </span> <h:panelGroup
+																rendered="#{lDAPMB.viewGroupLevel>2 and LDAP2.list.size()>0}">
+																<ul>
+																	<ui:repeat var="LDAP3" value="#{LDAP2.list}">
+																		<li><span class="tf-tree_lv3 tf-nc"><h:outputText value="#{LDAP3.description}" styleClass="#{lDAPMB.fontSize()}" /> </span> <h:panelGroup
+																				rendered="#{lDAPMB.viewGroupLevel>3 and LDAP3.list.size()>0}">
+																				<ul>
+																					<ui:repeat var="LDAP4" value="#{LDAP3.list}">
+																						<li><span class="tf-tree_lv4 tf-nc"><h:outputText value="#{LDAP4.description}" styleClass="#{lDAPMB.fontSize()}" /> </span> <h:panelGroup
+																								rendered="#{lDAPMB.viewGroupLevel>4 and LDAP4.list.size()>0}">
+																								<ul>
+																									<ui:repeat var="LDAP5" value="#{LDAP4.list}">
+																										<li><span class="tf-tree_lv5 tf-nc"><h:outputText value="#{LDAP5.description}" styleClass="#{lDAPMB.fontSize()}" /> </span></li>
+																									</ui:repeat>
+																								</ul>
+																							</h:panelGroup></li>
+																					</ui:repeat>
+																				</ul>
+																			</h:panelGroup></li>
+																	</ui:repeat>
+																</ul>
+															</h:panelGroup></li>
+													</ui:repeat>
+												</ul>
+											</h:panelGroup> <br />
+											<div class="line" /> <br /></li>
+									</ul>
+								</div>
+							</h:panelGroup>
+						</ui:repeat>
+					</div>
+				</h:panelGroup>
+			</div>
+		</f:view>
+	</h:form>
+</h:body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- Bootstrap -->
+	<link href="../../../css/bootstrap.min.css" rel="stylesheet" />
+	<link href="../../../css/main.css" rel="stylesheet" />
+</h:head>
+<h:form>
+	<div class="container-fluid">
+		<!-- Verifica si el menú esta en la Fase inicia  -->
+		#{tercerosRepresentantesMB.TercerosRepresentantesStartMenu()}
+		<!-- 
+	
+				TITULO Y OPCIONES
+	
+		 -->
+		<div class="row">
+			<div class="col-lg-12  form-opciones_m">
+				<div class="text-center">
+					<h2 class="text-warning">CATALOGO DE TERCEROS Y SUS REPRESENTANTES</h2>
+				</div>
+			</div>
+			<!-- 	BLOQUE DE OPCIONES -->
+			<div class="col-lg-2  form-opciones_o"></div>
+			<div class="col-lg-10 form-opciones_c">
+				<br />
+				<!-- 
+			
+					BÚSQUEDA
+			
+			 -->
+				<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+					<div class="row">
+						<!-- 	BLOQUE DE BÚSQUEDAS -->
+						<div class="col-12">
+							<div class="form row" id="Formulario de búsqueda">
+								<div class="col-6">
+									<div class="form-group">
+										<h:outputLabel value="Nombre Interesado/Representante" class="text-warning" />
+										<h:inputText type="text" class="form-control" id="idBusqueda" a:placeholder="CEPSA" value="#{menuSessionOption.searchOption}" disabled="false"></h:inputText>
+									</div>
+								</div>
+								<div class="col-2">
+									<div class="form-group">
+										<h:outputLabel value="NIF / CIF" class="text-warning" />
+										<h:inputText type="text" class="form-control" id="idBusqueda2" a:placeholder="00000000H" value="#{menuSessionOption.searchOption2}" disabled="false"></h:inputText>
+									</div>
+								</div>
+								<div class="col-2 text-right">
+									<br />
+									<h:commandButton class="btn btn-consola" action="#{tercerosRepresentantesMB.findAction()}" value="Buscar" onclick="loading()" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</h:panelGroup>
+			</div>
+		</div>
+		<!-- 
+			
+					Resultado de la BÚSQUEDA
+			
+		-->
+		<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+			<h:panelGroup rendered="#{tercerosRepresentantesMB.tercerosRepresentantesList != null}">
+				<br />
+				<div class="table-responsive container-fluid table" id="Tabla de resultados de la búsqueda">
+					<div>
+						<h:dataTable value="#{tercerosRepresentantesMB.tercerosRepresentantesList}" var="li" styleClass="table table-striped"
+							headerClass="table-dark h4 text-danger" columnClasses="w-50,w-50">
+							<f:facet name="header">
+								<h:outputText class="h3" value="&#160;RESULTADOS DE LA BÚSQUEDA" />
+							</f:facet>
+							<h:column>
+								<f:facet name="header">Interesado</f:facet>
+								<div class="row">
+									<div class="col">
+										<h:outputText value="#{li.terceroName}" class="h4" />
+										<br /><br />
+										<h:outputText value="NIF" class="text-dark-blue" />
+										&#160;
+										<h:outputText value="#{li.terceroIdentification}" class="text-dark-blue" />
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col-1"></div>
+									<div class="col">
+										<h:outputLabel value="Expedientes:" />
+									</div>
+									<div class="col">
+										<ui:repeat var="ter" value="#{tercerosRepresentantesMB.reportExp(li.terceroIdentification)}" >
+											<div class="row">
+												<div class="col">
+													<h:outputLabel value="Total:" rendered="#{ter.key_ lt 1}"  class="text-dark-blue"/>
+													<h:outputLabel value="Año:" rendered="#{ter.key_ gt 1}"/>
+													&#160;&#160;
+													<h:outputLabel value="#{ter.key_}" rendered="#{ter.key_ gt 1}" />
+													&#160;&#160;
+													<h:outputLabel value="#{ter.value_}" rendered="#{ter.key_ lt 1}" class="text-dark-blue" />
+													<h:outputLabel value="#{ter.value_}" rendered="#{ter.key_ gt 1}"/>
+												</div>
+											</div>
+										</ui:repeat>
+									</div>
+								</div>
+							</h:column>
+							<h:column >
+								<f:facet name="header">Representantes</f:facet>
+								<h:dataTable value="#{li.repList}" var="repLi" styleClass="table" headerClass="table-dark" rowClasses=" table-primary table-bordered table-striped" columnClasses="w-50,w-50">
+									<h:column>
+										<h:outputText value="#{repLi.name_}" class="h7" />
+										&#160;&#160;&#160;&#160;
+										<h:outputText value="#{repLi.identificacion_}" class="h7 text-dark-blue" />
+									</h:column>
+									<h:column>
+										<ui:repeat var="exp" value="#{tercerosRepresentantesMB.reportExp(repLi.identificacion_)}">
+													<h:outputLabel value="Total:" rendered="#{exp.key_ lt 1}"  class="text-dark-blue"/>
+													<h:outputLabel value="Año:" rendered="#{exp.key_ gt 1}"/>
+													&#160;&#160;
+													<h:outputLabel value="#{exp.key_}" rendered="#{exp.key_ gt 1}" />
+													<br/>
+										</ui:repeat>
+									</h:column>
+									<h:column>
+										<ui:repeat var="exp" value="#{tercerosRepresentantesMB.reportExp(repLi.identificacion_)}">
+											<h:outputLabel value="#{exp.value_}" rendered="#{exp.key_ lt 1}" class="text-dark-blue" />
+											<h:outputLabel value="#{exp.value_}" rendered="#{exp.key_ gt 1}"/>
+											<br/>
+										</ui:repeat>
+									</h:column>
+								</h:dataTable>
+							</h:column>
+						</h:dataTable>
+					</div>
+				</div>
+			</h:panelGroup>
+		</h:panelGroup>
+	</div>
+</h:form>
+</html>

@@ -1,0 +1,146 @@
+				<div class="table-responsive" id="Tabla de resultados de la búsqueda">
+					<div class="container table">
+						<h:dataTable value="" var="L_F" styleClass="table table-condensed table-striped"
+							rendered=" != null}">
+							<f:facet name="caption">
+								<h:outputText class="h3" value="&#160;RESULTADOS DE LA BÚSQUEDA"></h:outputText>
+							</f:facet>
+							<h:column>
+								<f:facet name="header">
+									<label class="text-warning">Firmantes</label>
+								</f:facet>
+								<div class="row">
+									<div class="col-sm-12">
+										<span class="text-warning">Nombre </span> <span class="text-primary h4">#{L_F.nombre} #{L_F.apellido1} #{L_F.apellido2}</span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-2">
+										<span class="text-warning">NIF </span> <span class="text-primary">#{L_F.nif}</span>
+									</div>
+									<div class="col-sm-5">
+										<span class="text-warning"> Cargo </span> <span class="text-primary">#{L_F.cargo}</span>
+									</div>
+
+									<div class="col-sm-5">
+										<span class="text-warning">Correo Electrónico </span> <span class="text-primary">#{L_F.email}</span>
+									</div>
+								</div>
+								<div class="row">
+									<br />
+								</div>
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:commandLink action="#{catalogoFirmantes.newAction()}" value="" onclick="loading()">
+										<span class="glyphicon glyphicon-plus" title="Añadir"></span>
+									</h:commandLink>
+								</f:facet>
+								<h:commandLink action="#{catalogoFirmantes.editAction(L_F.id_persona)}" value="" onclick="loading()">
+									<span class="glyphicon glyphicon-edit" title="Editar"></span>
+								</h:commandLink>
+								<h:commandLink name="delete" action="#{catalogoFirmantes.deleteAction(L_F.id_persona)}"
+									onclick="return confirm('Va a eliminar a #{L_F.nombre} #{L_F.apellido1} #{L_F.apellido2}, esta opción no se puede deshacer. ¿Está seguro?')">
+									<span class="glyphicon glyphicon-trash" title="Eliminar"></span>
+								</h:commandLink>
+							</h:column>
+						</h:dataTable>
+					</div>
+				</div>
+
+
+
+
+
+			<!-- 
+			<h:panelGroup rendered="#{flowForms.enabledPanel('E')}">
+				<div class="text-info container-fluid container" id="Formulario para editar el Firmante">
+					<div class="row">
+						<div class="col-xs-4">
+							<div class="form-group">
+								<label for="ex1">Nombre</label>
+								<h:inputText class="form-control" type="text" a:placeholder="Nombre" value="#{personasBean.nombre_TMP}" />
+							</div>
+						</div>
+						<div class="col-xs-3">
+							<div class="form-group">
+								<label for="ex2">Apellido</label>
+								<h:inputText class="form-control" type="text" a:placeholder="Apellido" value="#{personasBean.apellido1_TMP}" />
+							</div>
+						</div>
+						<div class="col-xs-3">
+							<div class="form-group">
+								<label for="ex2">Apellido 2</label>
+								<h:inputText class="form-control" type="text" a:placeholder="Apellido2" value="#{personasBean.apellido2_TMP}" />
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-4">
+							<div class="form-group">
+								<label for="ex3">Cargo</label>
+								<h:inputText class="form-control" type="text" a:placeholder="Jefe de ..." value="#{personasBean.cargo_TMP}" />
+							</div>
+						</div>
+						<div class="col-xs-4">
+							<div class="form-group">
+								<label for="ex3">Documento Identificativo</label>
+								<h:inputText class="form-control" type="text" a:placeholder="0000000A" value="#{personasBean.nif_TMP}" />
+							</div>
+						</div>
+						<div class="col-xs-4">
+							<div class="form-group">
+								<label for="ex3">Correo Electrónico</label>
+								<h:inputText class="form-control" type="text" a:placeholder="correo@dominio.es" value="#{personasBean.email_TMP}" />
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-2">
+							<div class="form-group">
+							
+								<div class="text-nowrap" title="ON = Este firmante puede validar documentos.">
+									<label>¿Es validador?</label>
+									<div class="checkbox checkbox-slider- -a checkbox-slider- -a-rounded checkbox-slider-md" style="margin-top: 0px;">
+										<label> <h:selectBooleanCheckbox value="#{personasBean.es_validador_TMP_Boolean}" type="checkbox" /> <span style="font-weight: bold;">&#160;</span>
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-xs-2">
+							<div class="form-group">
+								
+								<div class="text-nowrap" title="ON = Este firmante puede firmar documentos.">
+									<label>¿Es Firmante?</label>
+									<div class="checkbox checkbox-slider--a checkbox-slider--a-rounded checkbox-slider-md" style="margin-top: 0px;">
+										<label> <h:selectBooleanCheckbox value="#{personasBean.es_firmante_TMP_Boolean}" type="checkbox" /> <span style="font-weight: bold;">&#160;</span>
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-2">
+							<div class="form-group">
+								
+								<div class="text-nowrap" title="ON = Este firmante recibe alertas.">
+									<label>¿Adjunto Alertas?</label>
+									<div class="checkbox checkbox-slider--a checkbox-slider--a-rounded checkbox-slider-md" style="margin-top: 0px;">
+										<label> <h:selectBooleanCheckbox value="#{personasBean.adj_alertas_TMP_Boolean}" type="checkbox" /> <span style="font-weight: bold;">&#160;</span>
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-right">
+							<h:commandButton type="submit" class="btn btn-primary" action="#{catalogoFirmantes.saveAction()}" value="Guardar" onclick="loading()" />
+							<label></label>
+							<h:commandButton type="submit" class="btn btn-primary" action="#{catalogoFirmantes.returnAction()}" value="Volver" onclick="loading()" />
+						</div>
+					</div>
+				</div>
+			</h:panelGroup>
+			 -->

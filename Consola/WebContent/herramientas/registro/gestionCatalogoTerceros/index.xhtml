@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- Bootstrap -->
+	<link href="../../../css/bootstrap.min.css" rel="stylesheet" />
+	<link href="../../../css/main.css" rel="stylesheet" />
+</h:head>
+<body>
+<h:form>
+	<div class="container-fluid">
+		<!--  Verifica cada vez que se accede al formulario si está en fase de Inicio -->
+		#{tercerosMB.TercerosStartMenu()}
+		<!-- 
+	
+				TITULO Y OPCIONES
+	
+		 -->
+		<div>
+			<ui:include src="#{alert.alertaURL}" />
+		</div>
+		<div class="row">
+			<div class="col-lg-12  form-opciones_m">
+				<div class="text-center">
+					<h2 class="text-warning">GESTIÓN DE TERCEROS</h2>
+				</div>
+			</div>
+			<!-- 	BLOQUE DE OPCIONES -->
+			<div class="col-lg-2  form-opciones_o">
+				<div class="text-center">
+					<h:outputText value="Opciones" class="text-opciones" />
+				</div>
+				<br />
+				<div class="text-center">
+					<h:commandButton type="submit" class="btn btn-consola" action="#{tercerosMB.newAction()}" value="Añadir Tercero" onclick="loading()" />
+				</div>
+				<br />
+			</div>
+			<div class="col-lg-10">
+				<br />
+				
+					<!-- 	BÚSQUEDA   	-->
+					
+				<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+					<div class="row">
+						<div class="col-12">
+							<!-- 	BLOQUE DE BÚSQUEDAS -->
+							<div class="form row" id="Formulario de búsqueda">
+								<div class="col-lg-3">
+									<div class="form-group">
+										<h:outputLabel value="NOMBRE / RAZÓN SOCIAL" class="text-warning" />
+										<h:inputText type="text" class="form-control" id="nombre" a:placeholder="CARLOS / CEPSA" value="#{menuSessionOption.searchOption}" />
+									</div>
+								</div>
+								<div class="col-lg-3">
+									<div class="form-group">
+										<h:outputLabel value="1º Apellido" class="text-warning" />
+										<h:inputText type="text" class="form-control" id="apellido1" a:placeholder="Apellido" value="#{menuSessionOption.searchOption2}" />
+									</div>
+								</div>
+								<div class="col-lg-3">
+									<div class="form-group">
+										<h:outputLabel value="2º Apellido" class="text-warning" />
+										<h:inputText type="text" class="form-control" id="apellido2" a:placeholder="Apellido" value="#{menuSessionOption.searchOption3}" />
+									</div>
+								</div>
+								<div class="col-lg-3">
+									<div class="form-group">
+										<h:outputLabel value="NIF/CIF" class="text-warning" />
+										<h:inputText type="text" class="form-control" id="NIF" a:placeholder="00000000A / A00000000" value="#{menuSessionOption.searchOption4}" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12 text-lg-right">
+							<h:commandButton class="btn btn-consola" action="#{tercerosMB.findAction()}" value="Buscar" onclick="loading()" />
+						</div>
+					</div>
+				</h:panelGroup>
+			</div>
+		</div>
+		<f:view>
+			<!-- 
+			
+					Resultado de la BÚSQUEDA
+			
+			 -->
+			<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+				<br />
+				<div class="table-responsive container-fluid table" id="Tabla de resultados de la búsqueda">
+					<div class=" table">
+						<h:dataTable value="#{tercerosMB.listTercerosB}" var="L_T" styleClass="table table-striped" headerClass="table-dark h4 text-danger"
+							rendered="#{tercerosMB.listTercerosB != null}">
+							<h:column>
+								<f:facet name="header">Nombre/Razón Social</f:facet>
+								<h:outputText value="#{L_T.RAZON_SOCIAL}" rendered="#{L_T.RAZON_SOCIAL != null}" />
+								<label> </label>
+								<h:outputText value="#{L_T.NOMBRE}" rendered="#{L_T.NOMBRE != null}" />
+								<label> </label>
+								<h:outputText value="#{L_T.APELLIDO_1}" rendered="#{L_T.APELLIDO_1 != null}" />
+								<label> </label>
+								<h:outputText value="#{L_T.APELLIDO_2}" rendered="#{L_T.APELLIDO_2 != null}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header"><div class="text-center">NIF/CIF</div></f:facet><div class="text-center">#{L_T.IDENTIFICACION}</div>
+   							</h:column>
+							<h:column>
+								<f:facet name="header"><div class="text-center"><h:outputText value="E. Notif." title="Notificaciones Electrónicas"/></div></f:facet>
+								<div class="text-center">
+									<h:graphicImage value="/icons/no.png" rendered="#{!funciones.trueOrFalse(L_T.NOTIF_ELECT_OBLIGATORIA)}" title="No" />
+									<h:graphicImage value="/icons/yes.png" rendered="#{funciones.trueOrFalse(L_T.NOTIF_ELECT_OBLIGATORIA)}" title="Sí" />
+								</div>
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<div class="text-center"><h:outputText value="R/Elec." title="Registro Electrónico"/></div>
+								</f:facet>
+								<div class="text-center">
+									<h:graphicImage value="/icons/no.png" rendered="#{!L_T.REGISTRO_ELECTRONICO_Boolean}" title="No" />
+									<h:graphicImage value="/icons/yes.png" rendered="#{L_T.REGISTRO_ELECTRONICO_Boolean}" title="Sí" />
+								</div>
+							</h:column>
+							<h:column>
+								<div class="text-right">
+									<h:commandLink action="#{tercerosMB.editAction(L_T.ID)}" value="" onclick="loading()">
+										<img src="icons/edit_blue.png" title="Editar" />
+									</h:commandLink>
+									<h:commandLink name="eliminar" action="#{tercerosMB.deleteAction(L_T.ID)}"
+										onclick="loading(); return confirm('Va a eliminar a #{L_T.RAZON_SOCIAL} #{L_T.NOMBRE} #{L_T.APELLIDO_1} #{L_T.APELLIDO_2} , esta opción no se puede deshacer. ¿Está seguro?')">
+										<img src="icons/ko_blue.png" title="Eliminar" />
+									</h:commandLink>
+								</div>
+							</h:column>
+						</h:dataTable>
+					</div>
+				</div>
+			</h:panelGroup>
+			<!-- 
+			
+					EDICIÓN
+				
+			 -->
+
+			<h:panelGroup rendered="#{menuSessionOption.enabledPanel('E')}">
+				<br />
+				<div class="text-info container-fluid formulario " id="Formulario para editar Terceros">
+					<div class="row">
+						<div class="col-12">
+							<div class="col-12">
+								<div class="row">
+									<div class="col-12">
+										<br />
+										<h:panelGroup id="terceroForm">
+											<div class="row">
+												<div class="col-9">
+													<!-- ************** Tipo de Identificación ****************** -->
+													<div class="row">
+														<div class="col-3">
+															<label>Tipo de Identificación</label>
+															<h:selectOneMenu value="#{tercerosMB.tercerosB.TIPO_IDENTIFICACION_ID}" class="form-control">
+																<f:selectItem itemValue="C" itemLabel="CIF" />
+																<f:selectItem itemValue="N" itemLabel="NIF" />
+																<f:selectItem itemValue="P" itemLabel="Pasaporte" />
+																<f:selectItem itemValue="X" itemLabel="Código de Origen" />
+																<f:selectItem itemValue="E" itemLabel="Extranjero" />
+																<f:selectItem itemValue="O" itemLabel="Otro - Persona Física" />
+																<f:ajax event="change" render="terceroForm" />
+															</h:selectOneMenu>
+														</div>
+														<div class="col-5">
+															<label>Identificación</label>
+															<h:inputText class="form-control" type="text" a:placeholder="A00000000" value="#{tercerosMB.tercerosB.IDENTIFICACION}" />
+														</div>
+													</div>
+													<br />
+													<!-- ************** TERCERO NIF ****************** -->
+													<h:panelGroup rendered="#{tercerosMB.isNombreApOrRazonSocial('NA',tercerosMB.tercerosB.TIPO_IDENTIFICACION_ID)}">
+														<div class="row">
+															<div class="col">
+																<label>Nombre</label>
+																<h:inputText class="form-control" type="text" a:placeholder="CARLOS" value="#{tercerosMB.tercerosB.NOMBRE}"></h:inputText>
+															</div>
+															<div class="col">
+																<label>1º Apellido</label>
+																<h:inputText class="form-control" type="text" a:placeholder="Apellido" value="#{tercerosMB.tercerosB.APELLIDO_1}"></h:inputText>
+															</div>
+															<div class="col">
+																<label>2º Apellido</label>
+																<h:inputText class="form-control" type="text" a:placeholder="Apellido" value="#{tercerosMB.tercerosB.APELLIDO_2}"></h:inputText>
+															</div>
+														</div>
+													</h:panelGroup>
+													<!-- ************** TERCERO CIF ****************** -->
+													<h:panelGroup rendered="#{tercerosMB.isNombreApOrRazonSocial('RS',tercerosMB.tercerosB.TIPO_IDENTIFICACION_ID)}">
+														<div class="row">
+															<div class="col">
+																<label>Razón Social</label>
+																<h:inputText class="form-control" type="text" a:placeholder="CEPSA" value="#{tercerosMB.tercerosB.RAZON_SOCIAL}"></h:inputText>
+															</div>
+														</div>
+													</h:panelGroup>
+												</div>
+												<div class="col-3">
+													<!-- ************** SERVICIOS ELECTRONICOS ****************** -->
+													<div class="row">
+														<div class="col">
+															<label class="text-warning h5 text-bold">Servicios Electrónicos</label>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col">
+															<div class="checkbox checkbox-slider--a checkbox-slider--a-rounded checkbox-slider-md">
+																<label title="Habilita el acceso a Registro Electrónico"> <h:selectBooleanCheckbox
+																		value="#{tercerosMB.tercerosB.REGISTRO_ELECTRONICO_Boolean}" type="checkbox" /> <span style="font-weight: bold;">Registro Electrónico</span>
+																</label>
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col">
+															<div class="checkbox checkbox-slider--a checkbox-slider--a-rounded checkbox-slider-md">
+																<label title="Habilita la publicación de datos en el buzón de Notificaciones"> <h:selectBooleanCheckbox
+																		value="#{tercerosMB.tercerosB.NOTIF_ELECT_OBLIGATORIA_Boolean}" type="checkbox" /> <span style="font-weight: bold;">Notificación
+																		Electrónica</span>
+																</label>
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col">
+															<label>Canal preferente de notificación</label>
+															<h:selectOneMenu value="#{tercerosMB.tercerosB.CANAL_PREFERENTE_ID}" class="form-control">
+																<f:selectItems value="#{tercerosMB.canalesList}" var="L_Ca" itemValue="#{L_Ca.ID}" itemLabel="#{L_Ca.DESCRIPCION}" />
+															</h:selectOneMenu>
+														</div>
+													</div>
+												</div>
+											</div>
+										</h:panelGroup>
+										<br />
+										<h:panelGroup>
+											<div class="row">
+												<div class="col-2">
+													<div class="row">
+														<!-- <label class="text-warning h5 text-bold">Direcciones</label> &#160;&#160;&#160;&#160; -->
+														<h:commandButton type="submit" class="btn btn-consola" value="+ Dirección" action="#{tercerosMB.newDireccion()}" title="Nueva Dirección">
+															<f:ajax render="direccionesForm" />
+														</h:commandButton>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col"></div>
+												<div class="col-10">
+													<!-- ************** DIRECCIONES ****************** -->
+													<div class="row">
+														<h:panelGroup id="direccionesForm" class="col-12" rendered="#{tercerosMB.listDireccionesB != null}">
+															<div class="row">
+																<ui:repeat value="#{tercerosMB.listDireccionesB}" var="L_DIR">
+																	<div class="col-12 table-bordered table-style_01">
+																		<div class="row">
+																			<div class="col-11">
+																				<div class="row">
+																					<div class="col-10">
+																						<label>Dirección</label>
+																						<h:inputTextarea class="form-control" type="text" value="#{L_DIR.DIRECCION}" />
+																					</div>
+																					<div class="col-2">
+																						<label>Código Postal</label>
+																						<h:inputText class="form-control" type="text" value="#{L_DIR.CODIGO_POSTAL}" />
+																					</div>
+																				</div>
+																				<br />
+																				<div class="row">
+																					<div class="col-3">
+																						<label>País</label>
+																						<h:selectOneMenu value="#{L_DIR.PAIS_ID}" class="form-control">
+																							<f:selectItem itemValue="null" itemLabel="Sin Definir" />
+																							<f:selectItems value="#{tercerosMB.paisesList}" var="L_Pa" itemValue="#{L_Pa.ID}" itemLabel="#{L_Pa.DESCRIPCION}" />
+																							<f:ajax event="change" render="provinciaSelect" />
+																						</h:selectOneMenu>
+																					</div>
+																					<h:panelGroup id="provinciaSelect" class="col-4">
+																						<div>
+																							<label>Provincia</label>
+																							<h:outputText value="#{L_DIR.PAIS_ID}"></h:outputText>
+																							<h:selectOneMenu value="#{L_DIR.PROVINCIA_ID}" class="form-control">
+																								<f:selectItem itemValue="null" itemLabel="Sin Definir" />
+																								<f:selectItems value="#{tercerosMB.getProvinciasList(L_DIR.PAIS_ID)}" var="L_Pro" itemValue="#{L_Pro.ID}"
+																									itemLabel="#{L_Pro.DESCRIPCION}" />
+																								<f:ajax event="change" render="municipioSelect" />
+																							</h:selectOneMenu>
+																						</div>
+																					</h:panelGroup>
+																					<h:panelGroup id="municipioSelect" class="col-5">
+																						<div>
+																							<label>Municipio</label>
+																							<h:outputText value="#{L_DIR.PROVINCIA_ID}"></h:outputText>
+																							<h:selectOneMenu value="#{L_DIR.MUNICIPIO_ID}" class="form-control">
+																								<f:selectItem itemValue="null" itemLabel="Sin Definir" />
+																								<f:selectItems value="#{tercerosMB.getMunicipiosList(L_DIR.PROVINCIA_ID)}" var="L_Mu" itemValue="#{L_Mu.ID}"
+																									itemLabel="#{L_Mu.DESCRIPCION}" />
+																							</h:selectOneMenu>
+																						</div>
+																					</h:panelGroup>
+																				</div>
+																			</div>
+																			<div class="col-1">
+																				<br />
+																				<div class="row ">
+																					<div class="col text-center">
+																						<h:selectBooleanCheckbox title="Dirección Predeterminada" disabled="true" />
+																					</div>
+																				</div>
+																				<div class="row ">
+																					<div class="col text-center">
+																						<h:commandLink name="delete" onclick="return confirm('Va a eliminar  , esta opción no se puede deshacer. ¿Está seguro?')" disabled="true">
+																							<img src="icons/ko_blue.png" title="Eliminar" />
+																						</h:commandLink>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		<br />
+																	</div>
+																</ui:repeat>
+															</div>
+														</h:panelGroup>
+													</div>
+												</div>
+											</div>
+										</h:panelGroup>
+										<br />
+										<h:panelGroup>
+											<div class="row">
+												<div class="col-2">
+													<div class="row">
+														<!-- <label class="text-warning h5 text-bold">Telefonos</label> &#160;&#160;&#160;&#160; -->
+														<h:commandButton type="submit" class="btn btn-consola" value="+ Teléfono" action="#{tercerosMB.newTelefono()}" title="Nuevo Teléfono">
+															<f:ajax render="telefonosForm" />
+														</h:commandButton>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col" />
+												<div class="col-10">
+													<!-- ************** TELEFONOS ****************** -->
+													<h:panelGroup id="telefonosForm" rendered="#{tercerosMB.listTelefonosB != null}" class="col-12">
+														<div class="row">
+															<ui:repeat value="#{tercerosMB.listTelefonosB}" var="L_TEL" styleClass="table table-condensed">
+																<div class="col-12 table-bordered table-style_01">
+																	<div class="row">
+																		<div class="col-11">
+																			<label>Telefono</label>
+																			<h:inputText class="form-control" type="text" value="#{L_TEL.telefono}"
+																				a:placeholder="666444555, 666-444-555, 666 44 45 55, 666-44-45-55, +34666555444, 0034666555444" />
+																		</div>
+																		<div class="col-1">
+																			<br />
+																			<div class="row">
+																				<div class="col text-center">
+																					<h:selectBooleanCheckbox title="Teléfono Predeterminado" disabled="true" />
+																				</div>
+																			</div>
+																			<div class="row">
+																				<div class="col text-center">
+																					<h:commandLink name="delete" onclick="return confirm('Va a eliminar  , esta opción no se puede deshacer. ¿Está seguro?')" disabled="true">
+																						<img src="icons/ko_blue.png" title="Eliminar" />
+																					</h:commandLink>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<br />
+																</div>
+																<br />
+															</ui:repeat>
+														</div>
+													</h:panelGroup>
+												</div>
+											</div>
+										</h:panelGroup>
+										<br />
+										<h:panelGroup>
+											<div class="row">
+												<div class="col-2">
+													<div class="row">
+														<!-- <label class="text-warning h5 text-bold">Email</label> &#160;&#160;&#160;&#160; -->
+														<h:commandButton class="btn btn-consola" value="+ Email" action="#{tercerosMB.newCorreo()}" title="Nueva Dirección de Correo Electrónico">
+															<f:ajax render="correosForm" />
+														</h:commandButton>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col" />
+												<div class="col-10">
+													<!-- ************** CORREOS ELECTRÓNICOS ****************** -->
+													<h:panelGroup id="correosForm" class="col-12" rendered="#{tercerosMB.listCorreosB != null}">
+														<div class="row">
+															<ui:repeat value="#{tercerosMB.listCorreosB}" var="L_CORR" styleClass="table table-condensed">
+																<div class="col-12 table-bordered table-style_01">
+																	<div class="row">
+																		<div class="col-11">
+																			<label>Correo</label>
+																			<h:inputText class="form-control" type="text" value="#{L_CORR.email}" a:placeholder="correo@dominio.es" />
+																		</div>
+																		<div class="col-1">
+																			<br />
+																			<div class="row">
+																				<div class="col text-center">
+																					<h:selectBooleanCheckbox title="Correo Predeterminado" disabled="true" />
+																				</div>
+																			</div>
+																			<div class="row">
+																				<div class="col text-center">
+																					<h:commandLink name="delete" onclick="return confirm('Va a eliminar, esta opción no se puede deshacer. ¿Está seguro?')" disabled="true">
+																						<img src="icons/ko_blue.png" title="Eliminar" />
+																					</h:commandLink>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</ui:repeat>
+														</div>
+													</h:panelGroup>
+												</div>
+											</div>
+										</h:panelGroup>
+										<br />
+										<h:panelGroup>
+											<div class="row">
+												<div class="col-2">
+													<div class="row">
+														<!-- <label class="text-warning h5 text-bold">D E H</label> &#160;&#160;&#160;&#160; -->
+														<h:commandButton class="btn btn-consola" value="+ DEH" action="#{tercerosMB.newDEH()}" title="Nueva Dirección de Correo Habilitada">
+															<f:ajax render="dehForm" />
+														</h:commandButton>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col" />
+												<div class="col-10">
+													<!-- ************** DEH ****************** -->
+													<h:panelGroup id="dehForm" class="col-12" rendered="#{tercerosMB.listDehB != null}">
+														<div class="row">
+															<ui:repeat value="#{tercerosMB.listDehB}" var="L_DEH" styleClass="table table-condensed">
+																<div class="col-12 table-bordered table-style_01">
+																	<div class="row">
+																		<div class="col-11">
+																			<label>DEH</label>
+																			<h:inputText class="form-control" type="text" value="#{L_DEH.DEH}" a:placeholder="correo@dominio.es" />
+																		</div>
+																		<div class="col-1">
+																			<br />
+																			<div class="row">
+																				<div class="col text-center">
+																					<h:selectBooleanCheckbox title="Dirección Electrónica Habilitada Predeterminada" disabled="true" />
+																				</div>
+																			</div>
+																			<div class="row">
+																				<div class="col text-center">
+																					<h:commandLink name="delete" onclick="return confirm('Va a eliminar, esta opción no se puede deshacer. ¿Está seguro?')" disabled="true">
+																						<img src="icons/ko_blue.png" title="Eliminar" />
+																					</h:commandLink>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<br />
+																</div>
+																<br />
+															</ui:repeat>
+														</div>
+													</h:panelGroup>
+												</div>
+											</div>
+										</h:panelGroup>
+										<br />
+									</div>
+								</div>
+								<br />
+								<!-- ************** BOTONES ****************** -->
+								<div class="row">
+									<div class="col-12">
+										<div class="text-right">
+											<h:commandButton type="submit" class="btn btn-consola" action="#{tercerosMB.saveAction()}" value="Guardar" onclick="loading()" />
+											<label></label>
+											<h:commandButton type="submit" class="btn btn-consola" action="#{tercerosMB.returnAction()}" value="Volver" onclick="loading()" />
+										</div>
+									</div>
+								</div>
+								<br />
+							</div>
+						</div>
+					</div>
+				</div>
+			</h:panelGroup>
+		</f:view>
+	</div>
+</h:form>
+</body>
+</html>

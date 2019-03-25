@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!--  Gestión de Sesiones. UNA VEZ CADUCADA REENVÍA AL USUARIO AL LOGGIN -->
+	<meta http-equiv="refresh" content="#{facesContext.externalContext.sessionMaxInactiveInterval};url=#{request.contextPath}/login.xhtml"/>
+	<title>Consola</title>
+	<!-- Bootstrap -->
+	<link href="css/bootstrap.css" rel="stylesheet" />
+	<link href="css/daterangepicker.css" rel="stylesheet" />
+	<link href="css/main.css" rel="stylesheet" />
+	<link href="css/titatoggle-dist.css" rel="stylesheet"/>
+	<!-- Estructura Jerarquica -->
+	<link href="css/treeflex.css" rel="stylesheet" />
+	<link href="imagenes/favicon.ico" rel="icon" />
+	<link href="css/easyTree.css" rel="stylesheet" />
+	<!-- tda Font -->
+	<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" />
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+	<script src="js/moment-with-locales.min.js"></script>
+	<!-- Tree view  -->
+	 <!-- <link href="https://unpkg.com/treeflex/dist/css/treeflex.css" rel="stylesheet"/> --> 
+	<script>
+		function loading() { 
+			lockScroll();
+			var loading = document.getElementById("image");
+			loading.style.display = "block";
+		}
+		function loadingsubmit() {
+			lockScroll();
+			var loading = document.getElementById("image");
+			document.getElementById("formulario").submit();
+			loading.style.display = "block";
+		}
+		function lockScroll() {
+			// lock scroll position, but retain settings for later
+			var scrollPosition = [
+					self.pageXOffset || document.documentElement.scrollLeft
+							|| document.body.scrollLeft,
+					self.pageYOffset || document.documentElement.scrollTop
+							|| document.body.scrollTop ];
+			var html = jQuery('html');
+			html.data('scroll-position', scrollPosition);
+			html.data('previous-overflow', html.css('overflow'));
+			html.css('overflow', 'hidden');
+			window.scrollTo(scrollPosition[0], scrollPosition[1]);
+		}
+	</script>
+	<h:outputScript library="javax.faces" name="jsf.js" />
+</h:head>
+<h:body>
+	<div class="container-fluid container-fluid_2 height_">
+		<!-- 
+		
+						Cabecera
+		
+		  -->
+		<header class="menu">
+			<div class="row">
+				<div class="col-lg-9">
+					<div class="t text-left">
+						<h1 >
+							<img src="imagenes/Logo.png" alt="Logotipo" class="rounded image_max_size_80"></img> &#160;
+							<h:outputText value="Consola de Administración" />
+						</h1>
+					</div>
+				</div>
+				<div class="col-lg-3">
+					<h:form>
+						<div class="row">
+							<div class="col-7 text_mid">
+								<h:outputText value="Versión:" class="text-info" />
+								&#160;
+								<h:outputText value="#{versionUtils.version}" class="text-orange" />
+								<br />
+								<h:outputText value="Fecha:" class="text-info" />
+								&#160;
+								<h:outputText value="#{versionUtils.versionDate}" class="text-orange" />
+								<br />
+								<h:outputText value="Usuario:" class="text-info" />
+								&#160;
+								<h:outputText value="#{LoginMB.user.nameUser}" class="text-orange" />
+								<br />
+								<h:outputText value="Menu - Fase:" class="text-info" />
+								&#160;
+								<h:outputText value="#{menuSessionOption.menuEnabledForm}" class="text-orange" />
+								&#160;
+								<br />
+								<div class="row">
+									<div class="col-9">
+										<h:outputText value="Validar campos:" class="text-info" />	
+									</div>
+									<div class="col-2 text-left">
+										<div class="checkbox checkbox-slider--c checkbox-slider--c-weight.checkbox-slider-sm checkbox-slider-sm" style="margin-top: 0px;">
+											<label> <h:selectBooleanCheckbox  value="#{menuSessionOption.enabledValidation}" type="checkbox" onclick="submit()"/> <span style="font-weight: bold;">&#160;</span></label>
+										</div>									
+									</div>
+								</div>
+							</div>
+							<div class="col-5">
+								<div class="text-right">
+									<h:commandButton value="Logout" class="btn btn-default btn-consola" action="#{LoginMB.logout()}" />
+								</div>
+							</div>
+						</div>
+					</h:form>
+				</div>
+				<br />
+			</div>
+			<!-- 
+			
+							Menu
+			
+			 -->
+			<h:form>
+				<div class="row ">
+					<div class="col-10">
+						<ul class="nav nav-tabs col-12 text_mid">
+							<ui:repeat value="#{menuDao.lista}" var="Options_Menu">
+								<li class="nav-item dropdown "><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle"><h:outputText value="#{Options_Menu.value}" /></a>
+									<ul class="dropdown-menu">
+										<ui:repeat value="#{menu2Dao.getList(Options_Menu.key)}" var="Opt_Menu_2">
+											<li onclick="loading()" class="dropdown-item"><h:commandLink action="#{menuSessionOption.newContentValue(Opt_Menu_2.url)}"
+													value="#{Opt_Menu_2.value}" type="" /></li>
+										</ui:repeat>
+									</ul></li>
+							</ui:repeat>
+						</ul>
+					</div>
+					<div class="col-2">
+						<h:selectOneMenu value="#{menuSessionOption.environmentSelected}" onchange="submit()"
+							valueChangeListener="#{menuSessionOption.valueChangeEnvironmentSelected}" class="form-control" id="entorno">
+							<f:selectItem itemValue="desa" itemLabel="DESARROLLO" />
+							<f:selectItem itemValue="pre" itemLabel="PREPRODUCCION" />
+							<f:selectItem itemValue="pro" itemLabel="PRODUCCION" />
+							<!-- <f:selectItem itemValue="local" itemLabel="LOCAL" /> -->
+						</h:selectOneMenu>
+					</div>
+				</div>
+			</h:form>
+			<!-- 
+							Loading
+			-->
+			<div class="row">
+				<div id="image" style="background: url(imagenes/fondoCarga.png) repeat;" class="loading">
+					<div class="cssload-loader">
+							<h:outputLabel value="Procesando" class="text-orange h7"/>
+					</div>
+				</div>
+			</div>
+		</header>
+		<br />
+		<div class="contenido height_">
+			<!-- 
+							Alertas
+		-->
+			<h:messages errorClass="alert alert-danger" infoClass="alert alert-success" warnClass="alert alert-warning" fatalClass="alert alert-danger" showDetail="true"
+				role="alert" />
+			<!--  
+		
+							Cuerpo de la aplicación
+							Muestra el contenido correspondiente a cada una de las funciones
+		
+		 -->
+			<ui:include src="#{menuSessionOption.contentURL}" />
+
+		</div>
+		<!-- 
+		
+								Footer
+		
+		 -->
+		<footer>
+			<div class="text-dark-blue">
+				<h6><span class="text-orange">Pl</span>ataforma de <span class="text-orange">A</span>dministración <span class="text-orange">E</span>lectrónica de la Autoridad Portuaria de Santa Cruz de Tenerife.</h6>
+			</div>
+		</footer>
+	</div>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/daterangepicker.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			var start = moment().startOf('year');
+			var end = moment();
+			function cb(start, end) {
+				$('#reportrange textarea').html(
+						start.format('D/MM/YYYY') + ' - '
+								+ end.format('D/MM/YYYY'));
+
+			}
+			// He modificado moment.js para que los meses se muestren en Español, en el momento de mostrar la fecha
+			$('#reportrange').daterangepicker(
+					{
+						"locale" : {
+							"format" : "DD/MM/YYYY",
+							"separator" : " - ",
+							"applyLabel" : "Aplicar",
+							"cancelLabel" : "Cancelar",
+							"fromLabel" : "Desde",
+							"toLabel" : "Hasta",
+							"customRangeLabel" : "Personalizada",
+							"weekLabel" : "Semana",
+							"daysOfWeek" : [ "Dom", "Lun", "Mar", "Mi", "Ju","Vi", "Sa" ],
+							"monthNames" : [ "Enero", "Febrero", "Marzo",
+									"Abril", "Mayo", "Junio", "Julio",
+									"Agosto", "Septiembre", "Octubre",
+									"Noviembre", "Deciembre" ],
+							"firstDay" : 1
+						},
+						"showDropdowns" : true,
+						"autoApply" : true,
+						"linkedCalendars" : false,
+						"autoUpdateInput" : false,
+						"showCustomRangeLabel" : false,
+						"alwaysShowCalendars" : true,
+						"opens" : "center",
+						startDate : start,
+						endDate : end,
+						ranges : {
+							'Hoy' : [ moment().subtract(0, 'days'),
+									moment().subtract(-1, 'days') ],
+							'Ayer' : [ moment().subtract(1, 'days'),
+									moment().subtract(0, 'days') ],
+							'Los últimos 7 Días' : [
+									moment().subtract(6, 'days'), moment() ],
+							'Los últimos 30 Días' : [
+									moment().subtract(29, 'days'), moment() ],
+							'Este Mes' : [ moment().startOf('month'),
+									moment().endOf('month') ],
+							'Este Año' : [ moment().startOf('year'), moment() ]
+						}
+					}, cb);
+
+			cb(start, end);
+
+		});
+	</script>
+</h:body>
+</html>

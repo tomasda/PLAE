@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- Bootstrap -->
+	<link href="../../../css/bootstrap.min.css" rel="stylesheet" />
+	<link href="../../../css/main.css" rel="stylesheet" />
+	<link href="/css/main.css"/>
+</h:head>
+<h:form id="formulario">
+	<div class="container-fluid">
+		<!-- 
+	
+				TITULO Y OPCIONES
+	
+		 -->
+		<div class="row">
+			<div class="col-lg-12  form-opciones_m">
+				<div class="text-center">
+					<h2 class="text-warning">GESTIÓN DEL CATALOGO DE PROCEDIMIENTOS</h2>
+				</div>
+			</div>
+			<!-- 	BLOQUE DE OPCIONES -->
+			<div class="col-lg-2  form-opciones_o">
+				<div class="text-center">
+					<h:outputText value="Opciones" class="text-opciones" />
+				</div>
+				<br />
+				<div class="text-center">
+					<h:commandButton type="submit" class="btn btn-consola" action="#{procedimientosMB.newAction()}" value="Añadir Procedimiento" onclick="loading()" />
+				</div>
+				<br />
+			</div>
+			<div class="col-lg-10">
+				<br />
+				<!-- 
+			
+				BÚSQUEDA
+			
+			 -->
+				<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+					<div class="row">
+						<!-- 	BLOQUE DE BÚSQUEDAS -->
+						<div class="col-10">
+							<div class="form" id="Formulario de búsqueda">
+								<div class="form-group">
+									<label for="listaFamilias" class="text-warning">Familias</label>
+									<h:selectOneMenu value="#{menuSessionOption.searchOption}" onchange="loadingsubmit()" class="form-control" id="listaFamilias">
+										<f:selectItem itemValue="--" itemLabel="Seleccione una Familia" />
+										<f:selectItems value="#{procedimientosMB.listOfFamilias}" var="L_F" itemValue="#{L_F.ID}" itemLabel="#{L_F.ID} - #{L_F.DESCRIPTION}" />
+									</h:selectOneMenu>
+								</div>
+							</div>
+						</div>
+					</div>
+				</h:panelGroup>
+			</div>
+		</div>
+		<f:view>
+			<!-- 
+			
+					Resultado de la BÚSQUEDA
+			
+			 -->
+			<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+				<br />
+				<div class="table-responsive container-fluid table" id="Tabla de resultados de la búsqueda">
+					<div>
+						<h:dataTable value="#{procedimientosMB.listOfProcedimientos}" id="tabla" var="L_P" styleClass="table table-striped" rowClasses="" headerClass="table-dark h4 text-danger"
+							rendered="#{procedimientosMB.listOfProcedimientos != null}">
+							<h:column>
+								<f:facet name="header">
+									<div class="text-center">
+										<h:outputText value="PROCEDIMIENTOS" class="h2" />
+									</div>
+								</f:facet>
+								<div class="panel panel-primary">
+								<h:panelGroup styleClass="#{L_P.activo != 0 ? '':'text-opacity-50'}">
+									<div class="row pl-2">
+										<div class="col-md-3">
+											<h:outputText styleClass="text-orange h2 bold text-bottom" value="#{L_P.procedimiento}" rendered="#{L_P.activo != 0}" />
+											<h:outputText styleClass="text-orange h2 bold text-bottom text-lineThrough" value="#{L_P.procedimiento}" rendered="#{L_P.activo == 0}" />
+											<h:outputText styleClass="text-danger h4 bold text-bottom" value="&#160;&#160;&#160;Desactivado" rendered="#{L_P.activo == 0}" />
+										</div>
+										<div class="col-md-8">
+											<h:outputText value="#{L_P.descripcion}" />
+										</div>
+										<div class="col-md-1">
+											<h:commandLink name="edit" action="#{procedimientosMB.editAction(L_P)}" value="" onclick="loading()">
+												<img src="icons/edit_blue.png" title="Editar" />
+											</h:commandLink>
+											&#160;
+											<h:commandLink name="delete" action="#{procedimientosMB.deleteAction(L_P)}"
+												onclick="return confirm('Va a eliminar #{L_P.procedimiento} , esta opción no se puede deshacer. ¿Está seguro?')">
+												<img src="icons/ko_blue.png" title="Eliminar" />
+											</h:commandLink>
+										</div>
+									</div>
+									<br/>
+									<div class="row">
+										<div class="col">
+											<div class="row">
+												<div class="col-1">
+													<h:outputText class="text-dark-blue" value="Familia:" />
+													<h:outputText value="#{L_P.familia_id}" />
+												</div>
+												<div class="col-3">
+													<h:outputLabel class="text-dark-blue" value="ID Proceso:" />
+													&#160;
+													<h:outputText value="#{L_P.idProcppal}" />
+												</div>
+												<div class="col-3">
+													<h:outputLabel class="text-dark-blue" value="Inicio:" title="Esta opción indica desde dónde se puede iniciar un expediente." />
+													&#160;
+													<h:outputText value="#{procedimientosMB.descripcionInicio(L_P.activo)}" />
+												</div>
+		
+												<div class="col-2">
+													<h:outputLabel class="text-dark-blue" value="¿Mod. Ineresado?" title="Habilitado permite modificar el interesado del expediente." />
+													&#160;
+													<h:graphicImage value="/icons/no.png" rendered="#{!funciones.trueOrFalse(L_P.modificar_interesado)}" title="No" />
+													<h:graphicImage value="/icons/yes.png" rendered="#{funciones.trueOrFalse(L_P.modificar_interesado)}" title="Sí" />
+												</div>
+												<div class="col-3">
+													<h:outputLabel class="text-dark-blue" value="Ineresado por defecto:" title="Habilitado permite modificar el interesado del expediente." />
+													&#160;
+													<h:outputText value="#{L_P.interesado_x_defecto}" />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-4">
+													<h:outputLabel class="text-dark-blue" value="Artículo de Resolución:" />
+													&#160;
+													<h:outputText value="#{L_P.art_resolucion}" />
+												</div>
+												<div class="col-4">
+													<h:outputLabel class="text-dark-blue" value="Firmante de la Resolución:" />
+													&#160;
+													<h:outputText value="#{L_P.firmante_resolucion}" />
+												</div>
+												<div class="col-4">
+													<h:outputLabel class="text-dark-blue" value="Efecto del Silencio Administrativo:" />
+													&#160;
+													<h:outputText value="#{L_P.efect_sil_adm}" />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-4">
+													<h:outputLabel class="text-dark-blue" value="Sección Tramitación:" />
+													&#160;
+													<h:outputText value="#{L_P.seccion_tramitacion}" />
+												</div>
+												<div class="col-2">
+													<h:outputLabel class="text-dark-blue" value="Plazo:" />
+													&#160;
+													<h:outputText value="#{L_P.plazo} días" />
+												</div>
+												<div class="col-6"></div>
+											</div>
+											<br />
+											<div class="row">
+												<div class="col-4">
+													<h:outputLabel class="text-dark-blue" value="Permisos de inicio: " />
+													<h:panelGroup rendered="#{L_P.listOfCatProcedimientosRoles != null}" styleClass="">
+														<div class="table-info table-info-bordererd p-2">
+															<div class="">
+																<ui:repeat var="L_R" value="#{L_P.listOfCatProcedimientosRoles}">
+																	<div class="row">
+																		<div class="col">
+																			<h:outputLabel value="#{L_R.DEPARTAMENTO_ID_}" class="text-dark" />
+																		</div>
+																		<div class="col text-right">
+																			<h:panelGroup rendered="#{L_R.FAMILIA_ID_ != null}">
+																				<img src="icons/info.png"  title="Permiso a nivel de Familia" />
+																			</h:panelGroup>
+																		</div>
+																	</div>
+																</ui:repeat>
+															</div>
+														</div>
+													</h:panelGroup>
+												</div>
+												<div class="col-8 ">
+													<h:outputLabel class="text-dark-blue" value="Permisos al iniciar (Carpetas Alfresco):"
+														title="Permisos extra que se añanden al expediente cuando se inicia.
+													Aplicar roles en esta tabla dará permisos de consulta a los departamentos indicados." />
+													<h:panelGroup rendered="#{L_P.listOfWorkflowPermission != null}">
+														<div class="table-info table-info-bordererd p-2">
+																<h:panelGroup styleClass="text-bold">
+																	<div class="row">
+																		<div class="col-6">
+																			<h:outputLabel value="Departamento" />
+																		</div>
+																		<div class="col-3">
+																			<h:outputLabel value="Permiso" />
+																		</div>
+																		<div class="col-3">
+																			<h:outputLabel value="Departamento Iniciador" />
+																		</div>
+																	</div>
+																</h:panelGroup>
+																<ui:repeat value="#{L_P.listOfWorkflowPermission}" var="L__W" styleClass="table-workflows">
+																	<div class="row">
+																		<div class="col-6">
+																			<h:outputText value="#{L__W.ROLE_ID_}" />
+																		</div>
+																		<div class="col-3">
+																			<h:outputText value="#{workflowPermissionManagedBean.PermissionDescription(L__W.PERMISSION_)}" />
+																		</div>
+																		<div class="col-3">
+																			<h:outputText value="#{L_W.STARTER_ROLE_ID_}" />
+																		</div>
+																	</div>
+																</ui:repeat>
+														</div>
+													</h:panelGroup>
+												</div>
+											</div>
+											<br />
+											<div class="row">
+												<div class="col-2">
+													<h:outputLabel class="text-dark-blue" value="Circuitos de firma:" />
+												</div>
+												<div class="col-10">
+													<h:panelGroup rendered="#{L_P.listOfCatProcedimientoCircuitos != null}">
+														<div class="table-info table-info-bordererd p-2">
+															<h:panelGroup styleClass="text-bold">
+																<div class="row">
+																	<div class="col">
+																		<h:outputText value="Descripción" />
+																	</div>
+																	<div class="col-3">
+																		<h:outputText value="Actividad" />
+																	</div>
+																</div>
+															</h:panelGroup>
+															<ui:repeat var="L_F" value="#{L_P.listOfCatProcedimientoCircuitos}">
+																<div class="row">
+																	<div class="col">
+																		<h:outputText value="#{pF_FlujosMB.getDescription(L_F.circuitoID)}" />
+																	</div>
+																	<div class="col-3">
+																		<h:outputText value="#{procedimientosMB.getActividad(L_F.actividad_ID)}" />
+																	</div>
+																</div>
+															</ui:repeat>
+														</div>
+													</h:panelGroup>
+												</div>
+											</div>
+										</div>
+									</div>
+									</h:panelGroup>
+								</div>
+							</h:column>
+						</h:dataTable>
+					</div>
+				</div>
+			</h:panelGroup>
+			<!-- 
+			
+					EDICIÓN
+				
+			 -->
+			<br />
+			<h:panelGroup rendered="#{menuSessionOption.enabledPanel('E')}">
+				<div class=" container-fluid formulario text-info">
+					<br />
+					<div class="row ">
+						<div class="col-12 ">
+							<div class="row">
+								<div class="col-4">
+									<label >ID Procedimiento </label>
+									<h:inputText class="form-control" type="text" a:placeholder="AABBDES" value="#{procedimientosMB.procecimientoBean.procedimiento}" />
+								</div>
+								<div class="col-8">
+									<label >Descripción </label>
+									<h:inputText class="form-control" type="text" a:placeholder="(AA-Departamento) - Descripción del procedimiento" value="#{procedimientosMB.procecimientoBean.descripcion}" />
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-5">
+									<label >Familia </label>
+									<h:selectOneMenu value="#{procedimientosMB.procecimientoBean.familia_id}" class="form-control">
+										<f:selectItems value="#{procedimientosMB.listOfFamilias}" var="L_F" itemValue="#{L_F.ID}" itemLabel="#{L_F.DESCRIPTION}" />
+									</h:selectOneMenu>
+								</div>
+								<div class="col-2">
+									<label >Inicio </label>
+									<h:selectOneMenu value="#{procedimientosMB.procecimientoBean.activo}" class="form-control">
+										<f:selectItems value="#{procedimientosMB.listaTiposInicio}" var="L_I" itemValue="#{L_I.tipoInicioValue}" itemLabel="#{L_I.tipoInicioLabel}" />
+									</h:selectOneMenu>
+								</div>
+								<div class="col-2"/>
+								<div class="col-3">
+									<br />
+									<div class="checkbox checkbox-slider--a checkbox-slider--a-rounded checkbox-slider-md">
+										<label title="Permitir modificar Interesado" > <h:selectBooleanCheckbox value="#{procedimientosMB.procecimientoBean.modificar_interesado_boolean}" type="checkbox" />
+											&#160; <span style="font-weight: bold;">Modificar Interesado</span>
+										</label>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-3">
+									<label >ID Proceso Principal</label>
+									<h:inputText class="form-control" type="text" a:placeholder="RegistroGeneralAPT" value="#{procedimientosMB.procecimientoBean.idProcppal}" />
+								</div>
+								<div class="col-2">
+									<label >Plazo </label>
+									<h:inputText class="form-control" type="text" a:placeholder="0" value="#{procedimientosMB.procecimientoBean.plazo}" />
+								</div>
+								<div class="col-3">
+									<label title="Efecto del silencio administrativo" >Sil. Administrativo </label>
+									<h:inputText class="form-control" type="text" a:placeholder="null" value="#{procedimientosMB.procecimientoBean.efect_sil_adm}" />
+								</div>
+								<div class="col-3">
+									<h:outputLabel value="Interesado por defecto" />
+									<h:inputText class="form-control" type="text" a:placeholder="null" value="#{procedimientosMB.procecimientoBean.interesado_x_defecto}" />
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-3">
+									<label >Art. de la Resolución </label>
+									<h:inputText class="form-control" type="text" a:placeholder="null" value="#{procedimientosMB.procecimientoBean.art_resolucion}" />
+								</div>
+								<div class="col-3">
+									<label title="Firmante de la Resolución" >Firmante de la Res. </label>
+									<h:inputText class="form-control" type="text" a:placeholder="null" value="#{procedimientosMB.procecimientoBean.firmante_resolucion}" />
+								</div>
+								<div class="col-3">
+									<label >Sección de Tramitación </label>
+									<h:inputText class="form-control" type="text" a:placeholder="null" value="#{procedimientosMB.procecimientoBean.seccion_tramitacion}" />
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-12">
+									<div class="row">
+										<div class="col-9">
+											<h:outputText value="Departamentos que tienen permisos para iniciar expedientes a partir de este procedimiento." styleClass="h6" />
+										</div>
+									</div>
+									<div class="row mt-1">
+										<div class="col-6">
+											<h:inputText value="null" class="form-control" rendered="#{procedimientosMB.procecimientoBean.listOfCatProcedimientosRoles == null}" disabled="true"/>
+											<h:dataTable name="Tabla de Roles" value="#{procedimientosMB.procecimientoBean.listOfCatProcedimientosRoles}" var="L_R"
+											 styleClass="table-consola" headerClass="table-consola-header" columnClasses="widht_50,widht_30,widht_20" rendered="#{procedimientosMB.procecimientoBean.listOfCatProcedimientosRoles != null}">
+												<h:column>
+													<f:facet name="header">
+														<h:outputLabel value="Departamentos" />
+													</f:facet>
+													<h:outputText value="#{L_R.DEPARTAMENTO_ID_}" />
+												</h:column>
+												<h:column>
+													<f:facet name="header">
+														<h:outputLabel value="Familia" />
+													</f:facet>
+													<h:outputText value="#{L_R.FAMILIA_ID_}" />
+												</h:column>
+												<h:column>
+													<h:panelGroup rendered="#{L_R.FAMILIA_ID_ == null}">
+													<div class="text-right">
+														<h:commandLink name="Eliminar el rol" action="#{procedimientosMB.deleteRolAction(L_R)}" 
+															onclick="return confirm('Va a eliminar del procedimiento el permiso #{L_R.DEPARTAMENTO_ID_}. ¿Está seguro?')">
+															<img src="icons/ko_blue.png" title="Eliminar" />
+														</h:commandLink>
+													</div>
+													</h:panelGroup>
+												</h:column>
+											</h:dataTable>
+										</div>
+										<div class="6">
+												<div class="text-success">
+													<div class="row">
+														<div class="col-12">
+															<label> El proceso para añadir un departamento es: </label>
+															<img src="icons/info.png"  title="En caso de querer que el permiso se añada a nivel de Familia. Acceder a la gestión de Familias."/>
+															 <br />&#160;&#160;
+															<h:outputText value="1º Seleccionar el Departamento a añadir" />
+															<br />&#160;&#160;
+															<h:outputText value="2º Pulsar en + para añadir el rol al procedimiento." />
+															<br /> <br />
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-11">
+															<label >Departamento</label>
+															<h:selectOneMenu name="Lista de Departamentos" value="#{procedimientosMB.selectedRolDepartamento}" class="form-control">
+																<f:selectItems value="#{procedimientosMB.listaDepartamentos}" var="L_D" itemValue="#{L_D.ID_}" itemLabel="#{L_D.DESCRIPTION_}" />
+															</h:selectOneMenu>
+														</div>
+														<div class="col-1">
+															<h:commandLink action="#{procedimientosMB.newProcedimientoRoleAction()}" value="" styleClass="image_to_bottom">
+																<img src="icons/add_blue.png" title="Añadir permiso de inicio" />
+															</h:commandLink>
+														</div>
+													</div>
+												</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-12">
+									<div class="row">
+										<div class="col-9">
+											<h:outputText value="Departamentos y rol de consulta que se da al iniciar un expediente de este procedimiento." styleClass="h6" />
+										</div>
+										<div class="col-3 text-right">
+											<!-- <h:commandButton type="subimt" styleClass="btn btn-consola" action="#{procedimientosMB.addPermissionForm() }" value=" Añadir Permiso"
+												rendered="#{procedimientosMB.enableWorkflowPermissionForm!=true}" /> -->
+										</div>
+									</div>
+									<div class="row mt-1">
+										<div class="col-6 table">
+											<h:inputText value="null" class="form-control" rendered="#{procedimientosMB.procecimientoBean.listOfWorkflowPermission == null}" disabled="true"/>
+											<h:dataTable name="Tabla de Permisos" value="#{procedimientosMB.procecimientoBean.listOfWorkflowPermission}" var="L_WP" 
+												styleClass="table-consola" headerClass="table-consola-header" rendered="#{procedimientosMB.procecimientoBean.listOfWorkflowPermission != null}">
+												<h:column>
+													<f:facet name="header">
+														<h:outputLabel value="Departamento" />
+													</f:facet>
+													<h:outputText value="#{L_WP.ROLE_ID_}" />
+												</h:column>
+												<h:column>
+													<f:facet name="header">
+														<h:outputLabel value="Permiso" />
+													</f:facet>
+													<h:outputText value="#{workflowPermissionManagedBean.PermissionDescription(L_WP.PERMISSION_)}" />
+												</h:column>
+												<h:column>
+													<f:facet name="header">
+														<h:outputLabel value="Start Role " />
+													</f:facet>
+													<h:outputText value="#{L_WP.STARTER_ROLE_ID_}" />
+												</h:column>
+												<h:column>
+													<div class="text-right">
+														<h:commandLink name="Eliminar el permiso" action="#{procedimientosMB.deletePermissionAction(L_WP)}"
+															onclick="return confirm('Va a eliminar del procedimiento el permiso #{L_WP.ROLE_ID_}. ¿Está seguro?')">
+															<img src="icons/ko_blue.png" title="Eliminar" />
+														</h:commandLink>
+													</div>
+												</h:column>
+											</h:dataTable>
+										</div>
+										<div class="col-6 text-success">
+											<div class="row">
+												<div class="col-12">
+													<label> El proceso para añadir un departamento es: </label> <br />&#160;&#160;
+													<h:outputText value="1º Seleccionar el Departamento a añadir" />
+													<br />&#160;&#160;
+													<h:outputText value="2º Seleccione el permiso que se va a otorgar." />
+													<br />&#160;&#160;
+													<h:outputText value="3º Pulsar en + para añadir el permiso de consulta al procedimiento." />
+													<br /> <br />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-7">
+													<label >Departamento</label>
+													<h:selectOneMenu name="Lista de Departamentos" value="#{procedimientosMB.selectedWorkflowDepartamento}" class="form-control">
+														<f:selectItems value="#{procedimientosMB.listaDepartamentos}" var="L_D" itemValue="#{L_D.ID_}" itemLabel="#{L_D.DESCRIPTION_}" />
+													</h:selectOneMenu>
+												</div>
+												<div class="col-4">
+													<label >Permiso </label>
+													<h:selectOneMenu name="Lista de Permisos" value="#{procedimientosMB.selectedWorkflowPermission}" class="form-control">
+														<f:selectItems value="#{workflowPermissionManagedBean.permissionMap}" var="L_PM" itemLabel="#{L_PM.value}" itemValue="#{L_PM.key}" />
+													</h:selectOneMenu>
+												</div>
+												<div class="col-1">
+													<h:commandLink action="#{procedimientosMB.newWorkfloPermissionAction()}" 
+														onclick="return confirm('Está añadiendo un permiso de consulta al procedimiento #{procedimientosMB.procecimientoBean.descripcion}. ¿Está seguro?') " styleClass="image_to_bottom">
+														<img src="icons/add_blue.png" title="Añadir permiso de consulta al Procedimiento" />
+													</h:commandLink>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col-12">
+									<div class="row">
+										<div class="col-9">
+											<h:outputText value="Circuitos de firma asociados al procedimiento." styleClass="h6" />
+										</div>
+										<div class="col-3 text-right">
+										<!-- 
+											<h:commandButton type="submit" class="btn btn-consola" action="#{procedimientosMB.addCircuitoForm()}" value="Añadir Circuito"
+												rendered="#{procedimientosMB.enableCatProcedimientosCircuitosForm==false  and menuSessionOption.menuEnabledForm=='Ed'}" onclick="loading()" />
+												-->
+										</div>
+									</div>
+									<div class="row mt-1">
+										<h:inputText value="null" class="form-control m-3" rendered="#{procedimientosMB.procecimientoBean.listOfCatProcedimientoCircuitos == null}" disabled="true"/>
+										<div class="col table">
+											<h:dataTable name="Tabla de Circuitos" value="#{procedimientosMB.procecimientoBean.listOfCatProcedimientoCircuitos}" var="L_C"
+												styleClass="table-consola" headerClass="table-consola-header" rendered="#{procedimientosMB.procecimientoBean.listOfCatProcedimientoCircuitos != null}">
+												<h:column>
+													<f:facet name="header">
+														<h:outputText value="Circuitos" />
+													</f:facet>
+													<h:outputText value="#{pF_FlujosMB.getDescription(L_C.circuitoID)}" />
+												</h:column>
+												<h:column>
+													<f:facet name="header">
+														<h:outputText value="Actividad" />
+													</f:facet>
+													<h:outputText value="#{procedimientosMB.getActividad(L_C.actividad_ID)}" />
+												</h:column>
+												<h:column>
+													<f:facet name="header">
+														<h:outputText value="Departamento" />
+													</f:facet>
+													<h:outputText value="#{procedimientosMB.getDepartamento(L_C.departamento_ID)}" />
+												</h:column>
+												<h:column>
+													<div class="text-right">
+														<h:commandLink name="Eliminar el circuito relacionado" action="#{procedimientosMB.deleteCircuitoAction(L_C)}"
+															onclick="return confirm('Va a eliminar del procedimiento el circuito #{pF_FlujosMB.getDescription(L_C.circuitoID)}. ¿Está seguro?')">
+															<img src="icons/ko_blue.png" title="Eliminar" />
+														</h:commandLink>
+													</div>
+												</h:column>
+											</h:dataTable>
+										</div>
+									</div>
+									<!-- <h:panelGroup rendered="#{procedimientosMB.enableCatProcedimientosCircuitosForm==true}"> -->
+										<div class="text-success col-12">
+											<!-- <div class="row">
+												<div class="col-12 text-center">
+													<h:outputLabel value="Añadir Circuito" class="h2" />
+												</div>
+											</div> -->
+											<div class="row">
+												<div class="col-12">
+													<label> El proceso para añadir un circuito es: </label> <br />&#160;&#160;
+													<h:outputText value="1º Seleccionar el Circuito a añadir" />
+													<br />&#160;&#160;
+													<h:outputText value="2º Si el circuito se asigna a un trámite específico, seleccionar el trámite. En caso contrario dejarlo vacío y se podrá usar en cualquier trámite del procedimiento." />
+													<br />&#160;&#160;
+													<h:outputText
+														value="3º Si el circuito se asigna a un departamento específico, seleccionar el departamento. En caso contrario dejarlo vacío y se asignará a todos los departamentos que usen este procedimiento " />
+													<br />&#160;&#160;
+													<h:outputText value="4º Pulsar en + para añadir el circuito de firma al procedimiento." />
+													<br /> <br />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-5">
+													<label >Circuito de Firma </label>
+													<h:selectOneMenu name="Lista de Circuitos" value="#{procedimientosMB.selectedFamilia}" class="form-control">
+														<f:selectItems value="#{procedimientosMB.listaFlujosFirma}" var="L_FF" itemValue="#{L_FF.flujo_id}" itemLabel="#{L_FF.descripcion}" />
+													</h:selectOneMenu>
+												</div>
+												<div class="col-3">
+													<label >Actividad </label>
+													<h:selectOneMenu name="Lista de Actividades" value="#{procedimientosMB.selectedFlujodeFirmaActividad}" class="form-control">
+														<f:selectItem itemValue="null" itemLabel="Todas las Actividades" />
+														<f:selectItems value="#{procedimientosMB.getListaActividades(procedimientoBean.idProcppal_TMP)}" var="L_A" itemValue="#{L_A.ID}" itemLabel="#{L_A.DESCRIPTION}" />
+													</h:selectOneMenu>
+												</div>
+												<div class="col-3">
+													<label >Departamento</label>
+													<h:selectOneMenu name="Lista de Departamentos" value="#{procedimientosMB.selectedFlujodeFirmaDepartamento}" class="form-control">
+														<f:selectItem itemValue="null" itemLabel="Todos los Departamentos" />
+														<f:selectItems value="#{procedimientosMB.listaDepartamentos}" var="L_D" itemValue="#{L_D.ID_}" itemLabel="#{L_D.DESCRIPTION_}" />
+													</h:selectOneMenu>
+												</div>
+												<div class="col-1">
+													<h:commandLink name="Añadir Circuito" action="#{procedimientosMB.newCircuitoAction()}"
+														onclick="return confirm('Está añadiendo un circuito de firma al procedimiento #{procedimientosMB.procecimientoBean.descripcion}. ¿Está seguro?')" styleClass="image_to_bottom">
+														<img src="icons/add_blue.png" title="Añadir circuito de firma al Procedimiento" />
+													</h:commandLink>
+												</div>
+											</div>
+										</div>
+									<!-- </h:panelGroup> -->
+								</div>
+							</div>
+							<br />
+						</div>
+					</div>
+					<div class="row ">
+						<div class="col-12 text-right">
+							<h:commandButton type="submit" class="btn btn-consola" action="#{procedimientosMB.saveAction()}" value="Guardar" onclick="loading()" />
+							&#160;
+							<h:commandButton type="submit" class="btn btn-consola" action="#{procedimientosMB.returnAction()}" value="Volver" onclick="loading()" />
+						</div>
+					</div>
+				</div>
+			</h:panelGroup>
+		</f:view>
+	</div>
+</h:form>
+</html>

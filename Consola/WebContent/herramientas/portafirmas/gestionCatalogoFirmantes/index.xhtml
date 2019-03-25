@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- Bootstrap -->
+	<link href="../../../css/bootstrap.min.css" rel="stylesheet" />
+	<link href="../../../css/main.css" rel="stylesheet" />
+</h:head>
+<body>
+	<h:form>
+		<div>
+			<ui:include src="#{alert.alertaURL}" />
+		</div>
+		<div class="row">
+			<div class="col-lg-12  form-opciones_m">
+				<h2 align="center" class="text-warning">GESTION DEL CATALOGO DE FIRMANTES</h2>
+			</div>
+			<div class="col-lg-2  form-opciones_o">
+				<div class="text-center">
+					<h:outputText value="Opciones" class="text-opciones" />
+				</div>
+				<br />
+				<div class="text-center">
+					<h:commandButton type="submit" class="btn btn-consola" action="#{catalogoFirmantesMB.newAction()}" value="Añadir Firmante" onclick="loading()" />
+				</div>
+				<br />
+			</div>
+			<div class="col-lg-10">
+				<br />
+				<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+					<div class="row">
+					<div class="col-12">
+							<!-- 	BLOQUE DE BÚSQUEDAS -->
+						<div class="text-warning form row" id="Formulario de búsqueda">
+							
+							<div class="col-3">
+								<div class="form-group">
+									<h:outputLabel value="Nombre" class="text-warning" />
+									<h:inputText type="text" class="form-control" id="nombre" a:placeholder="Nombre" value="#{menuSessionOption.searchOption}" />
+								</div>
+							</div>
+							<div class="col-3">
+								<div class="form-group">
+									<h:outputLabel value="Apellido1" class="text-warning" />
+									<h:inputText type="text" class="form-control" id="apellido1" a:placeholder="Apellido" value="#{menuSessionOption.searchOption2}" />
+								</div>
+							</div>
+							<div class="col-3">
+								<div class="form-group">
+									<h:outputLabel value="Apellido 2" class="text-warning" />
+									<h:inputText type="text" class="form-control" id="apellido2" a:placeholder="Apellido 2" value="#{menuSessionOption.searchOption3}" />
+								</div>
+							</div>
+							<div class="col-3">
+								<div class="form-group">
+									<h:outputLabel value="NIF" class="text-warning" />
+									<h:inputText type="text" class="form-control" id="nif" a:placeholder="00000000A" value="#{menuSessionOption.searchOption4}" />
+								</div>
+								
+							</div>
+						</div>
+					</div>
+				</div>	
+				<div class="row">
+						<div class="col-12 text-lg-right">
+						<h:commandButton type="submit" class="btn btn-consola" action="#{catalogoFirmantesMB.findAction()}" value="Buscar" onclick="loading()" tabindex="1" />
+					</div>
+				</div>
+				</h:panelGroup>
+			</div>
+		</div>
+
+
+		<f:view>
+			<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+				<br />
+				<div class="table-responsive container-fluid table" id="Tabla de resultados de la búsqueda">
+					<div class="table">
+						<h:dataTable value="#{catalogoFirmantesMB.listOfFirmantes}" var="L_F" styleClass="table table-striped" headerClass="table-dark h4 text-danger"
+							rendered="#{catalogoFirmantesMB.listOfFirmantes != null}" columnClasses="widht_50,widht_20,widht_20,widht_10">
+							<h:column>
+								<f:facet name="header">Firmante</f:facet>
+								<div class="row">
+									<div class="col-sm-12">
+										<h:outputText class="h5" value="#{L_F.nombre} #{L_F.apellido} #{L_F.apellido2}" />
+									</div>
+								</div>
+								<br/>
+								<div class="row">
+									<div class="col-sm-4">
+										<span class="text-warning">NIF: </span> 
+										&#160;
+										<h:outputText class="h6 text-dark-blue" value="#{L_F.DNI_NIE}" />
+									</div>
+									<div class="col-sm-8">
+										<span class="text-warning">Cargo:</span>
+										&#160;
+										<h:outputText class="h6 text-dark-blue" value="#{L_F.cargo}"/>
+									</div>
+								</div>
+							</h:column>
+							<h:column>
+								<f:facet name="header">mail</f:facet>
+								<br/>
+								<span class="h6 text-dark-blue">#{L_F.mail}</span>
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<div class="text-center" title="Firmante, Validador, Usuario de Pruebas, Adjunto Alertas">
+										<div class="row">
+											<div class="col-3 verticaltext_content text_mid">Firmante</div>
+											<div class="col-3 verticaltext_content text_mid">Validador</div>
+											<div class="col-3 verticaltext_content text_mid">Usuario de Pruebas</div>
+											<div class="col-3 verticaltext_content text_mid">Adjunto Alertas</div>
+										</div>
+									</div>
+								</f:facet>
+								<div class="text-center">
+									<div class="row">
+										<div class="col-3">
+											<h:graphicImage value="/icons/no.png" rendered="#{!funciones.trueOrFalse(L_F.esFirmante)}" title="NO Es Firmante" />
+											<h:graphicImage value="/icons/yes.png" rendered="#{funciones.trueOrFalse(L_F.esFirmante)}" title="Es Firmante" />
+										</div>
+										<div class="col-3">
+											<h:graphicImage value="/icons/no.png" rendered="#{!funciones.trueOrFalse(L_F.esValidador)}" title="NO Es Validador" />
+											<h:graphicImage value="/icons/yes.png" rendered="#{funciones.trueOrFalse(L_F.esValidador)}" title="Es Validador" />
+										</div>
+										<div class="col-3">
+											<h:graphicImage value="/icons/no.png" rendered="#{!funciones.trueOrFalse(L_F.es_usuario_pruebas)}" title="NO Es Usuario de Pruebas" />
+											<h:graphicImage value="/icons/yes.png" rendered="#{funciones.trueOrFalse(L_F.es_usuario_pruebas)}" title="Es Usuario de Pruebas" />
+										</div>
+										<div class="col-3">
+											<h:graphicImage value="/icons/no.png" rendered="#{!funciones.trueOrFalse(L_F.adjuntos_alertas)}" title="NO Recibe Alertas" />
+											<h:graphicImage value="/icons/yes.png" rendered="#{funciones.trueOrFalse(L_F.adjuntos_alertas)}" title="Recibe Alertas" />
+										</div>
+									</div>
+								</div>
+							</h:column>
+							<h:column>
+								<div class="text-right">
+									<h:commandLink action="#{catalogoFirmantesMB.editAction(L_F.idFirmante)}" value="" onclick="loading()">
+										<img src="icons/edit_blue.png" title="Editar" />
+									</h:commandLink>
+									<h:commandLink name="eliminar" action="#{catalogoFirmantesMB.deleteAction(L_F.idFirmante)}"
+										onclick="loading(); return confirm('Va a eliminar a  #{L_F.nombre} #{L_F.apellido} #{L_F.apellido2} , esta opción no se puede deshacer. ¿Está seguro?')">
+										<img src="icons/ko_blue.png" title="Eliminar" />
+									</h:commandLink>
+								</div>
+							</h:column>
+						</h:dataTable>
+					</div>
+				</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{menuSessionOption.enabledPanel('E')}">
+			<br />
+				<div class="text-info container-fluid formulario " id="Formulario para editar Firmantes">
+					
+					<div class="row">
+						<div class="col">
+								<h:outputLabel value="Nombre" class="text-warning" />
+								<h:inputText class="form-control" type="text" a:placeholder="Nombre" value="#{catalogoFirmantesMB.firmante.nombre}">
+									<f:validateLength maximum="25" />
+								</h:inputText>
+						</div>
+						<div class="col">
+								<h:outputLabel value="Apellido" class="text-warning" />
+								<h:inputText class="form-control" type="text" a:placeholder="Apellido" value="#{catalogoFirmantesMB.firmante.apellido}">
+									<f:validateLength maximum="50" />
+								</h:inputText>
+						</div>
+						<div class="col">
+								<h:outputLabel value="2º Apellido" class="text-warning" />
+								<h:inputText class="form-control" type="text" a:placeholder="Apellido2" value="#{catalogoFirmantesMB.firmante.apellido2}" >
+									<f:validateLength maximum="50" />
+								</h:inputText>
+						</div>
+					</div>
+					<br/>
+					<div class="row">
+						<div class="col-8">
+							<div class="row">
+								<div class="col">
+										<h:outputLabel value="Cargo" class="text-warning" />
+										<h:inputText class="form-control" type="text" a:placeholder="Jefe de ..." value="#{catalogoFirmantesMB.firmante.cargo}" >
+											<f:validateLength maximum="50" />
+										</h:inputText>
+								</div>
+								<div class="col">
+										<h:outputLabel value="Documento Identificativo" class="text-warning" />
+										<h:inputText class="form-control" type="text" a:placeholder="0000000A" value="#{catalogoFirmantesMB.firmante.DNI_NIE}" >
+											<f:validateLength maximum="10" />
+										</h:inputText>
+								</div>
+							</div>
+							<br/>
+							<div class="row">
+								<div class="col">
+										<h:outputLabel value="Correo Electrónico" class="text-warning" />
+										<h:inputText class="form-control" type="text" a:placeholder="correo@dominio.es" value="#{catalogoFirmantesMB.firmante.mail}" >
+											<f:validateLength maximum="255" />
+										</h:inputText>
+								</div>
+							</div>
+						</div>
+						<div class="col-1"/>
+						<div class="col-3">
+							<div class="row">
+								<label class="text-warning h2 text-underline">Funciones</label>
+							</div>
+							<div class="row">
+								<div class="col">
+									<div class="row">
+										<div class="checkbox checkbox-slider--a checkbox-slider--a-rounded checkbox-slider-md">
+											<label title="ON = Puede validar documentos.">
+												 <h:selectBooleanCheckbox value="#{catalogoFirmantesMB.firmante.esValidadorCheckBox}" type="checkbox" />
+												 &#160;
+												 <span style="font-weight: bold;">¿Es validador?</span>
+											</label>
+										</div>
+									</div>
+									
+									<div class="row">
+										<div class="checkbox checkbox-slider--a checkbox-slider--a-rounded checkbox-slider-md">
+											<label title="ON = Puede firmar documentos.">
+												 <h:selectBooleanCheckbox value="#{catalogoFirmantesMB.firmante.esFirmanteCheckBox}" type="checkbox" />
+												 &#160;
+												 <span style="font-weight: bold;">¿Es Firmante?</span>
+											</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="checkbox checkbox-slider--a checkbox-slider--a-rounded checkbox-slider-md">
+											<label title="ON = Está habilitada la recepción de Alertas.">
+												 <h:selectBooleanCheckbox value="#{catalogoFirmantesMB.firmante.alertasCheckBox}" type="checkbox" />
+												 &#160;
+												 <span style="font-weight: bold;">¿Adjunto Alertas?</span>
+											</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="checkbox checkbox-slider--a checkbox-slider--a-rounded checkbox-slider-md">
+											<label title="ON = Es usuario de Pruebas.">
+												 <h:selectBooleanCheckbox value="#{catalogoFirmantesMB.firmante.pruebasCheckBox}" type="checkbox" />
+												 &#160;
+												 <span style="font-weight: bold;">¿Es usuario de Pruebas?</span>
+											</label>
+										</div>
+									</div>
+								</div>
+		
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col text-right">
+							<h:commandButton type="submit" class="btn btn-consola" action="#{catalogoFirmantesMB.saveAction()}" value="Guardar" onclick="loading()" />
+							&#160;&#160;
+							<h:commandButton type="submit" class="btn btn-consola" action="#{catalogoFirmantesMB.returnAction()}" value="Volver" onclick="loading()" />
+						</div>
+					</div>
+				</div>
+			</h:panelGroup>
+		</f:view>
+	</h:form>
+</body>
+</html>

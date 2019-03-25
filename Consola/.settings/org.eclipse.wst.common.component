@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="Consola">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/consola"/>
+        <dependent-module archiveName="javaee7-ejb-server.war" deploy-path="/WEB-INF/lib" handle="module:/resource/javaee7-ejb-server/javaee7-ejb-server">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="java-output-path" value="/Consola/build/classes"/>
+        <property name="context-root" value="Consola"/>
+    </wb-module>
+</project-modules>

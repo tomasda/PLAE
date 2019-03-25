@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Bootstrap -->
+<link href="../../../css/bootstrap.min.css" rel="stylesheet" />
+<link href="../../../css/main.css" rel="stylesheet" />
+</h:head>
+<h:form>
+	<div class="container-fluid">
+		<!-- 
+	
+				TITULO Y OPCIONES
+	
+		 -->
+		<div class="row">
+			<div class="col-lg-12  form-opciones_m">
+				<div class="text-center">
+					<h2 class="text-warning">GESTIÃ“N DEL CATÃ�LOGO DE FAMILIAS</h2>
+				</div>
+			</div>
+			<!-- 	BLOQUE DE OPCIONES -->
+			<div class="col-lg-2  form-opciones_o">
+				<div class="text-center">
+					<h:outputText value="Opciones" class="text-opciones" />
+				</div>
+				<br />
+				<div class="text-center">
+					<h:commandButton type="submit" class="btn btn-consola" action="#{familiasMB.newAction()}" value="Añadir Familia" onclick="loading()" />
+				</div>
+			</div>
+			<div class="col-lg-10">
+				<br />
+				<!-- 
+			
+				BÚSQUEDA
+			
+			 -->
+				<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+					<div class="row">
+						<!-- 	BLOQUE DE BÚSQUEDAS -->
+						<div class="col-10">
+							<div class="form" id="Formulario de búsqueda">
+								<div class="form-group row">
+									<label for="inputFam" class="col-2 col-form-label text-warning">Familia</label>
+									<div class="col-2">
+										<h:inputText type="text" class="form-control" id="inputFam" a:placeholder="AAAA" value="#{menuSessionOption.searchOption}" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label for="inputFamDes" class="col-2 text-warning">Descripción</label>
+									<div class="col-8">
+										<h:inputText type="text" class="form-control " id="inputFamDes" a:placeholder="Descripción" value="#{menuSessionOption.searchOption2}"></h:inputText>
+									</div>
+									<div class="col-2 text-right">
+										<h:commandButton class="btn btn-consola" action="#{familiasMB.findAction()}" value="Buscar" onclick="loading()" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</h:panelGroup>
+			</div>
+		</div>
+		<f:view>
+			<!-- 
+			
+					Resultado de la BÚSQUEDA
+			
+			 -->
+			<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+				<br />
+				<div class="table-responsive container-fluid" id="Tabla de resultados de la búsqueda">
+					<div class=" table">
+						<h:dataTable value="#{familiasDAO.list}" var="L_F" styleClass="table table-condensed" headerClass="employeeTableHeader"
+							rowClasses="employeeTableOddRow,employeeTableEvenRow" rendered="#{familiasDAO.list != null}">
+							<h:column>
+								<f:facet name="header">Familia</f:facet>
+								<h:outputText value="#{L_F.ID}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">DescripciÃ³n</f:facet>
+								<h:outputText value="#{L_F.DESCRIPTION}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">ID de Proceso</f:facet>
+								<h:outputText value="#{L_F.PROCESO_ID}" />
+							</h:column>
+							<h:column>
+								<div class="text-right">
+									<h:commandLink action="#{familiasMB.editAction(L_F.ID)}" value="" onclick="loading()">
+										<img src="icons/edit_blue.png" title="Editar"/>
+									</h:commandLink>
+									<h:commandLink action="#{familiasMB.deleteAction(L_F.ID)}" value=""
+										onclick="return confirm('Va a cancelar el expediente #{L_F.ID} , esta opción no se puede deshacer. ¿Está seguro?')">
+										<img src="icons/ko_blue.png" title="Eliminar" />
+									</h:commandLink>
+								</div>
+							</h:column>
+						</h:dataTable>
+					</div>
+				</div>
+			</h:panelGroup>
+			<!-- 
+			
+					EDICIÓN
+				
+			 -->
+			<h:panelGroup rendered="#{menuSessionOption.enabledPanel('E')}">
+				<div class=" container-fluid">
+					<br/>
+					<div class="row">
+						<div class="row col-12">
+							<label for="fam" class="col-2 text-warning">Familia</label>
+							<div class="form-group col-lg-2">
+								<h:inputText class="form-control" id="fam" type="text" a:placeholder="AAAA" value="#{familiasDAO.fb.ID}" disabled="#{flowForms.editOrNew()}"></h:inputText>
+							</div>
+							<label for="des" class="col-2 text-warning" >Descripción</label>
+							<div class="col-lg-6">
+								<h:inputText class="form-control" id="des" type="text" a:placeholder="Departamento - Subdepartamento" value="#{familiasDAO.fb.DESCRIPTION}"></h:inputText>
+							</div>
+						</div>
+						<div class="row col-12">
+							<label for="reg" class="col-2 text-warning">Proceso</label>
+							<div class="col-lg-4">
+								<h:inputText class="form-control" id="reg" type="text" a:placeholder="RegistroGeneralAPT" value="#{familiasDAO.fb.PROCESO_ID}"></h:inputText>
+							</div>
+						</div>
+					</div>
+					<div class="row ">
+						<div class="col-12 text-right">
+							<h:commandButton type="submit" class="btn btn-consola" action="#{familiasMB.saveAction()}" value="Guardar" onclick="loading()" />
+							&#160;
+							<h:commandButton type="submit" class="btn btn-consola" action="#{familiasMB.returnAction()}" value="Volver" onclick="loading()" />
+						</div>
+					</div>
+				</div>
+			</h:panelGroup>
+		</f:view>
+	</div>
+</h:form>
+</html>

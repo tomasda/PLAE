@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- Bootstrap -->
+	<link href="../../../css/bootstrap.min.css" rel="stylesheet" />
+	<link href="../../../css/main.css" rel="stylesheet" />
+</h:head>
+<h:form>
+	<div class="container-fluid">
+		<!-- 
+	
+				TITULO Y OPCIONES
+	
+		 -->
+		<div class="row">
+			<div class="col-lg-12  form-opciones_m">
+				<div class="text-center">
+					<h2 class="text-warning">GESTION DE ASIENTOS</h2>
+				</div>
+			</div>
+			<!-- 	
+					BLOQUE DE OPCIONES
+			 -->
+			<div class="col-2  form-opciones_o">
+				<div class="text-center">
+					<h:outputText value="Opciones" class="text-opciones" />
+				</div>
+				<br />
+				<h:panelGroup rendered="#{menuSessionOption.enabledPanel('E')}">
+					<div class="text-center">
+						<h:commandButton type="submit" class="btn btn-consola" value="Eliminar Relación" title="Elimina la relación entre el Asiento y el Expediente."
+							action="#{asientosMB.deleteRelationship('0')}" />
+					</div>
+					<br />
+					<div class="text-center">
+						<h:commandLink type="" value="Eliminar Relación + Docs" class="btn btn-consola "
+							title="Elimina la relación entre el Asiento y el Expediente. Y además también elimina la Documentación del Asiento aportada al Expediente."
+							action="#{asientosMB.deleteRelationship('1')}" />
+					</div>
+					<br />
+				</h:panelGroup>
+			</div>
+			<div class="col-lg-10">
+				<br />
+				<!-- 
+			
+				BÚSQUEDA
+			
+			 -->
+				<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+					<div class="row">
+						<!-- 	BLOQUE DE BÚSQUEDAS -->
+						<div class="col-10">
+							<div class="form" id="Formulario de búsqueda">
+								<div class="form-group row">
+									<label for="inputFam" class="col-2 col-form-label text-warning">Nº Asiento</label>
+									<div class="col-8">
+										<h:inputText type="text" class="form-control" id="inputFam" a:placeholder="AAAA" value="#{menuSessionOption.searchOption}" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label for="inputFamDes" class="col-2 text-warning">Fecha (Desde Hasta)</label>
+									<div class="col-8">
+										<div id="reportrange" class="pull-right form-control">
+											<i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+											<h:inputTextarea value="#{menuSessionOption.searchOption2}" class="textAreaDate" />
+										</div>
+									</div>
+									<div class="col-2 text-right">
+										<h:commandButton class="btn btn-consola" action="#{asientosMB.findAction()}" value="Buscar" onclick="loading()" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</h:panelGroup>
+				<!-- 
+			
+					EDICIÓN
+				
+			 -->
+				<h:panelGroup rendered="#{menuSessionOption.enabledPanel('E')}">
+					<div class=" container-fluid">
+						<br />
+						<div class="row text-info">
+							<div class="row col-12">
+								<div class="col-10">
+									<label class="text-warning h3 text-bold">Asiento</label>
+								</div>
+								<div class="col-2"></div>
+							</div>
+							<br />
+							<div class="row col-12">
+								<h:panelGroup>
+									<div class="formulario col-12">
+										<div class="col-12">
+											<br />
+											<div class="row">
+												<br />
+												<div class="col-4">
+													<label>Nº Asiento</label>
+													<h:inputText type="text" class="form-control" readonly="true" value="#{asientosMB.asiento.IDENTIFICACION}" />
+												</div>
+												<div class="col-8">
+													<label>Asunto</label>
+													<h:inputText type="text" class="form-control" value="#{asientosMB.asiento.ASUNTO}" />
+												</div>
+											</div>
+											<br/>
+											<div class="row">
+												<div class="col-3">
+													<label>Estado</label>
+													<h:selectOneMenu value="#{asientosMB.asiento.ESTADO_REGISTRO_ID}" class="form-control">
+														<f:selectItems value="#{tablasComunesMB.estadoRegistrosList}" var="L_F" itemValue="#{L_F.ID}" itemLabel="#{L_F.DESCRIPTION}" />
+													</h:selectOneMenu>
+												</div>
+												<div class="col-3">
+													<label>Origen</label>
+													<h:selectOneMenu value="#{asientosMB.asiento.TIPO_TRANSPORTE_ENTRADA_ID}" class="form-control">
+														<f:selectItems value="#{tablasComunesMB.tiposTransporteEntradaList}" var="L_F" itemValue="#{L_F.ID}" itemLabel="#{L_F.DESCRIPTION}" />
+													</h:selectOneMenu>
+												</div>
+												<div class="col-3">
+													<label>Origen Interno</label>
+													<h:selectOneMenu value="#{asientosMB.asiento.ORIGEN_ASIENTO_ID}" class="form-control">
+														<f:selectItems value="#{tablasComunesMB.liOrigenAsiento}" var="L_OA" itemValue="#{L_OA.origeAsiento}" itemLabel="#{L_OA.origenAsientoDescripcion}"></f:selectItems>
+													</h:selectOneMenu>
+												</div>
+												<div class="col-1"/>
+												<div class=" col-1" title="¿Este Asiento es de prueba?">
+													<label>Prueba</label>
+													<div class="checkbox checkbox-slider--a checkbox-slider--a-rounded checkbox-slider-md" style="margin-top: 0px;">
+														<label> <h:selectBooleanCheckbox value="#{asientosMB.prueba}" type="checkbox" /> <span style="font-weight: bold;">&#160;</span>
+														</label>
+													</div>
+												</div>
+											</div>
+											<br />
+											<div class="row">
+												<div class="col-4">
+													<label>Nº Expediente</label>
+													<h:inputText type="text" class="form-control" readonly="true" value="#{asientosMB.asiento.EXPEDIENTE}" />
+												</div>
+												<div class="col-8">
+													<label>Asunto del Expediente</label>
+													<h:inputText type="text" class="form-control" readonly="true" value="#{asientosMB.asiento.ASUNTOEXPEDIENTE}" />
+												</div>
+											</div>
+											<br />
+											<div class="row">
+												<label>Observaciones</label>
+												<div class="col-12">
+													<h:inputTextarea class="form-control" value="#{asientosMB.asiento.OBSERVACIONES}" />
+												</div>
+											</div>
+											<br />
+											<div class="row">
+												<div class="col-3">
+													<label>Fecha Entrada</label>
+													<h:inputText class="form-control" readonly="true" value="#{asientosMB.asiento.FECHA_HORA}" />
+												</div>
+												<div class="col-4">
+													<label>Nombre de Usuario Origen</label>
+													<h:inputText class="form-control" readonly="true" value="#{asientosMB.asiento.NOMBRE_USUARIO_ORIGEN}" />
+												</div>
+												<div class="col-3">
+													<label>Aplicación y Versión</label>
+													<h:inputText class="form-control" readonly="true" value="#{asientosMB.asiento.APLICACION_Y_VERSION}" />
+												</div>
+											</div>
+											<br />
+										</div>
+
+										<br />
+									</div>
+								</h:panelGroup>
+							</div>
+						</div>
+						<br />
+						<div class="row ">
+							<div class="col-12 text-right">
+								<h:commandButton type="submit" class="btn btn-consola" action="#{asientosMB.saveAction()}" value="Guardar" onclick="loading()" />
+								&#160;
+								<h:commandButton type="submit" class="btn btn-consola" action="#{asientosMB.returnAction()}" value="Volver" onclick="loading()" />
+							</div>
+						</div>
+					</div>
+				</h:panelGroup>
+			</div>
+		</div>
+		<f:view>
+			<!-- 
+			
+					Resultado de la BÚSQUEDA
+			
+			 -->
+			<h:panelGroup rendered="#{menuSessionOption.enabledPanel('B')}">
+				<br />
+				<div class="table-responsive container-fluid table" id="Tabla de resultados de la búsqueda">
+					<div class="table ">
+						<h:dataTable value="#{asientosMB.liAsientos}" var="L_As" styleClass="table table-striped" headerClass="table-dark h4 text-danger" rendered="#{asientosMB.liAsientos != null}">
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Nº Asiento&#160;"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{L_As.IDENTIFICACION}" class="text-nowrap" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">Descripción</f:facet>
+								<h:outputText value="#{L_As.ASUNTO}" />
+
+							</h:column>
+							<h:column>
+								<f:facet name="header">Expediente</f:facet>
+								<h:outputText value="#{L_As.EXPEDIENTE}" class="text-nowrap" />
+
+							</h:column>
+							<h:column>
+								<f:facet name="header">Fecha</f:facet>
+								<h:outputText value="#{L_As.FECHA_HORA}" class="text-nowrap" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">Origen</f:facet>
+								<h:outputText value="#{tablasComunesMB.getOrigenAsientoDescription(L_As.ORIGEN_ASIENTO_ID)}"/>
+							</h:column>
+							<h:column>
+								<h:commandLink action="#{asientosMB.editAction(L_As.IDENTIFICACION)}" value="">
+									<img src="icons/edit_blue.png" title="Editar" />
+								</h:commandLink>
+							</h:column>
+						</h:dataTable>
+					</div>
+				</div>
+			</h:panelGroup>
+		</f:view>
+	</div>
+</h:form>
+</html>
