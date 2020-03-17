@@ -5,6 +5,7 @@
 	<projects>
 		<project>PortaFirmasFacadeCORE</project>
 		<project>PortafirmasServiceFacadeEJB</project>
+		<project>AutenticacionServiceFacadeEJB</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

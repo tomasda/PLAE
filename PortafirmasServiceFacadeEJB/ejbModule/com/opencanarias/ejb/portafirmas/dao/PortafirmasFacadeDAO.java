@@ -25,6 +25,7 @@ import com.opencanarias.utils.StringUtils;
 
 import es.apt.ae.facade.entities.BackOffice;
 import es.apt.ae.facade.entities.CatPropiedadesConfiguracion;
+import es.apt.ae.facade.entities.User;
 import es.apt.ae.facade.entities.portafirmas.Accion;
 import es.apt.ae.facade.entities.portafirmas.Ausencia;
 import es.apt.ae.facade.entities.portafirmas.CircuitoEntity;
@@ -1024,5 +1025,22 @@ public class PortafirmasFacadeDAO implements PortafirmasFacadeDAOLocal, Portafir
 			users = (List<DataBaseUser>) em.createNamedQuery(DataBaseUser.findAllDepartments).getResultList();
 		}
 		return users;
+	}
+
+	@Override
+	public User doLogin(String username, String password) {
+		Query q =em.createNamedQuery(User.getUserPassword); //em.createQuery("SELECT s FROM User s WHERE username = ? AND password = ?");
+		q.setParameter("user", username);
+		q.setParameter("pass", password);
+		User result;
+		try {
+			result = (User) q.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+		if(null!=result) {
+			return result;
+		}
+		return null;
 	}
 }

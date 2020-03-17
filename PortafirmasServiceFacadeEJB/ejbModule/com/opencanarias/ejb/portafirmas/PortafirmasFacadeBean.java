@@ -69,6 +69,7 @@ import ee.sk.digidoc.SignedDoc;
 import es.apt.ae.facade.dto.UsuarioItem;
 import es.apt.ae.facade.entities.BackOffice;
 import es.apt.ae.facade.entities.CatPropiedadesConfiguracion;
+import es.apt.ae.facade.entities.User;
 import es.apt.ae.facade.entities.portafirmas.Accion;
 import es.apt.ae.facade.entities.portafirmas.Ausencia;
 import es.apt.ae.facade.entities.portafirmas.CircuitoEntity;
@@ -1946,5 +1947,10 @@ public class PortafirmasFacadeBean implements PortafirmasFacadeLocal, Portafirma
 					resultMap.put(dataBaseUser.getId(), result);
 		}
 		return resultMap;
+	}
+
+	@Override
+	public User doLogin(String username, String password) {
+		return (User) portafirmasDao.doLogin(username,password);
 	}
 }

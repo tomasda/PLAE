@@ -298,4 +298,5 @@ public class UsuarioBean implements Serializable{
 		}
 		return null;
 	}
+
 }

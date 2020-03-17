@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,6 +28,8 @@ public class ValidacionUsuarioBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private static Logger logger = Logger.getLogger(ValidacionUsuarioBean.class);
+	@Inject
+	UsuarioBean usuarioBean;
 	
 	private Boolean valid = null;
 	
@@ -43,7 +46,7 @@ public class ValidacionUsuarioBean implements Serializable {
 	
 	private Boolean calcular() {
 		ICredentialBean loginUsuarioBean = (ICredentialBean) FacesUtils.resolveVariable(Constantes.LOGIN_BEAN);
-		UsuarioBean usuarioBean = (UsuarioBean)FacesUtils.resolveVariable(Constantes.USUARIO_BEAN);
+		//UsuarioBean usuarioBean = (UsuarioBean)FacesUtils.resolveVariable(Constantes.USUARIO_BEAN);
 		HttpServletRequest request = FacesUtils.getRequest();
 		HttpServletResponse response = FacesUtils.getResponse();
 		try {

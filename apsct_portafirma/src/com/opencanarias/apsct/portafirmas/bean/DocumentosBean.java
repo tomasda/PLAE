@@ -12,6 +12,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 
 import org.jboss.logging.Logger;
 
@@ -39,6 +40,9 @@ public class DocumentosBean implements Serializable {
 	private static final long serialVersionUID = -934772464009690234L;
 
 	private static Logger logger = Logger.getLogger(DocumentosBean.class);
+	
+	@Inject
+	UsuarioBean usuarioBean;
 
 	private List<DocumentoPortafirmas> documentosList;
 	private String comentario = "";
@@ -67,7 +71,7 @@ public class DocumentosBean implements Serializable {
 	private boolean clienteFirmaWeb; 
 	
 	public DocumentosBean(){
-		UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+		//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 		String uri = FacesUtils.getParam("uri");
 		if (uri != null){
 			FacesUtils.setSessionAttribute(Constantes.ESTADO_URI, uri);
@@ -98,7 +102,7 @@ public class DocumentosBean implements Serializable {
 	public List<DocumentoPortafirmas> getDocumentosList() {
 		if (documentosList == null) {
 			documentosList = new ArrayList<DocumentoPortafirmas>();
-			UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+			//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 			String bandeja = Constantes.PENDIENTES.toUpperCase();
 			if (usuarioBean.getEntidadPersona() == null) {
 				bandeja = Constantes.PERSONAL.toUpperCase();
@@ -139,7 +143,7 @@ public class DocumentosBean implements Serializable {
 
 	public String getTitulo() {
 		if (titulo == null) {
-			UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+			//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 			if(usuarioBean.getNombre() == null){
 				usuarioBean.create();
 			}
@@ -324,7 +328,7 @@ public class DocumentosBean implements Serializable {
 
 	public List<BackOffice> getListBackoffice() {
 		if (listBackoffice == null || listBackoffice.isEmpty()){
-			UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+			//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 			try {
 				BackOffice cabecera = new BackOffice();
 				cabecera.setDescripcion("-- Seleccione un Sistema Origen --");

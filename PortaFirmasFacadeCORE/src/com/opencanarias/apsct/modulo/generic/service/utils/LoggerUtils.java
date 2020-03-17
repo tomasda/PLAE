@@ -4,7 +4,6 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import org.jboss.logging.Logger;
 
@@ -12,6 +11,8 @@ import com.opencanarias.apsct.modulo.generic.service.client.EJBClient;
 //import com.opencanarias.exceptions.PortafirmasFacadeException;
 //import com.opencanarias.apsct.modulo.generic.service.client.EJBClient;
 import com.opencanarias.utils.StringUtils;
+
+import es.apt.ae.facade.entities.User;
 
 public class LoggerUtils {
 	@PersistenceContext(unitName = "facade-pu")
@@ -22,11 +23,9 @@ public class LoggerUtils {
 	public static Map<String, String> tercerosMap = null;
 	
 	
-	public Object doLogin(String username,String password) {
-		Query q =em.createQuery("SELECT * FROM PF_USERS WHERE username = ? AND password = ?");
-		q.setParameter(1, username);
-		q.setParameter(2, password);
-		Object result = (String) q.getSingleResult();
+	public User doLogin(String username,String password) {
+		
+		User result = EJBClient.getSrvGenericFacadeRemote().doLogin( username, password); //(String) q.getSingleResult();
 		if(null!=result) {
 			return result;
 		}

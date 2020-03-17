@@ -80,4 +80,5 @@ public interface IPortafirmasFacadeDAO {
 	public Departamento getDepartamentoById(String Id);	
 	public List<BackOffice> consultarDescripcionesBackoffices();
 	public List<DataBaseUser> obtenerUsuarios(List<String> departamentos);
+	public Object doLogin(String username, String password);
 }

@@ -31,7 +31,7 @@
 			</p:panel>
 			<!-- :mainForm:tablaDocumentos :mainForm:accesoAdmin --> 
 			<p:panel id="identidad" styleClass="identidad" rendered="#{!usuarioBean.administrador}">
-				<h3>Usuario: #{usuarioBean.nombre}</h3>
+				<h3>Usuario:</h3><h:outputText value="#{loginController.test()}" />
 			</p:panel>
 
 			<p:panelMenu id="panelMenu" widgetVar="panelMenu">

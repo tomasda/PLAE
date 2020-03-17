@@ -11,6 +11,7 @@ import com.opencanarias.exceptions.PortafirmasFacadeException;
 
 import es.apt.ae.facade.entities.BackOffice;
 import es.apt.ae.facade.entities.CatPropiedadesConfiguracion;
+import es.apt.ae.facade.entities.User;
 import es.apt.ae.facade.entities.portafirmas.Accion;
 import es.apt.ae.facade.entities.portafirmas.Ausencia;
 import es.apt.ae.facade.entities.portafirmas.CircuitoEntity;
@@ -36,6 +37,7 @@ public interface IPortafirmasFacade {
 	public String consultarFirmantes(@WebParam(name = "parametros") String parametros) throws PortafirmasFacadeException;
 	public Map<String, String> consultarDescripcionesBackoffices();
 	public Map<String, String> consultarUsuariosDepartamentosMap(List<String> departamentos, boolean incluirUsuariosPrueba);
+	public User doLogin(String username, String password);
 	
 	/*EJB-PERSONAS*/
 	public Persona getPersona(String dni) throws PortafirmasFacadeException;

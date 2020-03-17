@@ -29,6 +29,8 @@ import com.opencanarias.apsct.portafirmas.utils.LoginUtils;
 import com.opencanarias.ejb.common.FacadeBean;
 import com.opencanarias.utils.StringUtils;
 
+import es.apt.ae.facade.entities.User;
+
 
 @Named(value = "loginController")
 //@SessionScoped
@@ -73,10 +75,7 @@ public class LoginController implements Serializable {
 				 */
 				//request.login(loginBean.getUsername(), loginBean.getPassword());
 				LoggerUtils log = new LoggerUtils();
-				Object login = log.doLogin(loginBean.getUsername(), loginBean.getPassword());
-				
-				
-				//Object login = com.opencanarias.api.security.utils.LoginUtils.doLogin(loginBean.getUsername(), loginBean.getPassword());
+				User login = log.doLogin(loginBean.getUsername(), loginBean.getPassword());
 				if (null!=login) {
 
 				Principal principal =  setPrincipal(login);//(Principal) context.getExternalContext().getUserPrincipal();
@@ -119,12 +118,12 @@ public class LoginController implements Serializable {
 		return result;
 	}
 
-	private Principal setPrincipal(Object login) {
-		String name = "";
-		String nombre = "";
-		String apellido = "";
-		String username = "";
-		String email = "";
+	private Principal setPrincipal(User login) {
+		String name = login.getCarLicense();
+		String nombre = login.getCn();
+		String apellido = login.getCn();
+		String username = login.getUsername();
+		String email = login.getEmail();
 		
 		Principal user = new UserPrincipal(name, nombre, apellido, username, email);
 		return user;
@@ -145,5 +144,7 @@ public class LoginController implements Serializable {
 	public void setPasswordFromFrom(String passwordFromFrom) {
 		this.passwordFromFrom = passwordFromFrom;
 	}
-
+	public String test() {
+		return "#@Test@#";
+	}
 }

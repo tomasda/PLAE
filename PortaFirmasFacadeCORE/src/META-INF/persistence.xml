@@ -6,6 +6,7 @@
 		<!-- Entidades del esquema OC3F -->
 			<class>es.apt.ae.facade.entities.CatPropiedadesConfiguracion</class>
 			<class>es.apt.ae.facade.entities.Expediente</class>
+			<class>es.apt.ae.facade.entities.User</class>
 		<!-- 
 		<class>es.apt.ae.facade.entities.Actividad</class>
 		<class>es.apt.ae.facade.entities.BackOffice</class>	
@@ -61,6 +62,7 @@
 		<class>es.apt.ae.facade.entities.portafirmas.TipoCircuito</class>
 		<class>es.apt.ae.facade.entities.portafirmas.TipoGrupo</class>
 		<class>es.apt.ae.facade.entities.portafirmas.DataBaseUser</class>
+		
 		
 		<!-- Entidades de Servicio de Requerimientos 
 		<class>es.apt.ae.facade.entities.requerimientos.DocumentosRequerimientoEntity</class>

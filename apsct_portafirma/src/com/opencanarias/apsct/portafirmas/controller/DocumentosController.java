@@ -12,6 +12,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.inject.Inject;
 
 import java.util.Base64;
 import org.jboss.logging.Logger;
@@ -46,6 +47,8 @@ public class DocumentosController implements Serializable{
 
 	private static final long serialVersionUID = -821972312311050347L;
 	protected static final Logger logger = Logger.getLogger(DocumentosController.class);
+	@Inject
+	UsuarioBean usuarioBean;
 
 	public void error(ActionEvent event) throws PortafirmasFacadeException {
 		throw new PortafirmasFacadeException();
@@ -56,7 +59,7 @@ public class DocumentosController implements Serializable{
 	}
 
 	public String goEstado() {
-		UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+		//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 		LoggerUtils.showInfo(logger, "Redireccion a 'Estado'", FacadeBean.USUARIO_PORTAFIRMAS, usuarioBean.getUsername());
 		DocumentosBean documentosBean = (DocumentosBean) FacesUtils.getSessionBean(Constantes.DOCUMENTOS_BEAN);
 		setDocumentoSeleccionado(documentosBean);
@@ -68,7 +71,7 @@ public class DocumentosController implements Serializable{
 	}
 
 	public String goDefinirFlujo() {
-		UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+		//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 		LoggerUtils.showInfo(logger, "Redireccion a 'Definir circuito'", FacadeBean.USUARIO_PORTAFIRMAS, usuarioBean.getUsername());
 		DocumentosBean documentosBean = (DocumentosBean) FacesUtils.getSessionBean(Constantes.DOCUMENTOS_BEAN);
 		CircuitoBean circuitoBean = (CircuitoBean) FacesUtils.getSessionBean("circuitoBean");
@@ -114,13 +117,13 @@ public class DocumentosController implements Serializable{
 	}
 
 	public String goUpload() {
-		UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+		//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 		LoggerUtils.showInfo(logger, "Redireccion a 'Subida de documentos'", FacadeBean.USUARIO_PORTAFIRMAS, usuarioBean.getUsername());
 		return "upload";
 	}
 
 	public String goAusente() throws PortafirmasFacadeException {
-		UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+		//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 		LoggerUtils.showInfo(logger, "Redireccion a 'Gestion de ausencias'", FacadeBean.USUARIO_PORTAFIRMAS, usuarioBean.getUsername());
 		if (permitirAccesoFirmantes(usuarioBean)) {
 			return Constantes.AUSNECIA;
@@ -129,7 +132,7 @@ public class DocumentosController implements Serializable{
 	}
 
 	public String goColaboradores() {
-		UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+		//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 		LoggerUtils.showInfo(logger, "Redireccion a 'Gestion de revisores'", FacadeBean.USUARIO_PORTAFIRMAS, usuarioBean.getUsername());
 
 		if (permitirAccesoFirmantes(usuarioBean)) {
@@ -164,7 +167,7 @@ public class DocumentosController implements Serializable{
 	}
 
 	public void upload(FileUploadEvent event) {
-		UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+		//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 		LoggerUtils.showInfo(logger, "Subiendo documento " + event.getFile().getFileName(), FacadeBean.USUARIO_PORTAFIRMAS, usuarioBean.getUsername());
 		Date start = new Date();
 		if (event.getFile() != null) {
@@ -210,7 +213,7 @@ public class DocumentosController implements Serializable{
 	}
 
 	public String actualizarDocumento() {
-		UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+		//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 		LoggerUtils.showInfo(logger, "Actualizando documento", FacadeBean.USUARIO_PORTAFIRMAS, usuarioBean.getUsername());
 		DocumentosBean documentosBean = (DocumentosBean) FacesUtils.getSessionBean(Constantes.DOCUMENTOS_BEAN);
 		CommonBean commonBean = (CommonBean) FacesUtils.getSessionBean(Constantes.COMMON_BEAN);
@@ -289,7 +292,7 @@ public class DocumentosController implements Serializable{
 	public void loadBandeja(ActionEvent event) {
 		String param = (String) event.getComponent().getAttributes().get("nombreBandeja");
 		DocumentosBean documentosBean = (DocumentosBean) FacesUtils.getSessionBean(Constantes.DOCUMENTOS_BEAN);
-		UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+		//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 		documentosBean.setTitulo(param);
 
 		List<DocumentoPortafirmas> listaDocumentos = Services.getSrvPortafirmasFacadeRemote().buscarPorBandeja(((UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN)).getNumIdentificacion(),
@@ -304,7 +307,7 @@ public class DocumentosController implements Serializable{
 	}
 	
 	public void loadBandejaPrincipalUsuario() {
-		UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+		//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 		DocumentosBean documentosBean = (DocumentosBean) FacesUtils.getSessionBean(Constantes.DOCUMENTOS_BEAN);
 		try {
 			// Recuperar la informacion del usuario seleccionado
@@ -355,7 +358,7 @@ public class DocumentosController implements Serializable{
 	}
 
 	public void verDocumento() {
-		UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+		//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 		LoggerUtils.showInfo(logger, "Accediendo a descarga del documento", FacadeBean.USUARIO_PORTAFIRMAS, usuarioBean.getUsername());
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("verDocumento?uri=" + FacesUtils.getParam("verIdURI") + "&usuario=" + usuarioBean.getUsername());
@@ -380,7 +383,7 @@ public class DocumentosController implements Serializable{
 	}
 	
 	public String ordenarBandeja(AjaxBehaviorEvent event){
-		UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
+		//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 		LoggerUtils.showInfo(logger, "He cambiado el valor del campo ordenar", FacadeBean.USUARIO_PORTAFIRMAS, usuarioBean.getUsername());
 		DocumentosBean documentosBean = (DocumentosBean) FacesUtils.getSessionBean(Constantes.DOCUMENTOS_BEAN);
 		DocumentosHelper.ordenarListaDocumentos(documentosBean.getCampoOrden());
