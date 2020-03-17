@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.1">
+	<ear-subdeployments-isolated>false</ear-subdeployments-isolated>
+
+	<deployment>
+		<dependencies>
+			<module name="org.hibernate" export="true" />
+			<module name="com.opencanarias.api.alfresco" export="true" />
+			<module name="org.apache.commons.codec" export="true" />
+			<module name="org.apache.log4j" export="true" />
+			<module name="com.opencanarias.api.security" export="true"/>
+			<module name="org.jboss.resteasy.resteasy-jaxrs" export="true" />
+			<module name="org.jboss.as.web" export="true" />
+			<module name="javax.faces.api" export="true" slot="1.2" />
+			<module name="javax.el.api" export="true" />	
+			<module name="javax.enterprise.api" export="true" />			
+		</dependencies>
+	</deployment>
+</jboss-deployment-structure>

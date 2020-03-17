@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:func="http://com.opencanarias.utils/functions">
+<f:view renderKitId="PRIMEFACES_MOBILE">
+	<h:head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="requiresActiveX=true" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta charset="UTF-8"/>
+		<title>Portafirmas APSCT<ui:insert name="Titulo"></ui:insert></title>
+		<h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+		<h:outputScript library="js" name="firma/miniapplet-1.4.js" target="head"/>
+		<h:outputScript library="js" name="firma/firma-v3_15.js" target="head"/>
+		<h:outputScript library="js" name="firma/FirmaClienteWeb.js" target="head"/>
+		<h:outputScript library="js" name="keyboard.js" target="head" />
+		<h:outputStylesheet library="css" name="style_v3-19.css" />
+		<h:outputStylesheet library="css" name="overridepf_v3-1.css" />
+		<h:outputStylesheet library="css" name="font-awesome.min.css" />
+		<link rel="shortcut icon" type="image/x-icon" href="resources/img/favicon.ico"/>	
+	</h:head>
+	<h:body>
+		<div style="display: none;">#{circuitoBean}
+			#{ausenciaBean} #{colaboradoresBean} #{usuarioBean}</div>
+		<div id="header-nav">
+			<div id="menu" class="menuButton" title="Menú">
+				<i class="fa fa-bars fa-2x"></i>
+			</div>
+			<div id="action-title">
+				<h2>
+					<p:outputLabel id="titulo" value="#{documentosBean.titulo}"></p:outputLabel>
+				</h2>
+			</div>
+			<div id="logo" class="navigator">
+				<p:graphicImage url="#{commonBean.logoHeader}" alt="logo" />
+			</div>
+			<div id="action-application">
+				<p:outputLabel value="Portafirmas"/> 
+			</div>
+			<div id="refresh" title="Refrescar">
+				<h:form>
+					<p:commandLink update=":mainForm:tablaDocumentos" actionListener="#{documentosController.refreshBandeja}"
+						onclick="$('.fa-refresh').addClass('fa-spin')"
+						oncomplete="$('.fa-refresh').removeClass('fa-spin')">
+						<i class="fa fa-refresh"></i>
+					</p:commandLink> 
+				</h:form>	
+			</div>
+			
+			<div id="order" class="orderButton" title="Ordenar"> 
+				<i class="fa fa-sort"></i>
+			</div>
+			
+			<div id="search" class="searchButton" title="Buscar">
+				<i class="fa fa-search fa-2x"></i>
+			</div>
+		</div>
+		<div id="header-info">
+			<div id="info-version">
+				<p:outputLabel style="font-weight:bold" value="Versión: "/> 
+				<p:outputLabel id="version" value="#{documentosBean.version}"></p:outputLabel>
+			</div>	
+			<div id="info-entorno">
+				<p:outputLabel style="font-weight:bold" value="Entorno: "/>
+				<p:outputLabel id="entorno" value="#{documentosBean.entorno}"></p:outputLabel>
+			</div>	
+		</div>
+		<div id="container">
+			<ui:include src="templates/menu-section.xhtml" />
+			<ui:include src="templates/order-section.xhtml" />
+			<ui:include src="templates/filter-section.xhtml" />
+			<div id="content">
+				<h:form id="mainForm">
+					<p:outputLabel value="#{commonBean.message}" style="display:none;" />
+					
+					<p:dialog id="messageDialog" widgetVar="messageDialog" modal="true"
+						draggable="false" resizable="false" closable="true">
+						<p:outputLabel id="messageInfo" value="#{commonBean.message}" escape="false"/>
+					</p:dialog>
+					<p:dialog id="statusDialog" widgetVar="statusDialog" modal="true"
+						draggable="false" closable="false" resizable="false"
+						showHeader="false">
+						<ui:insert name="spin">
+							<ui:include src="templates/spin.xhtml" />
+						</ui:insert>
+						<!-- <i class="fa fa-circle-o-notch fa-spin"></i> -->
+					</p:dialog>
+
+					<p:dialog widgetVar="confirmationDialog" id="confirmationDialog"
+						header="Confirmación" draggable="false" closable="true"
+						styleClass="dialogCancel unActiveKeyboard">
+						<p:outputLabel icon="ui-icon-alert"
+							value="¿Está seguro que desea rechazar los documentos seleccionados?" />
+						<br />
+						<p:outputLabel value="Motivo (Opcional): " />
+						<p:inputTextarea styleClass="dialog-comentario" id="motivoRechazo"
+							rows="10" cols="60"
+							value="#{documentosBean.comentario}" onclick="addKeyboard();" 
+							onkeydown="checkMaxLength('motivoRechazo', 'contadorMotivoRechazo', 500);"
+							onkeyup="checkMaxLength('motivoRechazo', 'contadorMotivoRechazo', 500);"/>
+						<p:outputLabel value="Ha rellenado" /><p:spacer width="5" /><p:outputLabel id="contadorMotivoRechazo" value="0" /><p:spacer width="5" /><p:outputLabel value="caracteres de los 500 permitidos." />
+						<br />
+						<p:commandButton value="Sí"
+							onclick="removeKeyboard(); statusDialog.show(); confirmationDialog.hide(); "
+							oncomplete="statusDialog.hide();"
+							actionListener="#{actionDocumentController.rechazarDocumentos}"
+							update=":mainForm:tablaDocumentos :mainForm:messageDialog"
+							styleClass="ui-confirmdialog-yes button-action-confirm"
+							icon="ui-icon-check" />
+						<p:commandButton value="No"
+							onclick="removeKeyboard(); confirmationDialog.hide(); "
+							styleClass="ui-confirmdialog-no button-action-confirm"
+							icon="ui-icon-close" />
+					</p:dialog>
+
+					<!-- Prueba lote firma -->
+					<p:dialog widgetVar="signDialog" id="signDialog"
+						header="Confirmación" draggable="false" closable="true"
+						styleClass="dialogCancel unActiveKeyboard">
+						<p:outputLabel icon="ui-icon-alert"
+							value="¿Está seguro que desea firmar los documentos seleccionados?" />
+						<br />
+
+						<p:commandButton value="Sí"
+							onclick="removeKeyboard(); showSignProcess(); confirmationDialog.hide();"
+							oncomplete="SignData.sign();"
+							styleClass="ui-confirmdialog-yes button-action-confirm"
+							icon="ui-icon-check" />
+						<p:commandButton value="No"
+							onclick="removeKeyboard(); signDialog.hide();"
+							styleClass="ui-confirmdialog-no button-action-confirm"
+							icon="ui-icon-close" />
+					</p:dialog>
+					
+					<p:dialog widgetVar="signWebClientDialog" id="signWebClientDialog"
+						header="Confirmación" draggable="false" closable="true"
+						styleClass="dialogCancel unActiveKeyboard">
+						<p:outputLabel id="signWarnMessage" value="#{commonBean.message}" />
+						<p:outputLabel icon="ui-icon-alert"
+							value="¿Desea continuar?" />
+						<br />
+
+						<p:commandButton value="Sí"
+							onclick="signWebClientDialog.hide();statusDialog.show();confirmFirmarClienteWeb();"
+							styleClass="ui-confirmdialog-yes button-action-confirm"
+							icon="ui-icon-check" />
+						<p:commandButton value="No"
+							onclick="removeKeyboard(); signWebClientDialog.hide();"
+							styleClass="ui-confirmdialog-no button-action-confirm"
+							icon="ui-icon-close" />
+					</p:dialog>
+					
+					<p:dialog widgetVar="removeDialog" id="removeDialog"
+						header="Confirmación" draggable="false" closable="true"
+						styleClass="dialogCancel unActiveKeyboard">
+						<p:outputLabel icon="ui-icon-alert"
+							value="¿Está seguro que desea eliminar los documentos seleccionados?" />
+						<br />
+
+						<p:commandButton value="Sí"
+							onclick="removeKeyboard(); statusDialog.show(); removeDialog.hide(); "
+							oncomplete="statusDialog.hide();"
+							actionListener="#{actionDocumentController.borrarDocumento}"
+							update=":mainForm:tablaDocumentos :mainForm:messageDialog"
+							styleClass="ui-confirmdialog-yes button-action-confirm"
+							icon="ui-icon-check" />
+						<p:commandButton value="No"
+							onclick="removeKeyboard(); removeDialog.hide(); "
+							styleClass="ui-confirmdialog-no button-action-confirm"
+							icon="ui-icon-close" />
+					</p:dialog>	
+					
+					<p:dialog widgetVar="recoverDialog" id="recoverDialog"
+						header="Confirmación" draggable="false" closable="true"
+						styleClass="dialogCancel unActiveKeyboard">
+						<p:outputLabel icon="ui-icon-alert"
+							value="¿Está seguro que desea recuperar los documentos seleccionados y devolverlos a su carpeta personal?" />
+						<br />
+
+						<p:commandButton value="Sí"
+							onclick="removeKeyboard(); statusDialog.show(); recoverDialog.hide(); "
+							oncomplete="statusDialog.hide();"
+							actionListener="#{actionDocumentController.recuperarDocumentoDePortafirmas}"
+							update=":mainForm:tablaDocumentos :mainForm:messageDialog"
+							styleClass="ui-confirmdialog-yes button-action-confirm"
+							icon="ui-icon-check" />
+						<p:commandButton value="No"
+							onclick="removeKeyboard(); recoverDialog.hide(); "
+							styleClass="ui-confirmdialog-no button-action-confirm"
+							icon="ui-icon-close" />
+					</p:dialog>		
+					
+					<p:dialog widgetVar="validateDialog" id="validateDialog"
+						header="Confirmación" draggable="false" closable="true"
+						styleClass="dialogCancel unActiveKeyboard">
+						<p:outputLabel icon="ui-icon-alert"
+							value="¿Está seguro que desea validar los documentos seleccionados?" />
+						<br />
+
+						<p:commandButton value="Sí"
+							onclick="removeKeyboard(); statusDialog.show(); validateDialog.hide(); "
+							oncomplete="statusDialog.hide();"
+							actionListener="#{actionDocumentController.validarDocumentos}"
+							update=":mainForm:tablaDocumentos :mainForm:messageDialog"
+							styleClass="ui-confirmdialog-yes button-action-confirm"
+							icon="ui-icon-check" />
+						<p:commandButton value="No"
+							onclick="removeKeyboard(); validateDialog.hide(); "
+							styleClass="ui-confirmdialog-no button-action-confirm"
+							icon="ui-icon-close" />
+					</p:dialog>						
+					
+					<p:dialog widgetVar="signProcess" id="signProcess" modal="true" styleClass="signProcess"
+						draggable="false" closable="false" resizable="false" showHeader="false">
+						<ui:insert name="spin">
+							<ui:include src="templates/spin.xhtml" />
+						</ui:insert>
+						<div class="infoSign">Procesando firma</div>
+						<div class="infoSignSave">Se están guardando los documentos firmados</div>
+						<p:commandButton value="Guardar" widgetVar="btnGuardarFirma" styleClass="submitSign button-action hiddenTipo"
+							actionListener="#{actionDocumentController.firmarDocumentos}"
+							onclick="$('.submitSign').hide();"
+							oncomplete="$('.submitSign').show(); signProcess.hide();" update=":mainForm:messageDialog :mainForm:tablaDocumentos" />
+					</p:dialog>
+					
+					<p:dialog widgetVar="signProcessWebClient" id="signProcessWebClient" modal="true" styleClass="signProcessWebClient"
+						draggable="false" closable="false" resizable="false" showHeader="false">
+						<ui:insert name="spin">
+							<ui:include src="templates/spin.xhtml" />
+						</ui:insert>
+						<div class="infoSignWebClient">Procesando resultado de la firma</div>
+						<div class="infoSignSaveWebClient">Se está actualizando la información de firma de los documentos</div>
+						<p:commandButton value="Guardar" widgetVar="btnActualizarFirmaClienteWeb" styleClass="submitSignWebClient button-action hiddenTipo"
+							actionListener="#{actionDocumentController.actualizarFirmaClienteWeb}"
+							onclick="$('.submitSignWebClient').hide();"
+							oncomplete="$('.submitSignWebClient').show(); signProcessWebClient.hide();" update=":mainForm:messageDialog :mainForm:tablaDocumentos" />
+					</p:dialog>
+					
+					<div style="margin-top:60px;">
+						<p:panel rendered="#{ausenciaBean.ausenciaActiva}">
+							Usted está ausente
+						</p:panel>
+						
+						<p:panel rendered="#{not empty usuarioBean.listRevisiones }">
+							Usted es revisor de:
+							<ui:repeat var="persona" value="#{usuarioBean.listRevisiones}">
+								#{persona.nombre} #{persona.apellido1} #{persona.apellido2} - #{persona.cargo}<br />
+							</ui:repeat>
+						</p:panel>
+						<p:panel rendered="#{not empty usuarioBean.listSustitucion }">
+							Usted está sustituyendo a: 
+							<ui:repeat var="persona" value="#{usuarioBean.listSustitucion}">
+								#{persona.nombre} #{persona.apellido1} #{persona.apellido2} - #{persona.cargo}<br />
+							</ui:repeat>
+						</p:panel>
+					</div>
+					<ui:include src="bandeja.xhtml" />
+
+					<p:panel id="footer-actions" styleClass="footer-actions">
+					
+						<p:panel id="footer-buttons" styleClass="footer-buttons" rendered="#{usuarioBean.usuarioConsulta}">
+							<p:commandLink id="FirmarPaquete" styleClass="button-action"
+								actionListener="#{actionDocumentController.recuperarDocumentosFirmar}"
+								onclick="if ($('#mainForm input:checkbox:checked').length > 0) statusDialog.show();"
+								oncomplete="statusDialog.hide();showMensajesFirma();"
+								update=":mainForm:messageDialog :mainForm:signDialog :mainForm:tablaDocumentos :mainForm:documentosParaFirmar "
+								rendered="#{!documentosBean.clienteFirmaWeb}"
+								disabled="#{(documentosBean.titulo eq commonBean.TRAMITADOS) or (documentosBean.titulo eq commonBean.ENVIADOS) or 
+									(ausenciaBean.ausenciaActiva and !(documentosBean.titulo eq commonBean.PERSONAL)) or 
+									(documentosBean.titulo eq commonBean.PENDIENTES and !(usuarioBean.entidadPersona.firmante))}">
+								<span class="mobile"><i class="fa fa-pencil fa-2x"></i></span>
+								<span class="navigator"><i class="fa fa-pencil"></i>
+									Firmar Seleccionados</span>
+							</p:commandLink>
+							
+							<p:commandLink id="FirmarPaqueteClienteWeb" styleClass="button-action"
+								actionListener="#{actionDocumentController.recuperarDocumentosFirmarClienteWeb}"
+								onclick="if ($('#mainForm input:checkbox:checked').length > 0) statusDialog.show();"
+								oncomplete="onClickFirmarClienteWeb();"
+								update=":mainForm:messageDialog :mainForm:signWebClientDialog :mainForm:tablaDocumentos :mainForm:documentosParaFirmarClienteWeb"
+								rendered="#{documentosBean.clienteFirmaWeb}"
+								disabled="#{(documentosBean.titulo eq commonBean.TRAMITADOS) or (documentosBean.titulo eq commonBean.ENVIADOS) or 
+									(ausenciaBean.ausenciaActiva and !(documentosBean.titulo eq commonBean.PERSONAL)) or 
+									(documentosBean.titulo eq commonBean.PENDIENTES and !(usuarioBean.entidadPersona.firmante))}">
+								<span class="mobile"><i class="fa fa-pencil fa-2x"></i></span>
+								<span class="navigator"><i class="fa fa-pencil"></i>
+									Firmar Seleccionados</span>
+							</p:commandLink>
+							
+							<p:commandLink id="Borrar" styleClass="button-action"
+								actionListener="#{actionDocumentController.comprobarBorrarDocumentos}"
+								update=":mainForm:tablaDocumentos :mainForm:messageDialog"
+								rendered="#{!(documentosBean.titulo eq commonBean.PENDIENTES) and !(documentosBean.titulo eq commonBean.ENVIADOS)}"
+								disabled="#{(documentosBean.titulo eq commonBean.TRAMITADOS)}">
+								<span class="mobile"><i class="fa fa-times fa-2x"></i></span>
+								<span class="navigator"><i class="fa fa-times"></i>Borrar Seleccionados</span>
+							</p:commandLink>
+	
+							<p:commandLink id="Rechazar" styleClass="button-action"
+								actionListener="#{actionDocumentController.comprobarRechazarDocumentos}"
+								update=":mainForm:tablaDocumentos :mainForm:messageDialog :mainForm:confirmationDialog"
+								rendered="#{(documentosBean.titulo eq commonBean.PENDIENTES)}"
+								disabled="#{(documentosBean.titulo eq commonBean.TRAMITADOS) or (documentosBean.titulo eq commonBean.ENVIADOS) or (ausenciaBean.ausenciaActiva and !(documentosBean.titulo eq commonBean.PERSONAL))}">
+								<span class="mobile"><i class="fa fa-times fa-2x"></i></span>
+								<span class="navigator"><i class="fa fa-times"></i>
+									Rechazar Seleccionados</span>
+							</p:commandLink>
+							
+							<p:commandLink id="Recuperar" styleClass="button-action"
+								actionListener="#{actionDocumentController.comprobarRecuperarDocumentos}"
+								update=":mainForm:tablaDocumentos :mainForm:messageDialog"
+								rendered="#{(documentosBean.titulo eq commonBean.ENVIADOS)}">
+								<span class="mobile"><i class="fa fa-times fa-2x"></i></span>
+								<span class="navigator"><i class="fa fa-times"></i>Recuperar Seleccionados</span>
+							</p:commandLink>
+							
+							<p:commandLink id="Validar" styleClass="button-action "
+								actionListener="#{actionDocumentController.comprobarValidarDocumentos}"
+								update=":mainForm:tablaDocumentos :mainForm:messageDialog"
+								disabled="#{(documentosBean.titulo eq commonBean.TRAMITADOS) or (documentosBean.titulo eq commonBean.ENVIADOS) or (documentosBean.titulo eq commonBean.PERSONAL) or (ausenciaBean.ausenciaActiva and !(documentosBean.titulo eq commonBean.PERSONAL)) or !(usuarioBean.entidadPersona.validador)}">
+								<span class="mobile"><i class="fa fa-check fa-2x"></i></span>
+								<span class="navigator"><i class="fa fa-check"></i>Validar Seleccionados</span>
+							</p:commandLink>
+							<p:confirmDialog global="true" showEffect="fade">
+								<p:commandButton value="Sí" type="button"
+									styleClass="ui-confirmdialog-yes button-action-confirm"
+									icon="ui-icon-check" />
+								<p:commandButton value="No" type="button"
+									styleClass="ui-confirmdialog-no button-action-confirm" icon="ui-icon-close" />
+							</p:confirmDialog>	
+								
+							<p:commandLink id="Flujo" styleClass="button-action "
+								action="#{documentosController.goDefinirFlujo}"
+								onclick="if ($('#mainForm input:checkbox:checked').length > 0) statusDialog.show();" 
+								update=":mainForm:messageDialog"
+								disabled="#{(documentosBean.titulo eq commonBean.TRAMITADOS) or (documentosBean.titulo eq commonBean.ENVIADOS) or (documentosBean.titulo eq commonBean.PENDIENTES) or (ausenciaBean.ausenciaActiva and !(documentosBean.titulo eq commonBean.PERSONAL))}">
+								<span class="mobile"><i class="fa fa-paper-plane fa-2x"></i></span>
+								<span class="navigator"><i class="fa fa-paper-plane"></i>
+									Enviar Seleccionados</span>
+							</p:commandLink>
+						</p:panel>
+						
+						<p:panel id="documentosParaFirmar" styleClass="documentosParaFirmar" widgetVar="documentosParaFirmar">
+							<p:panel>
+								<p:inputText styleClass="fieldContentSign" value="#{firmaBean.contentSign}" />
+								<p:inputText styleClass="fieldSignBatch" value="#{firmaBean.signBatch}" />
+								<p:inputTextarea styleClass="fieldSignParams" value="#{firmaBean.params}" />
+								<p:inputText styleClass="fieldSignType" value="#{firmaBean.signType}" />
+								<p:inputText styleClass="fieldSignResult" value="#{firmaBean.signResult}" />
+								<p:commandLink styleClass="elementHidden predownload-document" action="#{documentosController.verDocumento}">
+									<f:param name="verIdURI" value="#{firmaBean.downloadUri}" />
+								</p:commandLink>
+							</p:panel> 
+						</p:panel>
+						
+						<p:panel id="documentosParaFirmarClienteWeb" styleClass="documentosParaFirmarClienteWeb" widgetVar="documentosParaFirmarClienteWeb">
+							<p:panel>
+								<p:inputText styleClass="fieldSignUris" value="#{firmaBean.signUris}" />
+								<p:inputText styleClass="fieldSignFormat" value="#{firmaBean.signFormat}" />
+								<p:inputText styleClass="fieldSignUser" value="#{usuarioBean.username}" />
+								<p:inputText styleClass="fieldSignValidationStatus" value="#{firmaBean.signValidationStatus}" />
+								<p:inputText styleClass="fieldSignResultCode" value="#{firmaBean.signResultCode}" />
+								<p:inputText styleClass="fieldSignResultDocsOk" value="#{firmaBean.signResultDocsOk}" />
+							</p:panel>
+						</p:panel>
+					</p:panel>
+				</h:form>
+				
+				<form id="firmaClienteWebForm" action="#{documentosBean.clienteFirmaWebUrl}" method="post">
+					<input type="hidden" id="usuario" name="usuario" value="#{commonBean.applicationUsername}" />
+					<input type="hidden" id="password" name="password" value="#{commonBean.applicationPassword}" />
+					<input type="hidden" id="usuarioSolicitante" name="usuarioSolicitante" value="" />
+					<input type="hidden" id="uris" name="uris" value=""/>
+					<input type="hidden" id="formatoFirma" name="formatoFirma" value=""/>
+					<input type="hidden" id="guardarAuto" name="guardarAuto" value="true"/>	
+					<input type="hidden" id="esCompulsa" name="esCompulsa" value="false"/>	
+					<input type="hidden" id="certFilter" name="certFilter" value=""/>
+				</form>
+			</div>
+		</div>
+	</h:body>
+</f:view>
+</html>

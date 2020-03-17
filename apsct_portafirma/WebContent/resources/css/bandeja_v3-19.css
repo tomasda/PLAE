@@ -1,0 +1,217 @@
+@media ( max-width : 600px) {
+	table tr{
+		display:block !important;
+		background-color: #e6e6e6;
+	}
+
+	.datosDocumento td.solicitante {
+		background-color:#eff !important;
+		display:block
+	}
+
+	.datosDocumento{
+		min-width:220px;
+		width:100% !important;
+	}
+
+	.datosDocumento td.asunto label{
+		font-size:12px;
+	}
+
+	.datosDocumento td.asunto .labelNombreDoc{
+		font-size:10px;
+	}
+
+	.datosDocumento td.solicitante label{
+		font-size:11px !important;
+	}
+	.columnDatosDocumento{
+		width: 40%;
+		max-width: 180px;
+	}
+	.accionesDocumento{
+		float:left;
+		padding:0px !important;
+	}
+
+	.infoFecha,.tagBackoffice, .accionColumn, .estadoColumn{
+		height:20px;
+		width:30%;
+	}
+
+	.solicitante{
+		font-size:12px;
+	}
+	.tablaDocumentos .ui-paginator.ui-paginator-top.ui-widget-header.ui-corner-top{
+		position:relative;
+		height:0px;
+		padding:0px !important;
+		border:none;
+	}
+	.tablaDocumentos th span{
+		display:none;
+	}
+
+	tbody tr{
+		min-height: 50px;
+	}
+
+	.mobile	tbody tr{
+		min-height: 30px;
+		border-bottom:1px solid #aaa;
+	}
+	.tablaDocumentos .ui-sortable-column-icon{
+		display:none;
+	}
+
+	tr{
+		display:block;
+		clear:both;
+	}
+	.accionesDocumento.mobile{
+		font-size:12px
+	}
+
+}
+.documentoColumn{
+	padding:0px !important;
+}	
+
+body{
+	font-size:12px;
+}
+
+.accesoAdmin {
+	color: red !important;
+}
+
+.datosDocumento{
+	background-color:white;
+}
+
+.tablaDocumentos .columnDatosDocumento{
+	padding:0px;
+}
+
+.tablaDocumentos .columnDatosDocumento table tr{
+	border-top-color:white !important;
+	border-left-color:white !important;
+
+}
+
+.tablaDocumentos .columnDatosDocument{
+	border-top-color:white !important;
+	border-left-color:white !important;
+}
+
+.tablaDocumentos td.FIRM{
+	background-color:#2ecc71;
+	color:white;
+}
+
+.tablaDocumentos td.RECH{
+	background-color:#e74c3c;
+	color:white;
+}
+
+.tablaDocumentos td.VALD{
+	background-color:#f1c40f;
+	color:white;
+}
+
+.infoColumn{
+	background-color:#ecf0f1;
+	min-width:13px;
+	min-height:15px;
+	text-align:center;
+}
+
+td.tagBackoffice{
+	background-color:#bdc3c7;
+	color:white;
+	text-align:center;
+	font-weight:bold;
+}
+
+.tagBackoffice a{
+	color:white !important;
+}
+
+.tagBackoffice a:hover{
+	color:white !important;
+}
+
+td.PRTF{
+	background-color:#5090CD !important;
+}
+
+td.GE{
+	background-color:#9b59b6 !important;
+}
+
+td.SIDOPU{
+	background-color:#2ecc71 !important;
+}
+
+td.MMPP{
+	background-color:#e67e22 !important;
+}
+
+td.PRTA{
+	background-color:#e67064!important;
+}
+
+td.NAVISION{
+	background-color:#408080!important;
+}
+
+td.ENVD, td.TRAM{
+	background-color:#bdc3c7 !important;
+	color:white;
+}
+
+.asunto{
+	white-space:pre-line;
+}
+
+.asunto .labelAsunto{
+	display: block;
+    /*margin-top: -1em;*/
+}
+
+td.accionColumn{
+	background-color:#1abc9c !important;
+	-webkit-transition: background .5s;
+    transition: background .5s;
+
+}
+td.accionColumn:hover{
+	background-color: #16a085 !important;
+}
+
+a.accionField{
+	color:white !important;
+}
+
+td.accionColumn a, td.estadoColumn span{
+    /*width: 80px !important;*/
+    display: inline-block;
+    text-align:center;
+    height:100%;
+    display:table-cell;
+    vertical-align:middle;
+}
+
+td.solicitante{
+	background-color:white !important;
+	color:black !important;
+	max-width: 110px;
+}
+
+td.infoColumn{
+	color:black;
+}
+
+.infoColumn i{
+	font-size:18px;
+}

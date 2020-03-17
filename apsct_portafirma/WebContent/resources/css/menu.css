@@ -1,0 +1,132 @@
+#menu-action-nav .ui-widget-content{
+	background-color:transparent !important;
+}
+
+.iconMenuActive{
+	background-color:#1abc9c !important;
+}
+
+.iconMenuActive:hover{
+	background-color:#16a085 !important;
+}
+
+#menu-action-nav{
+	font-size:12px;
+	padding:0px;
+}
+
+#menu-action-nav .headerMenu{
+	width:100%;
+	color: white;
+	height:50px;
+	background-color:#1abc9c;
+}
+
+#menu-action-nav label {
+	color: white;
+}
+
+#container #menu-action-nav {
+	float: left;
+	margin-right: 30%;
+}
+#menu-action-nav {
+	box-shadow: 5px 0 5px -5px #333;
+	max-width:280px;
+}
+
+#menu-action-nav {
+	background-color: #EEE;
+	display: none;
+	height: 100%;
+	min-height: 100%;
+	overflow-y: scroll;
+	padding-bottom: 140px;
+	position: fixed;
+	top: 0;
+	width: 70%;
+	z-index: 99;
+	font-family: Arial,sans-serif !important;
+}
+
+#menu-action-nav .ui-state-default a {
+	color: black;
+}
+
+#menu-action-nav .ui-menuitem-text {
+	color: black;
+}
+
+#menu-action-nav .ui-state-default {
+	background-image: none;
+	border: none;
+	border-radius: 0px;
+	box-shadow: none;
+	background-color: #EEE;
+}
+
+#menu-action-nav .ui-state-default a {
+	text-shadow: none;
+}
+
+#menu-action-nav .ui-panelmenu-content {
+	padding: 0px;
+	padding-right: 15px;
+}
+
+#menu-action-nav .ui-widget-content {
+	border: none;
+}
+
+#menu-action-nav .ui-state-hover {
+	box-shadow: none;
+}
+
+#menu-action-nav .ui-state-default a{
+	color:black;
+}
+
+#menu-action-nav .ui-menuitem .ui-state-hover {
+	background-color: #1abc9c;
+	background-image: none;
+	border: none;
+	box-shadow: none;
+	margin-bottom: 1px;
+	margin-left: 1px;
+	margin-top: 1px;
+	width: 100%;
+}
+
+#menu-action-nav .ui-menuitem .ui-state-hover span{
+	color:white !important;
+}
+
+.menu-option a{
+	text-decoration:none;
+	color:black
+}
+
+.menu-option i {
+	padding-left:10px
+}
+
+.menu-option span{
+	padding-left: 7px;
+	font-size:16px !important;
+}
+
+#menu-action-nav ul{
+	padding-left:40px;
+}
+
+#menu-action-nav .menuTitulo{
+	font-size: 24px;
+    margin-left: 50px;
+    color: white;
+    display: block;
+    padding-top: 9px;
+}
+
+.identidad{
+	padding-left:20px;
+	font-size:14px}

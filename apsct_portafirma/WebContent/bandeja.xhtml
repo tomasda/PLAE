@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:func="http://com.opencanarias.utils/functions">
+
+<ui:composition>
+	<h:outputStylesheet library="css" name="bandeja_v3-19.css" />
+
+	<p:panel id="contenidoBandeja">
+		<p:outputLabel rendered="#{usuarioBean.administrador and !(usuarioBean.usuarioConsulta)}" id="accesoAdmin" styleClass="accesoAdmin"
+			value="Usted ha accedido como Administrador. Debe seleccionar el Usuario a consultar desde el Menú."></p:outputLabel>
+	
+		<p:dataTable id="tablaDocumentos" styleClass="tablaDocumentos"
+			var="doc" value="#{documentosBean.documentosList}" rowKey="#{doc.id}"
+			selection="#{documentosBean.selectedDocs}"
+			rendered="#{usuarioBean.usuarioConsulta}"
+			emptyMessage="Bandeja de documentos #{documentosBean.titulo} vacía"
+			rows="15" paginator="true">
+	
+			<p:ajax event="rowSelectCheckbox" update=":mainForm:footer-actions" />
+			<p:ajax event="rowUnselectCheckbox" update=":mainForm:footer-actions" />
+			<p:ajax event="rowSelect" update=":mainForm:footer-actions" />
+			<p:ajax event="rowUnselect" update=":mainForm:footer-actions" />
+	
+			<p:column selectionMode="multiple" styleClass="columnCheck" />
+	
+			<p:column
+				styleClass="tagBackoffice #{doc.sistemaOrigen.codigo} infoColumn navigator"
+				sortBy="#{doc.sistemaOrigen.codigo}">
+				    <f:facet name="header" >
+	        			<p:outputLabel value="Origen" rendered="#{!(documentosBean.titulo eq commonBean.PERSONAL)}"/>
+	        			<p:outputLabel value="Estado" rendered="#{(documentosBean.titulo eq commonBean.PERSONAL)}"/>
+	    			</f:facet>
+				<p:commandLink value="#{doc.sistemaOrigen.codigo}" rendered="#{doc.departamento.id == null}"
+					title="#{doc.sistemaOrigen.descripcion}" />
+				<p:commandLink value="#{doc.sistemaOrigen.codigo}-#{doc.departamento.acronimo}" rendered="#{doc.departamento.id != null}"
+					title="#{doc.sistemaOrigen.descripcion} - #{doc.departamento.descripcion}"/>				
+				<p:commandLink rendered="#{doc.sistemaOrigen.codigo == null}"
+					value="#{doc.estadoDocumento.codigo}"
+					title="#{doc.estadoDocumento.descripcion}" />
+			</p:column>
+	
+			<p:column headerText="Fecha" sortBy="#{doc.accionSobreDocumento}"
+				sortFunction="#{documentosController.mySort}"
+				styleClass="infoColumn navigator infoFecha">
+				<h:outputLabel
+					value="#{func:dateOfLastAction(doc, usuarioBean.entidadPersona.numIdentificacion)}" rendered="#{usuarioBean.entidadPersona != null}">
+					<f:convertDateTime pattern="dd-MM-yyyy" />
+				</h:outputLabel>
+				<h:outputLabel
+					value="#{func:dateOfLastAction(doc, usuarioBean.numIdentificacion)}" rendered="#{usuarioBean.entidadPersona == null}">
+					<f:convertDateTime pattern="dd-MM-yyyy" />
+				</h:outputLabel>
+			</p:column>
+	
+			<p:column headerText="Asunto - Nombre"
+				styleClass="columnDatosDocumento" sortBy="#{doc.asunto}">
+				<!--
+				<h:outputLabel styleClass="labelAsunto"
+					rendered="#{doc.asunto != null}" value="#{doc.asunto}"
+					escape="false" />
+				<h:outputLabel styleClass="labelNombreDoc" value="#{doc.nombre}"
+					escape="false" />
+				-->
+				<p:panelGrid styleClass="datosDocumento">
+					<p:row>
+						<p:column rowspan="2" styleClass="asunto">
+							<h:outputLabel styleClass="labelAsunto"
+								rendered="#{doc.asunto != null}" value="#{doc.asunto}"
+								escape="false" />
+							<h:outputLabel styleClass="labelNombreDoc" value="#{doc.nombre}"
+								escape="false" />
+						</p:column>
+					</p:row>
+				</p:panelGrid>				
+			</p:column>
+	
+			<p:column headerText="Solicitante" rowspan="2"
+				styleClass="solicitante " sortBy="#{doc.subidoPorNombre}"
+				rendered="#{!(documentosBean.titulo eq commonBean.PERSONAL) and !(documentosBean.titulo eq commonBean.ENVIADOS)}">
+				<h:outputLabel value="#{doc.subidoPorNombre}" escape="false" />
+			</p:column>
+	
+			<!-- Acciones Navegador-->
+			<p:column rowspan="1" styleClass="infoColumn navigator">
+				<p:commandLink action="#{documentosController.goEstado}"
+					styleClass="infoFiled"
+					rendered="#{!(documentosBean.titulo eq commonBean.PERSONAL)}"
+					alt="Ver estado del documento" title="Ver información del documento">
+					<i class="fa fa-info-circle"></i>
+					<f:param name="uri" value="#{doc.uri}" />
+				</p:commandLink>
+				<p:commandLink action="#{documentosController.goEstado}"
+					styleClass="infoFiled"
+					rendered="#{(documentosBean.titulo eq commonBean.PERSONAL)}"
+					alt="Ver estado del documento"
+					title="Editar información del documento">
+					<i class="fa fa-pencil"></i>
+					<f:param name="uri" value="#{doc.uri}" />
+				</p:commandLink>
+			</p:column>
+			
+			<p:column rowspan="1" styleClass="infoColumn navigator">
+				<p:commandLink action="#{documentosController.goEstado}"
+					styleClass="infoFiled"
+					rendered="#{(documentosBean.titulo eq commonBean.PERSONAL)}"
+					alt="Ver estado del documento" title="Ver información del documento">
+					<i class="fa fa-info-circle"></i>
+					<f:param name="uri" value="#{doc.uri}" />
+				</p:commandLink>
+					
+				<p:outputLabel styleClass="infoField" rendered="#{doc.urlDetalleOrigen != null}">
+					<a href="#{doc.urlDetalleOrigen}" target="_blank" title="Ver detalle del origen del documento"><i class="fa fa-external-link"></i></a>
+				</p:outputLabel>	
+					
+			</p:column>
+			
+			<p:column rowspan="1" styleClass="infoColumn navigator">
+				<p:commandLink action="#{documentosController.verDocumento}"
+					styleClass="infoFiled" alt="Descargar documento"
+					title="Descargar documento">
+					<f:param name="verIdURI" value="#{doc.uri}" />
+					<i class="fa fa-download"></i>
+				</p:commandLink>
+			</p:column>
+			
+			<p:column rowspan="1" styleClass="infoColumn accionColumn navigator"
+				rendered="#{!(documentosBean.titulo eq commonBean.TRAMITADOS) and !(documentosBean.titulo eq commonBean.ENVIADOS)}">
+				
+				<p:commandLink styleClass="infoFiled accionField"
+					actionListener="#{actionDocumentController.recuperarDocumentosFirmar}"
+					onclick="statusDialog.show();"
+					oncomplete="statusDialog.hide();showMensajesFirma();"
+					update=":mainForm:messageDialog :mainForm:signDialog :mainForm:documentosParaFirmar"
+					rendered="#{func:containEntityInList(doc.circuito, usuarioBean.entidadPersona) and !(documentosBean.titulo eq commonBean.PERSONAL) and !(documentosBean.clienteFirmaWeb)}"
+					disabled="#{(ausenciaBean.ausenciaActiva and !(documentosBean.titulo eq commonBean.PERSONAL)) or !(usuarioBean.entidadPersona.firmante)}">
+					<f:param name="uri" value="#{doc.uri}" />
+									Firmar
+				</p:commandLink>
+				
+				<p:commandLink styleClass="infoFiled accionField"
+					actionListener="#{actionDocumentController.recuperarDocumentosFirmarClienteWeb}"
+					onclick="statusDialog.show();"
+					oncomplete="onClickFirmarClienteWeb();"
+					update=":mainForm:messageDialog :mainForm:signWebClientDialog :mainForm:documentosParaFirmarClienteWeb"
+					rendered="#{func:containEntityInList(doc.circuito, usuarioBean.entidadPersona) and !(documentosBean.titulo eq commonBean.PERSONAL) and (documentosBean.clienteFirmaWeb)}"
+					disabled="#{(ausenciaBean.ausenciaActiva and !(documentosBean.titulo eq commonBean.PERSONAL)) or !(usuarioBean.entidadPersona.firmante)}">
+					<f:param name="uri" value="#{doc.uri}" />
+									Firmar
+				</p:commandLink>
+	
+				<p:commandLink styleClass="infoFiled accionField"
+					actionListener="#{actionDocumentController.validarDocumentos}"
+					onclick="statusDialog.show();" oncomplete="statusDialog.hide();"
+					update=":mainForm:tablaDocumentos :mainForm:messageDialog"
+					rendered="#{!(func:containEntityInList(doc.circuito, usuarioBean.entidadPersona)) and !((documentosBean.titulo eq commonBean.PERSONAL))}"
+					disabled="#{(ausenciaBean.ausenciaActiva and !(documentosBean.titulo eq commonBean.PERSONAL)) or !(usuarioBean.entidadPersona.validador)}">
+					<f:param name="uri" value="#{doc.uri}" />
+									Validar
+				</p:commandLink>
+	
+				<p:commandLink styleClass="infoFiled accionField"
+					action="#{documentosController.goDefinirFlujo}"
+					onclick="statusDialog.show();" update=":mainForm:messageDialog"
+					rendered="#{(documentosBean.titulo eq commonBean.PERSONAL)}"
+					disabled="#{(ausenciaBean.ausenciaActiva and !(documentosBean.titulo eq commonBean.PERSONAL))}">
+					<f:param name="uri" value="#{doc.uri}" />
+									Enviar
+				</p:commandLink>
+	
+			</p:column>
+			
+			<p:column rowspan="1"
+				styleClass="infoColumn estadoColumn #{doc.estadoDocumento.codigo} navigator"
+				rendered="#{!(documentosBean.titulo eq commonBean.PERSONAL) and !(documentosBean.titulo eq commonBean.PENDIENTES)}">
+				<h:outputText value="#{doc.estadoDocumento.descripcion}"
+					styleClass="#{doc.estadoDocumento.codigo}" />
+			</p:column>
+			<!-- Fin Acciones Navegador -->
+	
+			<!-- Acciones Movil -->
+			<p:column styleClass="accionesDocumento mobile">
+				<p:panelGrid>
+					<p:row>
+						<p:column
+							styleClass="tagBackoffice #{doc.sistemaOrigen.codigo} infoColumn mobile">
+							<p:commandLink value="#{doc.sistemaOrigen.codigo}"
+								title="#{doc.sistemaOrigen.descripcion}" />
+							<p:commandLink rendered="#{doc.sistemaOrigen.codigo == null}"
+								value="#{doc.estadoDocumento.codigo}"
+								title="#{doc.estadoDocumento.descripcion}" />
+						</p:column>
+						<p:column styleClass="infoColumn mobile infoFecha">
+							<h:outputLabel value="#{doc.fechaSubidaPortafirmas}">
+								<f:convertDateTime pattern="dd-MM-yyyy" />
+							</h:outputLabel>
+						</p:column>
+						<p:column rowspan="1" styleClass="infoColumn mobile">
+							<p:commandLink action="#{documentosController.goEstado}"
+								styleClass="infoFiled"
+								rendered="#{!(documentosBean.titulo eq commonBean.PERSONAL)}"
+								alt="Ver estado del documento"
+								title="Ver información del documento">
+								<i class="fa fa-info-circle"></i>
+								<f:param name="uri" value="#{doc.uri}" />
+							</p:commandLink>
+							<p:commandLink action="#{documentosController.goEstado}"
+								styleClass="infoFiled"
+								rendered="#{(documentosBean.titulo eq commonBean.PERSONAL)}"
+								alt="Ver estado del documento"
+								title="Editar información del documento">
+								<i class="fa fa-pencil"></i>
+								<f:param name="uri" value="#{doc.uri}" />
+							</p:commandLink>
+						</p:column>
+						<p:column rowspan="1" styleClass="infoColumn mobile">
+							<p:commandLink action="#{documentosController.goEstado}"
+								styleClass="infoFiled"
+								rendered="#{(documentosBean.titulo eq commonBean.PERSONAL)}"
+								alt="Ver estado del documento"
+								title="Ver información del documento">
+								<i class="fa fa-info-circle"></i>
+								<f:param name="uri" value="#{doc.uri}" />
+							</p:commandLink>
+	
+							<p:outputLabel styleClass="infoField" rendered="#{doc.urlDetalleOrigen != null}">
+								<a href="#{doc.urlDetalleOrigen}" target="_blank" title="Ver detalle del origen del documento"><i class="fa fa-external-link"></i></a>
+							</p:outputLabel>	
+						</p:column>
+						<p:column rowspan="1" styleClass="infoColumn mobile">
+							<p:commandLink action="#{documentosController.verDocumento}"
+								styleClass="infoFiled" alt="Descargar documento"
+								title="Descargar documento">
+								<f:param name="verIdURI" value="#{doc.uri}" />
+								<i class="fa fa-download"></i>
+							</p:commandLink>
+						</p:column>
+						<p:column styleClass="infoColumn accionColumn mobile"
+								rendered="#{!(documentosBean.titulo eq commonBean.TRAMITADOS) and !(documentosBean.titulo eq commonBean.ENVIADOS)}">
+							<p:commandLink styleClass="infoFiled accionField"
+								actionListener="#{actionDocumentController.recuperarDocumentosFirmar}"
+								onclick="statusDialog.show(); "
+								oncomplete="statusDialog.hide();showMensajesFirma();"
+								update=":mainForm:messageDialog :mainForm:documentosParaFirmar"
+								rendered="#{func:containEntityInList(doc.circuito, usuarioBean.entidadPersona) and !(documentosBean.titulo eq commonBean.PERSONAL) and (!documentosBean.clienteFirmaWeb)}"
+								disabled="#{(ausenciaBean.ausenciaActiva and !(documentosBean.titulo eq commonBean.PERSONAL)) or !(usuarioBean.entidadPersona.firmante)}">
+								<f:param name="uri" value="#{doc.uri}" />
+									Firmar
+							</p:commandLink>
+							
+							<p:commandLink styleClass="infoFiled accionField"
+								actionListener="#{actionDocumentController.recuperarDocumentosFirmarClienteWeb}"
+								oncomplete="onClickFirmarClienteWeb();"
+								update=":mainForm:messageDialog :mainForm:documentosParaFirmarClienteWeb"
+								rendered="#{func:containEntityInList(doc.circuito, usuarioBean.entidadPersona) and !(documentosBean.titulo eq commonBean.PERSONAL) and (documentosBean.clienteFirmaWeb)}"
+								disabled="#{(ausenciaBean.ausenciaActiva and !(documentosBean.titulo eq commonBean.PERSONAL)) or !(usuarioBean.entidadPersona.firmante)}">
+								<f:param name="uri" value="#{doc.uri}" />
+									Firmar
+							</p:commandLink>						
+	
+							<p:commandLink styleClass="infoFiled accionField mobile"
+								actionListener="#{actionDocumentController.validarDocumentos}"
+								onclick="statusDialog.show();" oncomplete="statusDialog.hide();"
+								update=":mainForm:tablaDocumentos :mainForm:messageDialog"
+								rendered="#{!(func:containEntityInList(doc.circuito, usuarioBean.entidadPersona)) and !((documentosBean.titulo eq commonBean.PERSONAL))}"
+								disabled="#{(ausenciaBean.ausenciaActiva and !(documentosBean.titulo eq commonBean.PERSONAL)) or !(usuarioBean.entidadPersona.validador)}">
+								<f:param name="uri" value="#{doc.uri}" />
+									Validar
+							</p:commandLink>
+	
+							<p:commandLink styleClass="infoFiled accionField mobile"
+								action="#{documentosController.goDefinirFlujo}"
+								onclick="statusDialog.show();" update=":mainForm:messageDialog"
+								rendered="#{(documentosBean.titulo eq commonBean.PERSONAL)}"
+								disabled="#{(ausenciaBean.ausenciaActiva and !(documentosBean.titulo eq commonBean.PERSONAL))}">
+								<f:param name="uri" value="#{doc.uri}" />
+									Enviar
+							</p:commandLink>
+						</p:column>
+						<p:column styleClass="infoColumn estadoColumn #{doc.estadoDocumento.codigo} mobile"
+								rendered="#{!(documentosBean.titulo eq commonBean.PERSONAL) and !(documentosBean.titulo eq commonBean.PENDIENTES)}">
+							<h:outputText value="#{doc.estadoDocumento.descripcion}"
+								styleClass="#{doc.estadoDocumento.codigo}" />
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</p:column>
+			<!-- Fin Acción Movil -->
+		</p:dataTable>
+	</p:panel>
+</ui:composition>
+</html>

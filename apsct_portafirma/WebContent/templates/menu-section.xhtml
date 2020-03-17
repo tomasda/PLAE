@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+<ui:composition>
+	<h:outputScript library="js" name="menu_v3-1.js" />
+	<h:outputStylesheet library="css" name="menu_v3-15.css"/>
+	
+	<div id="menu-action-nav">
+		<div class="headerMenu">
+			<div class="menuButton">
+				<i class="fa fa-bars fa-2x"></i>
+			</div>
+			<span class="menuTitulo">Menú</span>
+		</div>
+		
+		<h:form id="actionForm">
+			<p:panel id="seleccionUsuario" styleClass="seleccionUsuario" rendered="#{usuarioBean.administrador}">
+				<h3>Administrador</h3>
+				<p:outputLabel for="usuarioActual" value="Usuario:" />
+				<p:selectOneMenu id="usuarioActual" value="#{usuarioBean.username}" styleClass="overrideSelect" widgetVar="usuarioActual"
+					onchange="statusDialog.show();expandMenu();">
+					<f:selectItem itemLabel="-- Seleccione un usuario --" itemValue="" />			
+					<f:selectItems value="#{usuarioBean.listUsuariosAE}" var="usuarioActual" itemLabel="#{usuarioActual.nombreApellidos}" itemValue="#{usuarioActual.username}"/>
+					<p:ajax update=":titulo :actionForm:panelMenu :actionForm:addDocumentMenu actionForm:managementMenu :mainForm:messageDialog :mainForm:contenidoBandeja :mainForm:footer-actions" 
+						listener="#{documentosController.loadBandejaPrincipalUsuario}" oncomplete="statusDialog.hide();"/>
+				</p:selectOneMenu>
+			</p:panel>
+			<!-- :mainForm:tablaDocumentos :mainForm:accesoAdmin --> 
+			<p:panel id="identidad" styleClass="identidad" rendered="#{!usuarioBean.administrador}">
+				<h3>Usuario: #{usuarioBean.nombre}</h3>
+			</p:panel>
+
+			<p:panelMenu id="panelMenu" widgetVar="panelMenu">
+				<p:submenu label="Bandejas">
+					<p:menuitem value="Pendientes" icon="ui-icon-folder-collapsed"
+						onclick="statusDialog.show(); expandMenu(this);"
+						oncomplete="statusDialog.hide();"
+						actionListener="#{documentosController.loadBandeja}"
+						update=":mainForm:tablaDocumentos :titulo :mainForm:footer-actions"
+						rendered="#{(usuarioBean.administrador and !(usuarioBean.usuarioConsulta)) or !(usuarioBean.entidadPersona == null)}"
+						disabled="#{usuarioBean.administrador and !(usuarioBean.usuarioConsulta)}">
+						<f:attribute name="nombreBandeja"
+							value="#{commonBean.PENDIENTES}" />
+					</p:menuitem>
+					<p:menuitem value="Tramitados" icon="ui-icon-folder-collapsed"
+						onclick="statusDialog.show(); expandMenu(this);"
+						oncomplete="statusDialog.hide();"
+						actionListener="#{documentosController.loadBandeja}"
+						update=":mainForm:tablaDocumentos :titulo :mainForm:footer-actions"
+						rendered="#{(usuarioBean.administrador and !(usuarioBean.usuarioConsulta)) or !(usuarioBean.entidadPersona == null)}"
+						disabled="#{usuarioBean.administrador and !(usuarioBean.usuarioConsulta)}">
+						<f:attribute name="nombreBandeja"
+							value="#{commonBean.TRAMITADOS}" />
+					</p:menuitem>
+					<p:menuitem value="Personal" icon="ui-icon-folder-collapsed"
+						actionListener="#{documentosController.loadBandeja}"
+						onclick="statusDialog.show(); expandMenu(this);"
+						oncomplete="statusDialog.hide();"
+						update=":mainForm:tablaDocumentos :titulo :mainForm:footer-actions"
+						disabled="#{usuarioBean.administrador and !(usuarioBean.usuarioConsulta)}">
+						<f:attribute name="nombreBandeja" value="#{commonBean.PERSONAL}" />
+					</p:menuitem>
+					<p:menuitem value="Enviados" icon="ui-icon-folder-collapsed"
+						actionListener="#{documentosController.loadBandeja}"
+						onclick="statusDialog.show(); expandMenu(this);"
+						oncomplete="statusDialog.hide();"
+						update=":mainForm:tablaDocumentos :titulo :mainForm:footer-actions :mainForm:messageDialog"
+						disabled="#{usuarioBean.administrador and !(usuarioBean.usuarioConsulta)}">
+						<f:attribute name="nombreBandeja" value="#{commonBean.ENVIADOS}" />
+					</p:menuitem>
+				</p:submenu>
+			</p:panelMenu>
+
+			<p:panel id="addDocumentMenu" styleClass="menu-option">
+				<p:commandLink icon="ui-icon-arrowthickstop-1-n" action="#{documentosController.goUpload}" onclick="statusDialog.show();" 
+						disabled="#{usuarioBean.administrador and !(usuarioBean.usuarioConsulta)}">
+					<h3><i class="fa fa-cloud-upload"></i><span>Subir Documento</span></h3>
+				</p:commandLink>
+			</p:panel>
+
+			<p:panelMenu id ="managementMenu">
+				<p:submenu label="Gestiones">
+					<p:menuitem value="Colaboradores" disabled="#{usuarioBean.administrador and !(usuarioBean.usuarioConsulta)}"
+						action="#{documentosController.goColaboradores}"
+						icon="ui-icon-person" update=":mainForm:messageDialog" />
+					<p:menuitem value="Ausencias" disabled="#{usuarioBean.administrador and !(usuarioBean.usuarioConsulta)}"
+						action="#{documentosController.goAusente}" icon="ui-icon-person"
+						update=":mainForm:messageDialog" />
+				</p:submenu>
+			</p:panelMenu>
+			
+			<p:panel styleClass="menu-option">
+				<p:commandLink action="#{generalController.logout}" onclick="statusDialog.show();">
+					<h3><i class="fa fa-power-off"></i><span>Cerrar Sesión</span></h3>
+				</p:commandLink>
+			</p:panel>
+			
+			<p:panel styleClass="menu-option">
+				<p:commandLink action="#{generalController.goHelp}" onclick="statusDialog.show();"> 
+				<h3><i class="fa fa-question"></i><span>Ayuda</span></h3>
+				</p:commandLink>
+			</p:panel>
+		</h:form>
+	</div>
+</ui:composition>
+</html>

@@ -1,0 +1,337 @@
+/**** Override Styles of Primefaces ****/
+
+.ui-inputfield {
+	box-shadow:none !important;
+}
+
+.ui-tabs-top{
+	padding: 0px;
+	margin: 0px;
+	border:none;
+}
+
+.ui-tabs-top .ui-state-default{
+	background: #eee !important;
+	box-shadow: none;
+	width: 48%;
+	float:left;
+}
+
+.ui-tabs-top .ui-state-active {
+	background:white !important;
+}
+
+.ui-tabs-panels{
+	background-color: white;
+}
+
+.ui-tabs-nav{
+	background: white !important;
+	border-bottom: solid 1px #ddd;
+}
+
+.ui-tabs-panel{
+	margin: 0px !important;
+	padding: 0px !important;
+	min-height: 200px;
+}
+
+#content .tablaDocumentos td{
+	border-color: transparent;
+}
+
+.ui-spinner-button{
+	background:#e6e6e6;
+	box-shadow: none;
+	z-index: 0;
+}
+
+.ui-spinner-button.ui-state-hover{
+	background: #e6e6e6;
+	box-shadow: none;
+}
+
+.personas .ui-widget-content{
+	border-color:transparent;
+}
+
+#content .tablaDocumentos td{
+	border-color: transparent;
+}
+
+
+#menu-search-nav h3.ui-state-hover {
+	background-color: 34495e;
+	box-shadow: none;
+	border: 1px solid #666;
+	background-image: none;
+	color: white;
+	font-size: 14px;
+	font-weight: 14px;
+}
+
+#menu-action-nav .ui-helper-hidden {
+	
+}
+
+#menu-search-nav label {
+	display: block;
+	padding: 5px;
+}
+
+#menu-search-nav input {
+	display: block;
+	height: 20px;
+	min-width: 130px;
+}
+
+#menu-search-nav form {
+	padding: 10px;
+}
+
+#menu-search-nav .ui-selectonemenu {
+	border: 1px solid #95a5a6;
+	font-size: 12px;
+}
+
+#menu-search-nav .ui-selectonemenu .ui-state-dafult {
+	border: 1px solid #95a5a6;
+	font-size: 20px;
+	width: 200px;
+}
+
+#menu-search-nav .ui-selectonemenu .ui-state-hover {
+	border: 1px solid #95a5a6;
+	font-size: 20px;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover {
+	background-color: #547f9c;
+	background-image: none;
+	box-shadow: none;
+	color: white;
+	transition: background .5s linear;
+	-webkit-transition: background .5s linear;
+}
+
+.ui-chkbox .ui-state-hover {
+	background-color: white;
+}
+
+.ui-widget-content .ui-state-highlight {
+	background-color: #547f9c;
+	background-image: none;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active {
+	background-color: white;
+}
+
+.tablaDocumentos .ui-widget-content a {
+	text-decoration: none;
+}
+
+.tablaDocumentos .ui-state-highlight a, .tablaDocumentos .ui-widget-content .ui-state-highlight a,
+	.tablaDocumentos .ui-widget-header .ui-state-highlight a {
+
+	text-shadow: none;
+}
+
+.tablaDocumentos .ui-chkbox-box.ui-state-hover {
+	background-color: white;
+}
+
+.tablaDocumentos .ui-chkbox-box.ui-state-highlight {
+	background-color: white;
+}
+
+.tablaDocumentos .ui-state-highlight {
+	text-shadow: none;
+}
+
+.ui-dialog a.ui-commandlink {
+	color: #59ABE3;
+	transition: color .5s linear;
+	-webkit-transition: color .5s linear;
+}
+
+.ui-dialog a.ui-commandlink:hover {
+	color: #19B5FE;
+}
+
+.ui-panelmenu .ui-menuitem-link{
+	width:inherit !important; 
+}
+
+.ui-panelmenu .ui-panelmenu-header a{
+	font-size: 16px !important;
+}
+
+.ui-panelmenu .ui-menuitem-text{
+	font-size: 15px;
+}
+
+.body-search .ui-selectonemenu{
+	width: 200px !important;;
+}
+
+.body-search input[type = "text"]{
+	width:200px;
+}
+
+
+
+/*SOLO MOVIL*/
+@media ( max-width : 600px) {
+	#menu-search-nav .ui-selectonemenu {
+		font-size: 20px;
+	}
+	
+	#menu-action-nav .ui-state-default {
+	background-image: none;
+	border: none;
+	border-radius: 0px;
+	box-shadow: none;
+	background-color: #34495e;
+}
+	
+	#menu-search-nav input {
+		display: block;
+		height: 30px;
+		padding: 3px;
+		width: 200px;
+	}
+	#menu-search-nav input[type="text"] {
+		font-size: 20px;
+	}
+	#menu-search-nav .ui-state-hover {
+		background-color: white;
+		color:black;
+	}
+	#menu-search-nav .ui-selectonemenu .ui-state-hover {
+		background-color: #bdc3c7;
+	}
+
+	#menu-search-nav input[type="text"] {
+		width: 95%;
+	}
+	#menu-search-nav .ui-selectonemenu {
+		width: 96%;
+	}
+	.ui-state-default, .ui-widget-content .ui-state-default,
+		.ui-widget-header .ui-state-default {
+		background: none;
+	}
+	.ui-state-default, .ui-widget-content .ui-state-default {
+		background-color: white;
+	}
+	.ui-widget-content .ui-state-highlight {
+		text-shadow: none;
+	}
+	.ui-widget-content, .ui-widget-content .ui-state-highlight {
+		border: none;
+	}
+	.ui-datatable table {
+		border-collapse: none;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td {
+		border-width: 0px;
+	}
+	.ui-state-hover, .ui-widget-content .ui-state-hover {
+		border-width: 0px;
+	}
+	.ui-dialog {
+		max-width: 350px !important;;
+	}
+	#menu-search-nav input{
+		width:100%;
+	}
+
+	/* Force table to not be like tables anymore */
+	.ui-fileupload, .ui-fileupload thead, .ui-fileupload tbody,
+		.ui-fileupload th, .ui-fileupload td, .ui-fileupload tr {
+		display: block;
+	}
+
+	/* Hide table headers (but not display: none;, for accessibility) */
+	.ui-fileupload thead tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	.ui-fileupload tr {
+		border: 1px solid #ccc;
+		margin: 5px;
+	}
+	.ui-fileupload td {
+		/* Behave  like a "row" */
+		border: none;
+		position: relative;
+		padding-left: 50%;
+		white-space: nowrap;
+		width: 12em;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.ui-fileupload .ui-messages-error-detail{
+		width:12em;
+		text-overflow: ellipsis;
+	}
+	.ui-fileupload .ui-messages-error-detail{
+		display:none;
+	}
+	
+	#content .tablaDocumentos th{
+		border-color: transparent;
+	}
+	
+	.ui-tabs-top .ui-state-default{
+	width: 100%;
+}
+	
+}
+
+.ui-dialog-titlebar,.ui-datatable-tablewrapper table thead th, 
+.ui-chkbox .ui-state-default, .ui-selectonemenu .ui-selectonemenu-trigger{
+	background: #e6e6e6;
+	text-shadow: none;
+	box-shadow: none;
+}
+
+.ui-selectonemenu .ui-selectonemenu-label{
+	box-shadow: none; 
+}
+
+.ui-chkbox .ui-state-default{
+	background-color: #f2f2f2;
+	text-shadow: none;
+	box-shadow: none;
+}
+
+input[type="text"].ui-state-focus{
+	background-color: white;
+	box-shadow: none;
+	border: 1px solid #666;
+	background-image: none;
+	color: black;
+	font-size: 14px;
+	font-weight: 14px;
+}
+
+input[type="text"].ui-state-hover{
+	background-color: white;
+	box-shadow: none;
+	border: 1px solid #666;
+	background-image: none;
+	color: black;
+	font-size: 14px;
+	font-weight: 14px;
+}
+
+.hecho .ui-widget-content .ui-state-highlight{
+	border: medium none !important;
+}
+
+.hecho .ui-datatable-odd{
+	background-color:#FFF;
+}

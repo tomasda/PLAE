@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition>
+
+	<h:panelGroup id="pasos" styleClass="pasos">
+		<ui:repeat var="grupo" value="#{circuitoBean.circuito.listGrupo}"
+			varStatus="status">
+
+			<h:panelGrid id="panel" styleClass="paso">
+				<p:panel id="panel2" styleClass="pasosCabecera">
+
+					<!-- Solo se deben poder visualizar las acciones si se trata de el último grupo -->
+					<p:commandLink actionListener="#{circuitoController.borrarGrupo}"
+						onclick="statusDialog.show();" oncomplete="statusDialog.hide();"
+						update=" :form2:pasos :form2:personas" styleClass="pasoAction" title="Eliminar grupo">
+						<f:param name="grupoIdBorrar" value="#{grupo.orden}" />
+						<i class="fa fa-trash fa-lg"></i>
+					</p:commandLink>
+					<p:commandLink
+						actionListener="#{circuitoController.addPersonasSeleccionadas}"
+						onclick="statusDialog.show();" oncomplete="statusDialog.hide();"
+						update=":form2:pasos :form2:personas" styleClass="pasoAction" title="Añadir personas seleccionadas al grupo">
+						<f:param name="grupoIdAddPersonas" value="#{grupo.orden}" />
+						<i class="fa fa-user-plus fa-lg"></i>
+					</p:commandLink>
+					<h:messages id="errorMessages" style="color:red;margin:8px;" />
+					<h:panelGroup id="operador" styleClas="operador">
+						<p:selectOneMenu id="Tipo" value="#{grupo.tipoGrupo}"
+							styleClass="overrideSelect selectOneTipoGrupo" converter="tipoGrupoConverter" widgetVar="tipoGrupo#{status.index}">
+							<!-- tipoGrupo -->
+							<f:selectItems value="#{circuitoBean.tiposGrupo}"
+								var="tiposGrupo" itemLabel="#{tiposGrupo.descripcion}"
+								itemValue="#{tiposGrupo}" />
+							<p:ajax event="change" update="@this" />
+						</p:selectOneMenu>
+						<p:outputLabel id="TipoCodText" value="#{grupo.tipoGrupo.codigo}" styleClass="hiddenTipo"/>
+						<p:spinner min="#{grupo.minimoFirmantes}"
+							max="#{grupo.maximoFirmantes}"
+							value="#{grupo.firmantesRequeridos}" id="numeroFirmantes"
+							styleClass="minimoFirmantes" />
+					</h:panelGroup>
+				</p:panel>
+				<p:dataGrid id="tablaPersonas1" value="#{grupo.grupoPersona}"
+					var="grupoPersona" columns="1"
+					emptyMessage="Añada aquí el firmante" styleClass="pasosCuerpo">
+					<p:column>
+						<p:outputLabel id="persona2" styleClass="persona persona1"
+							value="#{grupoPersona.persona.nombre} #{grupoPersona.persona.apellido1} #{grupoPersona.persona.apellido2}" />
+						<p:commandLink
+							actionListener="#{circuitoController.eliminarPersonaGrupo}"
+							onclick="statusDialog.show();" oncomplete="statusDialog.hide();"
+							update=":form2:pasos" styleClass="eliminarDePasos" title="Eliminar persona del grupo">
+							<f:param name="personaSeleccionada"
+								value="#{grupoPersona.persona.numIdentificacion}" />
+							<f:param name="grupoIdEliminarPersona" value="#{grupo.orden}"></f:param>
+							<i class="fa fa-user-times"></i>
+						</p:commandLink>
+						<!-- Acciones para el último -->
+						<p:commandLink
+							actionListener="#{circuitoController.liberarPersonaGrupo}"
+							onclick="statusDialog.show();" oncomplete="statusDialog.hide();"
+							rendered="#{grupoPersona.obligatorio}" update=":form2:pasos"
+							styleClass="fijarPasos" title="Persona indicada como obligatoria">
+							<f:param name="personaSeleccionada"
+								value="#{grupoPersona.persona.numIdentificacion}" />
+							<f:param name="grupoIdLiberarPersona" value="#{grupo.orden}" />
+							<i class="fa fa-lock"></i>
+						</p:commandLink>
+						<p:commandLink
+							actionListener="#{circuitoController.fijarPersonaGrupo}"
+							onclick="statusDialog.show();" oncomplete="statusDialog.hide();"
+							rendered="#{!grupoPersona.obligatorio}" update=":form2:pasos"
+							styleClass="liberarPasos" title="Persona indicada como opcional">
+							<f:param name="personaSeleccionada"
+								value="#{grupoPersona.persona.numIdentificacion}" />
+							<f:param name="grupoIdFijarPersona" value="#{grupo.orden}" />
+							<i class="fa fa-unlock"></i>
+						</p:commandLink>
+					</p:column>
+				</p:dataGrid>
+				<p:droppable tolerance="fit" activeStyleClass="slotActive"
+					scope="forward" datasource=":form2:tabViewDrag:tablaPersonas2">
+					<p:ajax listener="#{circuitoController.onDrop}"
+						update=":form2:pasos :form2:personas :form:messageDialog" />
+				</p:droppable>
+			</h:panelGrid>
+
+		</ui:repeat>
+
+		<p:commandLink actionListener="#{circuitoController.createGroup}"
+			onclick="statusDialog.show();" oncomplete="statusDialog.hide();"
+			update=":form2:pasos :form:messageDialog" styleClass="addNew" title="Crear nuevo grupo">
+			<i class="fa fa-plus-square fa-5x"></i>
+		</p:commandLink>
+		<h:outputScript library="js" name="tipoGrupoLoadder.js"/>
+	</h:panelGroup>
+</ui:composition>
+</html>

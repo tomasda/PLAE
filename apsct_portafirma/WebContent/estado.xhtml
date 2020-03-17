@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+	<ui:composition template="templates/page.xhtml">
+		<ui:define name="js">
+			<h:outputScript library="js" name="detailsState.js" target="head" />
+		</ui:define>
+		<ui:define name="css">
+		</ui:define>
+		<ui:define name="titulo">
+    		Detalles
+    	</ui:define>
+
+		<ui:define name="content">
+			<p:panel rendered="#{estadoBean.mensajeAcceso != null}">
+				<h3>#{estadoBean.mensajeAcceso}</h3>
+			</p:panel>
+			<h:form rendered="#{estadoBean.mensajeAcceso == null}">
+				<p:panel styleClass="grupoEstado infoGeneralEstado">
+					<h3>Información general</h3>
+					<ul>
+						<li>
+							<p:outputLabel id="labelDocNombre" value="Nombre: " styleClass="infoLabel" style="font-size:1.1em;" />
+							<p:outputLabel value="#{estadoBean.documento.nombre}" styleClass="infoLabel" style="font-size:1.1em;" />
+						</li>
+						<li>
+							<p:outputLabel id="labelDocAsunto" value="Asunto: " styleClass="infoLabel" />
+							<br /><br />
+							<p:inputTextarea value="#{estadoBean.documento.asunto}" styleClass="inputAsunto" rendered="#{(estadoBean.documento.estadoDocumento.codigo eq commonBean.PEND or estadoBean.documento.estadoDocumento.codigo eq commonBean.RECP)}"/>
+							<h:outputLabel id="docAsunto" styleClass="includeReturns" value="#{estadoBean.documento.asunto}" escape="false"
+								rendered="#{!(estadoBean.documento.estadoDocumento.codigo eq commonBean.PEND) and !(estadoBean.documento.estadoDocumento.codigo eq commonBean.RECP)}"/>
+						</li>						
+						<li>
+							<p:outputLabel id="labelEstado" value="Estado: " styleClass="infoLabel" />
+							<p:outputLabel id="docEstado" value="#{estadoBean.documento.estadoDocumento.descripcion}" />
+						</li>
+						<li>
+							<p:outputLabel id="labelDocFecha1" value="Fecha envío: " styleClass="infoLabel" rendered="#{!(estadoBean.documento.estadoDocumento.codigo eq commonBean.PEND) and !(estadoBean.documento.estadoDocumento.codigo eq commonBean.RECP)}"/>
+							<p:outputLabel id="labelDocFecha2" value="Fecha subida: " styleClass="infoLabel" rendered="#{(estadoBean.documento.estadoDocumento.codigo eq commonBean.PEND) or (estadoBean.documento.estadoDocumento.codigo eq commonBean.RECP)}"/>
+							<h:outputText id="docFecha" value="#{estadoBean.documento.fechaSubidaPortafirmas}">
+								<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+							</h:outputText>						
+						</li>
+						<ui:fragment rendered="#{(estadoBean.documento.estadoDocumento.codigo eq commonBean.PEND) or (estadoBean.documento.docRelacionada != null) or (estadoBean.documento.estadoDocumento.codigo eq commonBean.RECP)}">
+						<li>
+							<p:outputLabel id="labelDocObservaciones" value="Observaciones:" styleClass="infoLabel" />
+							<br />
+							<p:outputLabel id="docObservaciones" styleClass="includeReturns" value="#{estadoBean.documento.docRelacionada}" rendered="#{!(estadoBean.documento.estadoDocumento.codigo eq commonBean.PEND) and !(estadoBean.documento.estadoDocumento.codigo eq commonBean.RECP)}"/>
+							<p:inputTextarea styleClass="inputObservacion" value="#{estadoBean.documento.docRelacionada}" rendered="#{(estadoBean.documento.estadoDocumento.codigo eq commonBean.PEND) or (estadoBean.documento.estadoDocumento.codigo eq commonBean.RECP)}"/>
+						</li>
+						</ui:fragment>
+					</ul>
+				</p:panel>
+				<p:commandButton styleClass="button-action button-action-actualizar button-actualizar-info" action="#{documentosController.actualizarDocumento}" value="Actualizar Información" rendered="#{(estadoBean.documento.estadoDocumento.codigo eq commonBean.PEND) or (estadoBean.documento.estadoDocumento.codigo eq commonBean.RECP)}"/>
+			</h:form>
+
+			<h:form rendered="#{!(estadoBean.documento.estadoDocumento.codigo eq commonBean.PEND) and (estadoBean.mensajeAcceso == null)}" class="formAcciones">
+				<p:panel styleClass="grupoEstado" >
+					<h3>Acciones sobre el documento</h3>
+					<h4>Hecho</h4>
+					<p:outputLabel value="No se ha realizado ninguna acción sobre el documento hasta el momento." rendered="#{empty estadoBean.listProcesoRealizado }"/>
+					<p:dataTable id="hecho" value="#{estadoBean.listProcesoRealizado}"
+						var="proceso"
+						rendered="#{not empty estadoBean.listProcesoRealizado }"
+						styleClass="hecho">
+						<p:column>
+							<p:outputLabel rendered="#{!(proceso.accion.codigo == 'ENVD') and !(proceso.accion.codigo == 'RECP')}"
+								value="#{proceso.persona.nombre} #{proceso.persona.apellido1} #{proceso.persona.apellido2} - #{proceso.persona.numIdentificacion}" />
+							<p:outputLabel id="labelDocumentoSubido" rendered="#{proceso.accion.codigo == 'ENVD' or proceso.accion.codigo == 'RECP'}"
+								value="#{estadoBean.documento.subidoPorNombre} - #{estadoBean.documento.subidoPorDNI}" />
+							<br />
+							<div class="meta">
+								<p:outputLabel value="Realizado el: " styleClass="details" />
+								<h:outputText value="#{proceso.fechaAccion}"
+									styleClass="details value">
+									<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+								</h:outputText>
+							</div>
+							<div class="estadoAccion">
+								<p:outputLabel value="Acción:" styleClass="textoEstado" />
+								<p:outputLabel
+									styleClass="estado #{proceso.accion.codigo} estado-letra"
+									rendered="#{proceso.accion.codigo == 'VALD'}" value="Validado" />
+								<p:outputLabel
+									styleClass="estado #{proceso.accion.codigo} estado-letra"
+									rendered="#{proceso.accion.codigo == 'RECH'}" value="Rechazado" />
+								<p:outputLabel
+									styleClass="estado #{proceso.accion.codigo} estado-letra"
+									rendered="#{proceso.accion.codigo == 'FIRM'}" value="Firmado" />
+								<p:outputLabel
+									styleClass="estado #{proceso.accion.codigo} estado-letra"
+									rendered="#{proceso.accion.codigo == 'RECP'}" value="Recuperado" />
+								<p:outputLabel
+									styleClass="estado #{proceso.accion.codigo} estado-letra"
+									rendered="#{proceso.accion.codigo == 'ENVD'}" value="Enviado" />
+							</div>
+							<div>
+								<p:commandLink value="Ver observación" onclick="showObservacion(this);" />
+								<div class="observacion" style="display: none;">#{proceso.observaciones}</div>
+							</div>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+				<p:panel rendered="#{not empty estadoBean.listGruposPorRealizar}"
+					styleClass="grupoEstado">
+					<h4>Por hacer</h4>
+					<ui:repeat var="grupo" value="#{estadoBean.listGruposPorRealizar}"
+						varStatus="status">
+						<p:outputLabel value="#{grupo.tipoGrupo.descripcion}" />
+						Actores necesarios:<p:outputLabel
+							value="#{grupo.firmantesRequeridos}" />
+						<p:dataTable id="porHacer" value="#{grupo.grupoPersona}"
+							var="grupoPersona" styleClass="porHacer">
+							<!-- A nivel de interfaz que no visualice las acciones realizadas porque ya estarán en el otro grupo -->
+							<p:column
+								rendered="#{(grupoPersona.realizado != null) and (!grupoPersona.realizado)}">
+								<p:outputLabel
+									value="#{grupoPersona.persona.nombre} #{grupoPersona.persona.apellido1} #{grupoPersona.persona.apellido2} - #{grupoPersona.persona.numIdentificacion} " />
+								<p:outputLabel rendered="#{grupoPersona.obligatorio}">
+									<i class="fa fa-lock"></i>
+								</p:outputLabel>
+<!-- 								<p:outputLabel rendered="#{grupoPersona.persona.listAusencia != null}" value="Ausente" /> -->
+							</p:column>
+						</p:dataTable>
+					</ui:repeat>
+				</p:panel>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+
+</html>

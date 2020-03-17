@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+	<ui:composition template="templates/page.xhtml">
+		<ui:define name="js">
+			<h:outputScript library="js" name="upload.js" target="head" />
+		</ui:define>
+		<ui:define name="css">
+		</ui:define>
+		<ui:define name="titulo">
+    		Subir Documentos
+    	</ui:define>
+		<ui:define name="content">
+			<h:form>
+			<div class="restrictionUpload">
+				<i class="fa fa-info-circle"></i> Solo se admiten documentos en formato doc, docx, odt y pdf.
+			</div>
+			<p:commandButton
+				action="#{documentosController.redirectPersonal}"
+				widgetVar="buttonPersonal" style="display:none;"
+				onclick="statusDialog.show();" oncomplete="statusDialog.hide();" value="#{documentosBean.dummie}"/>
+
+			<p:fileUpload dragDropSupport="true" id="subirDocumento"
+				fileUploadListener="#{documentosController.upload}"
+				previewWidth="10" allowTypes="/(\.|\/)(pdf|odt|doc|docx)$/"
+				uploadLabel="Subir" cancelLabel="Cancelar"
+				invalidFileMessage="Tipo de fichero inválido"
+				invalidSizeMessage="Tamaño de fichero inválido" label="Elegir"
+				widgetVar="uploaderDocumentos" onstart="previous();"
+				oncomplete="end();"/>
+			</h:form>	
+		</ui:define>
+
+	</ui:composition>
+</h:body>
+</html>

@@ -1,0 +1,94 @@
+@media(max-width : 600px) {
+	#button-search {
+		position:fixed;
+		bottom: 0px;
+		right: 0px;
+		min-width:280px;
+		width: 60%;
+		max-width:340px;
+	}
+	.buscar, .limpiar {
+		width:50%
+		
+	}
+}
+
+@media(min-width : 600px) {
+	.buscar, .limpiar{
+		margin:5px;
+	}
+	.buscar, .limpiar {
+
+		width: 140px;
+	}
+}
+
+
+body{
+	background-color:white;
+}
+
+#menu-search-nav .headerMenu{
+	width:100%;
+	color: white;
+	height:50px;
+	background-color:#1abc9c;
+}
+
+#menu-search-nav {
+	background-color: #EEE;
+	display: none;
+	height: 100%;
+	min-height: 100%;
+	overflow-y: scroll;
+	padding-bottom: 140px;
+	position: fixed;
+	top: 0;
+	min-width:280px;
+	width: 70%;
+	z-index: 99;
+}
+
+#menu-search-nav {
+	box-shadow: -5px 0 5px -5px #333;
+	color: black;
+	margin-bottom: 40px;
+	right: 0;
+	max-width:340px;
+}
+
+#menu-search-nav input[type="button"] {
+	float: right;
+	height: 40px;
+}
+
+.buscar:hover, .limpiar:hover {
+	background-color: #16a085;
+}
+
+.buscar, .limpiar {
+	border:none;
+	background-color: #1abc9c;
+	color: white;
+	font-weight: bold;
+	height: 40px;
+	transition: .5s;
+	-webkit-transition: .5s;
+}
+
+#menu-search-nav .menuTitulo{
+	font-size: 24px;
+	float:right;
+    margin-right: 50px;
+    color: white;
+    display: block;
+    padding-top: 9px;
+}
+
+#menu-search-nav input{
+	width:100%;
+}
+
+#menu-search-nav .ui-selectonemenu {
+	width:100% !important;
+}

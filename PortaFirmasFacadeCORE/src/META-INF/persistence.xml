@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="facade-pu" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>java:jboss/datasources/FacadeDS</jta-data-source>
+		<!-- Entidades del esquema OC3F -->
+			<class>es.apt.ae.facade.entities.CatPropiedadesConfiguracion</class>
+			<class>es.apt.ae.facade.entities.Expediente</class>
+		<!-- 
+		<class>es.apt.ae.facade.entities.Actividad</class>
+		<class>es.apt.ae.facade.entities.BackOffice</class>	
+		<class>es.apt.ae.facade.entities.CatContenidoEstaticoEtiqueta</class>
+		<class>es.apt.ae.facade.entities.CatDispositivo</class>
+		<class>es.apt.ae.facade.entities.CatEtiqueta</class>
+		<class>es.apt.ae.facade.entities.CatPermisoDispositivo</class>
+		<class>es.apt.ae.facade.entities.CatPlantilla</class>
+		<class>es.apt.ae.facade.entities.CatProcedimientoCircuito</class>
+		<class>es.apt.ae.facade.entities.CatProcedimientoPermiso</class>
+		<class>es.apt.ae.facade.entities.CatProcedimientoRol</class>
+		
+		<class>es.apt.ae.facade.entities.CatTipoDocumento</class>		
+		<class>es.apt.ae.facade.entities.CatTipoInicio</class>
+		<class>es.apt.ae.facade.entities.Documento</class>
+		<class>es.apt.ae.facade.entities.Expediente</class>
+		<class>es.apt.ae.facade.entities.Familia</class>
+		<class>es.apt.ae.facade.entities.Fase</class>
+		<class>es.apt.ae.facade.entities.FirmaManuscritaDocumento</class>
+		<class>es.apt.ae.facade.entities.FirmaManuscritaDocumentoDestinatario</class>
+		<class>es.apt.ae.facade.entities.FirmaManuscritaDocumentoWSDL</class>
+		<class>es.apt.ae.facade.entities.GestionPortafirmasDocumento</class>
+		<class>es.apt.ae.facade.entities.IdsExpedientes</class>
+		<class>es.apt.ae.facade.entities.IndiceCapitulo</class>
+		<class>es.apt.ae.facade.entities.IndiceCapituloDocumento</class>
+		<class>es.apt.ae.facade.entities.Procedimiento</class>
+		<class>es.apt.ae.facade.entities.Proceso</class>
+		<class>es.apt.ae.facade.entities.RelacionExpedientes</class>
+		<class>es.apt.ae.facade.entities.Rol</class>
+		<class>es.apt.ae.facade.entities.TerceroExp</class>
+		<class>es.apt.ae.facade.entities.Track</class>
+		<class>es.apt.ae.facade.entities.Transicion</class>-->
+
+		<!-- Entidades portafirmas -->
+		<class>es.apt.ae.facade.entities.portafirmas.Accion</class>
+		<class>es.apt.ae.facade.entities.portafirmas.Ausencia</class>
+		<class>es.apt.ae.facade.entities.portafirmas.CircuitoEntity</class>
+		<class>es.apt.ae.facade.entities.portafirmas.CircuitoPersona</class>
+		<class>es.apt.ae.facade.entities.portafirmas.Departamento</class>
+		<class>es.apt.ae.facade.entities.portafirmas.DocumentoPortafirmas</class>
+		<class>es.apt.ae.facade.entities.portafirmas.DocumentoWSDL</class>
+		<class>es.apt.ae.facade.entities.portafirmas.EstadoDocumento</class>
+		<class>es.apt.ae.facade.entities.portafirmas.FirmantePersona</class>
+		<class>es.apt.ae.facade.entities.portafirmas.Grupo</class>
+		<class>es.apt.ae.facade.entities.portafirmas.GrupoPersona</class>
+		<class>es.apt.ae.facade.entities.portafirmas.Persona</class>
+		<class>es.apt.ae.facade.entities.portafirmas.PersonaAusencia</class>
+		<class>es.apt.ae.facade.entities.portafirmas.PersonaRevisores</class>
+		<class>es.apt.ae.facade.entities.portafirmas.ProcesoFirma</class>
+		<class>es.apt.ae.facade.entities.portafirmas.Revision</class>
+		<class>es.apt.ae.facade.entities.portafirmas.Revisor</class>
+		<class>es.apt.ae.facade.entities.portafirmas.Sustitucion</class>
+		<class>es.apt.ae.facade.entities.portafirmas.TipoCircuito</class>
+		<class>es.apt.ae.facade.entities.portafirmas.TipoGrupo</class>
+		<class>es.apt.ae.facade.entities.portafirmas.DataBaseUser</class>
+		
+		<!-- Entidades de Servicio de Requerimientos 
+		<class>es.apt.ae.facade.entities.requerimientos.DocumentosRequerimientoEntity</class>
+		<class>es.apt.ae.facade.entities.requerimientos.EstadoRequerimientoEntity</class>
+		<class>es.apt.ae.facade.entities.requerimientos.RequerimientoEntity</class>
+		<class>es.apt.ae.facade.entities.requerimientos.TipoRequerimientoEntity</class>		-->
+
+		<!-- Entidades del esquema EAACTIVITI
+ 		<class>es.apt.ae.facade.entities.workflow.Act_ru_execution</class>
+		<class>es.apt.ae.facade.entities.workflow.Act_ru_task</class>
+		<class>es.apt.ae.facade.entities.workflow.Act_ru_identitylink</class> -->
+
+		<!-- Entidades del esquema EAREGISTRO 
+		<class>es.apt.ae.facade.entities.earegistro.Asiento</class>
+		<class>es.apt.ae.facade.entities.earegistro.Tercero</class>
+		<class>es.apt.ae.facade.entities.earegistro.CatEstadoRegistro</class>
+		<class>es.apt.ae.facade.entities.earegistro.DocumentoAsiento</class>
+		<class>es.apt.ae.facade.entities.earegistro.TerceroAsiento</class>
+		<class>es.apt.ae.facade.entities.earegistro.Direccion</class>
+		<class>es.apt.ae.facade.entities.earegistro.Telefono</class>
+		<class>es.apt.ae.facade.entities.earegistro.Email</class>
+		<class>es.apt.ae.facade.entities.earegistro.CatPais</class>
+		<class>es.apt.ae.facade.entities.earegistro.CatProvincia</class>
+		<class>es.apt.ae.facade.entities.earegistro.CatMunicipio</class>
+		<class>es.apt.ae.facade.entities.earegistro.CatOrigenAsiento</class>
+		<class>es.apt.ae.facade.entities.earegistro.CatTipoTransporteEntrada</class>
+		<class>es.apt.ae.facade.entities.earegistro.CatEntidadRegistral</class>		
+		<class>es.apt.ae.facade.entities.earegistro.IdAsiento</class>			
+		<class>es.apt.ae.facade.entities.earegistro.HistoricoAsiento</class>		
+		<class>es.apt.ae.facade.entities.earegistro.CatSubtipoRegistro</class>
+		<class>es.apt.ae.facade.entities.earegistro.RepresentacionesTerceros</class>		-->
+		
+		<!-- Entidades callBack
+		<class>es.apt.ae.facade.entities.callback.CallbackTimer</class> -->	
+		
+		<!-- Entidades de Actuaciones 
+		<class>es.apt.ae.facade.entities.actuaciones.Actuacion</class>				
+		<class>es.apt.ae.facade.entities.actuaciones.ActuacionesLeidasInfo</class>
+		<class>es.apt.ae.facade.entities.actuaciones.ActuacionWSDL</class>				
+		<class>es.apt.ae.facade.entities.actuaciones.CatAccionesExpedientes</class>				
+		<class>es.apt.ae.facade.entities.actuaciones.CatActuaciones</class>				
+		<class>es.apt.ae.facade.entities.actuaciones.CatTramitesActuaciones</class>
+		<class>es.apt.ae.facade.entities.actuaciones.DocumentoReferenciaActuacion</class>	
+		<class>es.apt.ae.facade.entities.actuaciones.IdsActuaciones</class>		
+		<class>es.apt.ae.facade.entities.actuaciones.IndiceCapituloActuacion</class>-->
+		
+		<!-- Entidades notificaciones 
+		<class>es.apt.ae.facade.entities.notificaciones.NotificacionBuzon</class>	
+		<class>es.apt.ae.facade.entities.notificaciones.NotificacionDocumento</class>
+		<class>es.apt.ae.facade.entities.notificaciones.NotificacionPapelDocumento</class>
+		<class>es.apt.ae.facade.entities.notificaciones.ParametroNotificacion</class>-->	
+		
+		<properties>
+			<!--	Postgre SQL es casesensitive, esto significa que diferencia entre mayúsculas y minúsculas.
+					Por defecto hibernata convierte los nombres de las bases de datos y campos a minúsculas. 
+					Para que hibernate mantenga el nombre de la base de datos tal y como está definida en el name -->
+			<property name="hibernate.naming.implicit-strategy" value="org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl"/>
+			<property name="hibernate.naming.physical-strategy" value="org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"/>
+			<property name="hibernate.globally_quoted_identifiers" value="true"/>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect" /> <!-- PostgreSQLDialect is deprecated, You can use PostgreSQL95Dialect instead -->
+			<property name="hbm2ddl.auto" value="update" />
+			<!-- property name="hibernate.show_sql" value="true" / --> <!-- Show SQL in console -->
+            <!-- property name="hibernate.format_sql" value="true" / --> <!-- Show SQL formatted -->
+
+		</properties>
+	</persistence-unit>
+
+	
+</persistence>

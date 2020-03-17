@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+	<ui:composition template="templates/page.xhtml">
+		<ui:define name="js">
+		</ui:define>
+		<ui:define name="css">
+		</ui:define>
+		<ui:define name="titulo">
+    		Colaboradores
+    	</ui:define>
+	
+		<ui:define name="content">
+			<h:form>
+				<p:panel styleClass="colaboradores">
+				<p:outputLabel value="Seleccione sus colaboradores:"/>
+				<p:selectManyCheckbox id="persona"
+					value="#{colaboradoresBean.listPersonasSelecionadas}" layout="grid"
+					columns="1" converter="personaConverter" styleClass="listColaboradores">
+					<f:selectItems value="#{colaboradoresBean.listPersonas}" var="persona"
+						itemLabel="#{persona.nombre} #{persona.apellido1} #{persona.apellido2} - #{persona.cargo}"
+						itemValue="#{persona}" />
+				</p:selectManyCheckbox>
+				</p:panel>
+				<p:commandButton styleClass="button-save" value="Guardar" action="#{colaboradoresController.save}" update=":form:messageDialog"/>
+			</h:form>
+		</ui:define>
+		
+	</ui:composition>
+</h:body>
+</html>

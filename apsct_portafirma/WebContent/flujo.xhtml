@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+	<ui:composition template="templates/page.xhtml">
+		<ui:define name="js">
+			<h:outputScript library="js" name="checkbox.js" target="head" />
+		</ui:define>
+		<ui:define name="css">
+		</ui:define>
+		<ui:define name="titulo">
+    		Circuito
+    	</ui:define>
+
+		<ui:define name="content">
+			<h:form id="form2">
+				<p:panel id="docSeleccionado" styleClass="docSeleccionado">
+					<p:outputLabel value="Circuito de firmas para los documentos: " />
+					<br />
+					<ui:repeat var="documento" value="#{documentosBean.selectedDocs }">
+						<p:outputLabel value="#{documento.nombre} - #{documento.asunto}" />
+						<br />
+					</ui:repeat>
+				</p:panel>
+				<p:panel id="workspace" styleClass="workspace">
+					<h:panelGroup id="personas" styleClass="personas">
+						<h3 id="headder">
+							<i class="fa fa-search"></i>
+							<p:inputText />
+						</h3>
+						<!--  -->
+		
+						<p:tabView id="tabViewDrag">
+							<p:tab title="Personas">
+								<h:panelGrid columns="1">
+									<p:dataGrid id="tablaPersonas2" value="#{circuitoBean.listPersonas}"
+										var="persona" columns="1" rendered="#{not empty circuitoBean.listPersonas}">
+										<p:column>
+											<p:commandLink styleClass="checkbox"
+												onclick="clickCheckBox(this);"
+												oncomplete="deseleccionar($(this));"
+												actionListener="#{circuitoController.seleccionarPersona}"
+												update=":form:messageDialog">
+												<f:param name="personaSeleccionada" value="#{persona.numIdentificacion}" />
+												<i class="fa fa-circle-thin"></i>
+											</p:commandLink>
+										</p:column>
+										<p:column>
+											<p:outputLabel id="persona" styleClass="persona"
+												value="#{persona.nombre} #{persona.apellido1} #{persona.apellido2}" />
+											<p:draggable for="persona" revert="true" scope="forward" />
+										</p:column>
+									</p:dataGrid>
+									<p:outputLabel value="Usted no dispone de permisos sobre ningún firmante por lo que no puede configurar circuitos personalizados." rendered="#{empty circuitoBean.listPersonas}"/>
+									<p:outputLabel value="En cambio, puede enviar a alguno de los circuitos de firma mostrados en la pestaña 'Predefinidos'." rendered="#{empty circuitoBean.listPersonas and not empty circuitoBean.listCircuitosPredefinidos}"/>
+									<p:outputLabel value="Si desea solicitar el envío directo a personas así como la creación de circuitos personalizados contacte con el equipo de soporte de la Plataforma de Administración Electrónica." rendered="#{empty circuitoBean.listPersonas}"/>
+								</h:panelGrid>
+							</p:tab>
+							<p:tab title="Predefinidos">
+								<h:panelGrid columns="1">
+									<p:dataGrid id="tablaCircuitos" value="#{circuitoBean.listCircuitosPredefinidos}"
+										var="circuito" columns="1" rendered="#{not empty circuitoBean.listCircuitosPredefinidos}">
+										<p:column>
+											<p:commandLink value="#{circuito.descripcion}"
+												actionListener="#{circuitoController.cargarPredefinido}"
+												onclick="statusDialog.show();"
+												update=":form2:pasos" oncomplete="statusDialog.hide(); updateGroupType();">
+												<f:param name="circuitoID" value="#{circuito.id}"/>
+											</p:commandLink>
+										</p:column>
+									</p:dataGrid>
+									<p:outputLabel value="Usted no dispone de ningún circuito predefinido." rendered="#{empty circuitoBean.listCircuitosPredefinidos}"/>
+									<p:outputLabel rendered="#{empty circuitoBean.listCircuitosPredefinidos and not empty circuitoBean.listPersonas}">En cambio, puede crear un circuito marcando en la pestaña 'Personas' cada uno de los usuarios que van a intervenir y añadiéndolos de manera sucesiva en la parte derecha, indicando además si cada uno de ellos va a firmar o validar el/los documento/s. Para más detalle sobre como crear un circuito consulte el 
+										<a href="#{commonBean.urlManualUsuario}" target="_blank" title="Descarga del Manual de Usuario">Manual de Usuario</a>.</p:outputLabel>
+									<p:outputLabel value="Si desea solicitar el uso de circuitos predefinidos contacte con el equipo de soporte de la Plataforma de Administración Electrónica." rendered="#{empty circuitoBean.listCircuitosPredefinidos}"/>
+								</h:panelGrid>
+							</p:tab>
+						</p:tabView>
+						<!--  -->
+					</h:panelGroup>
+	
+					<ui:insert name="flujo">
+						<ui:include src="templates/grupofirmantes.xhtml" />
+					</ui:insert>
+				</p:panel>
+	
+				<div id="footer-actions">
+					<p:commandLink id="enviar" styleClass="button-action enviar"
+						action="#{circuitoController.enviarFlujo}"
+						onclick="statusDialog.show();" update=":form2:pasos :form:messageDialog">
+						<span class="mobile"><i class="fa fa-paper-plane fa-2x"></i></span>
+						<span class="navigator"><i class="fa fa-paper-plane"></i>
+							Enviar</span>
+					</p:commandLink>
+				</div>
+				<p:panel id="footer-wrapper" styleClass="footer-wrapper"></p:panel>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

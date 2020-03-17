@@ -1,0 +1,44 @@
+.switch{
+	width:65px;
+	height:30px;
+	border-radius: 200px;
+	border:1px solid #c4c4c4;
+}
+
+.switch.selected,.switch.unselected,.switch.selected label,.switch.unselected label{
+	-webkit-transition: .3s; /* Safari */
+    -webkit-transition-timing-function: linear; /* Safari */
+    transition:  .3s;
+    transition-timing-function: linear;
+}
+
+.switch.selected{
+	background-color: #87D37C;
+}
+
+.switch.unselected{
+	background-color: #ddd;
+
+}
+
+.switch.selected label{
+	margin-left: -1px;
+}
+
+.switch.unselected label{
+	margin-left: 35px;
+}
+
+.switch .ui-chkbox .ui-chkbox-box{
+	margin-top:-1px;
+	display: inline-block;
+	background-color: #eee;
+	width: 30px;
+	height: 30px;
+	border-radius: 100px;
+	border: solid 1px #c4c4c4;
+}
+
+.switch .ui-chkbox-icon.ui-icon{
+ 	display:none;
+}

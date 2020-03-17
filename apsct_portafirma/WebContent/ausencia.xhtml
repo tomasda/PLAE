@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+	<ui:composition template="templates/page.xhtml">
+		<ui:define name="titulo">
+    			Ausencias
+    	</ui:define>
+
+		<ui:define name="content">
+			<h:form id="formAusencia">
+				<p:panel styleClass="ausencia">
+					<div id="informacion">
+						<a href="#" class="link"><i class="fa fa-question-circle"></i>¿Qué es esto?</a>
+						<div id="textoInformativo" class="messageHidden">
+							<ul>
+								<li>A continuación usted podrá indicar que se encuentra ausente y designar una persona que actue sobre sus documentos en su lugar.</li>
+								<li>Mientras este periodo esté activo, usted no podrá realizar ninguna acción sobre los documentos en su bandeja de pendientes, pero si podrá visualizarlos.</li>
+								<li>Si usted tiene indicados colaboradores, la persona que lo sustituya no verá dichos documentos hasta que su colaborador valide dicho documento.</li>
+							</ul>
+						</div>
+						<script type="text/javascript">
+							$('.link').click(function(){
+								$('#informacion #textoInformativo').slideToggle();
+							});
+						</script>
+					</div>
+					<br/>
+					<p:commandLink styleClass="button-action button-action-actualizar" id="btnAusenciaActiva" actionListener="#{ausenciaBean.cambio}" update=":formAusencia :form" 
+					rendered="#{ausenciaBean.ausenciaActiva}" value="Desactivar ausencia"/>
+					<p:commandLink styleClass="button-action button-action-actualizar" id="btnAusenciaInactiva" actionListener="#{ausenciaBean.cambio}" update=":formAusencia :form" 
+					rendered="#{!ausenciaBean.ausenciaActiva}" value="Activar ausencia"/>
+					<br/>
+					<h4>Sustituido por:</h4>
+					<!-- Lista de personas -->
+					<p:selectOneRadio id="persona"
+						value="#{ausenciaBean.seleccionPersona}" columns="1" layout="grid" disabled="#{ausenciaBean.ausenciaActiva}"><!--  -->
+						<f:selectItems value="#{ausenciaBean.listPersonas}" var="persona"
+							itemLabel="#{persona.nombre} #{persona.apellido1} #{persona.apellido2} #{persona.cargo}" itemValue="#{persona.numIdentificacion}" />
+					</p:selectOneRadio>
+
+				</p:panel>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+
+</html>

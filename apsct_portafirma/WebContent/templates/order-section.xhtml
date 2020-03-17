@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+<ui:composition>
+	<div id="menu-order-nav">
+		<h:form id="formOrder">
+			<p:selectOneRadio id="selectTipoOrden" value="#{documentosBean.tipoOrden}" styleClass="selectTipoOrden">
+				<p:ajax listener="#{documentosController.ordenarBandeja}" update=":mainForm:tablaDocumentos"/>
+            	<f:selectItem itemLabel="Ascendente" itemValue="ASC" />
+            	<f:selectItem itemLabel="Descendente" itemValue="DESC" />
+        	</p:selectOneRadio>
+			
+	       	<p:selectOneListbox id="selectCampoOrden" value="#{documentosBean.campoOrden}"  >
+	            <p:ajax listener="#{documentosController.ordenarBandeja}" update=":mainForm:tablaDocumentos" oncomplete="hideOrderMenu();"/>
+	            <f:selectItem itemLabel="Ninguno" itemValue="ninguno" />
+			    <f:selectItem itemLabel="Asunto" itemValue="asunto" />
+			    <f:selectItem itemLabel="Nombre Documento" itemValue="nombreDoc" />			    
+				<f:selectItem itemLabel="Solicitante" itemValue="usuario" />
+				<f:selectItem itemLabel="Fecha" itemValue="FECHA" />
+				<f:selectItem itemLabel="Sistema Origen" itemValue="sisOrigen" />
+        	</p:selectOneListbox>
+		</h:form>
+	</div>
+</ui:composition>
+</html>

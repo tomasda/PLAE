@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+<ui:composition>
+	<h:outputStylesheet library="css" name="switch.css" />
+	<h:outputScript library="js" name="switch.js" />
+	
+	<div class="switch unselected">
+		<label for="button-switch">
+<!-- 		ausenciaBean.ausenciaActiva -->
+		<p:selectBooleanCheckbox id="hidenCheck" widgetVar="hidenCheck" value="#{elementBean}" onchange="emulateClick()"/>
+		</label>
+	</div>
+</ui:composition>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+	<ui:composition template="templates/page.xhtml">
+
+		<ui:define name="titulo">
+    		Ayuda
+    	</ui:define>
+
+		<ui:define name="content">
+			<div style="margin-left: 15px; float:left: width:98%">
+				<h3>Manual de Usuario</h3>
+				<p>Para descargar el Manual de Usuario del Portafirmas, haga click <a
+					href="#{commonBean.urlManualUsuario}" target="_blank"
+					title="Descarga del Manual de Usuario">aquí</a>.</p>
+				<br/>
+				
+				<h3>Requisitos Técnicos para firmar documentos en el Portafirmas</h3>
+				<p class="encabezado">Requisitos comunes</p>
+				<ul>
+					<li>Disponer de un Certificado digital aceptado por el Portafirmas (Camerfirma, FNMT o DNIe) y tenerlo instalado en el equipo/dispositivo.</li>
+				</ul>				
+
+				<p class="encabezado">Requisitos para equipos de escritorio</p>
+				<ul>
+					<li>Navegador: Internet Explorer 9 en adelante, Mozilla Firefox, Google Chrome.</li>
+					<li>En caso de usar Windows 8, 8.1 o 10, es necesario ejecutar el navegador fuera del modo "metro".</li>
+					<!--<li>Tener instalada la Máquina Virtual de Java 1.6.45</li>-->
+					<li>Tener instalada en el ordenador la aplicación de Autofirma. Para descargar el Cliente de Autofirma, haga click <a
+						href="#{commonBean.urlAutofirma}" target="_blank"
+						title="Descarga de Autofirma">aquí</a>.</li>					
+				</ul>
+
+				<p class="encabezado">Requisitos para dispositivos móviles</p>
+				<div style="margin-left:25px;">
+					<p class="subencabezado">Dispositivos Android</p>
+					<ul>
+						<li>Navegador: Navegador por defecto a partir de la versión 4.0 de Android, Google Chrome, Mozilla Firefox.</li>
+						<li>Tener instalado el Cliente Firma Móvil <br/><br/><a href="https://play.google.com/store/apps/details?id=es.gob.afirma"
+							target="_blank"> <img alt="Get it on Google Play"
+							src="https://developer.android.com/images/brand/es_generic_rgb_wo_45.png" />
+					</a> </li>
+					</ul>
+					<p class="subencabezado">Dispositivos iOS (Apple)</p>
+					<ul>
+						<li>Navegador: Safari.</li>
+						<li>Tener instalado el Cliente Firma Móvil <br/><br/>
+							<h:outputLink value="https://itunes.apple.com/es/app/cliente-firma-movil/id627410001?mt=8" target="itunes_store" style="display: inline-block; overflow: hidden; background: url(https://linkmaker.itunes.apple.com/htmlResources/assets/es_es//images/web/linkmaker/badge_appstore-lrg.png) no-repeat; width: 135px; height: 40px;@media only screen{background-image:url(https://linkmaker.itunes.apple.com/htmlResources/assets/es_es//images/web/linkmaker/badge_appstore-lrg.svg);}" />
+						</li>
+					</ul>
+				</div>
+				
+				<hr/>
+				<p class="aviso">Para cualquier duda por favor contacte con el área de Sistemas de la Autoridad Portuaria de Santa Cruz de Tenerife.</p>
+				<br/>
+			</div>
+		</ui:define>
+	</ui:composition>
+</h:body>
+
+</html>

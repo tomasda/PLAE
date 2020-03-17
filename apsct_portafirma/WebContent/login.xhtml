@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+<f:view>
+	<h:head>
+		<meta name="viewport"
+			content="user-scalable=no, width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="requiresActiveX=true" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Portafirmas APSCT - Login</title>
+		<link rel="shortcut icon" type="image/x-icon" href="resources/img/favicon.ico"/>
+	</h:head>
+	<h:body>
+	<h:form>
+		<h:outputScript library="primefaces" name="jquery/jquery.js"
+			target="head" />
+		<h:outputStylesheet library="css" name="style_v3-19.css" />
+		<h:outputStylesheet library="css" name="overridepf_v3-1.css" />
+		<h:outputStylesheet library="css" name="font-awesome.min.css" />
+		
+		<div id="header-nav">
+			<div id="logo" class="navigator">
+				<p:graphicImage url="#{commonBean.logoHeader}" alt="logo" />
+			</div>
+			<div id="action-application">
+				<p:outputLabel value="Portafirmas"/> 
+			</div>
+		</div>
+		<div id="header-info">
+			<div id="info-version">
+				<p:outputLabel style="font-weight:bold" value="Versión: "/> 
+				<p:outputLabel id="version" value="#{documentosBean.version}"></p:outputLabel>
+			</div>	
+			<div id="info-entorno">
+				<p:outputLabel style="font-weight:bold" value="Entorno: "/>
+				<p:outputLabel id="entorno" value="#{documentosBean.entorno}"></p:outputLabel>
+			</div>	
+		</div>		
+		
+		<div id="container">
+			<div id="content">
+				<h:form id="loginForm">
+					<div class="panel-login">
+						<p:panel id="login" styleClass="login">
+							<p:graphicImage url="#{commonBean.logoLogin}"></p:graphicImage>
+							<p:panel rendered="#{param['error'] eq 'true' or loginBean.error}"
+								styleClass="error-message">
+								<i class="fa fa-times-circle"></i>
+								<p:outputLabel value="Usuario y/o contraseña incorrecta" />
+							</p:panel>
+							<p:inputText placeholder="Usuario" id="tmpUsername"
+								widgetVar="tmpUsername" value="#{loginBean.username}"/>
+							<p:inputText type="password" placeholder="Contraseña"
+								id="tmpPassword" widgetVar="tmpPassword" value="#{loginBean.password}"/>
+							<p:commandButton value="ENTRAR" styleClass="button-action button-login" action="#{loginController.login}" />
+						</p:panel>
+					</div>
+				</h:form>
+				<p:panel id="footer-copyright" styleClass="footer-copyright">
+					Portafirmas Corporativo de la Autoridad Portuaria de Santa Cruz de Tenerife
+				</p:panel>
+			</div>
+		</div>
+		</h:form>
+	</h:body>
+</f:view>
+</html>

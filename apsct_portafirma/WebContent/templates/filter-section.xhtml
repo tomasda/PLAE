@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+<ui:composition>
+	<h:outputScript library="js" name="cleanForm.js" />
+	<h:outputStylesheet library="css" name="filter.css" />
+<div id="menu-search-nav">
+	
+	<div class="headerMenu">
+		<div class="searchButton">
+			<i class="fa fa-search fa-2x"></i>
+		</div>
+		<span class="menuTitulo">Filtros</span>
+	</div>
+
+	<h:form id="formFilter" styleClass="body-search">
+		<h:outputLabel for="usuarioRemitente" value="Usuario remitente:" />
+		<p:inputText id="usuarioRemitente"
+			value="#{documentosBean.usuarioRemitente}" required="false" />
+
+		<p:outputLabel for="fechaSolicitud" value="Fecha:" />
+		<p:selectOneMenu id="fechaSolicitud"
+			value="#{documentosBean.fechaSolicitud}"
+			styleClass="overrideSelect"
+			widgetVar="fechaSolicitud">
+			<f:selectItem itemLabel="-- Seleccione una fecha --" itemValue="" />
+			<f:selectItem itemLabel="Un día" itemValue="DAY" />
+			<f:selectItem itemLabel="Una semana" itemValue="WEEK" />
+			<f:selectItem itemLabel="Un mes" itemValue="MONTH" />
+			<f:selectItem itemLabel="Tres meses" itemValue="QUARTER" />
+			<f:selectItem itemLabel="Seis meses" itemValue="MIDDLE" />
+			<f:selectItem itemLabel="Un año" itemValue="YEAR" />
+		</p:selectOneMenu>
+
+		<p:outputLabel for="estadoDocumento" value="Estado documento:" />
+		<p:selectOneMenu id="estadoDocumento"
+			value="#{documentosBean.estadoDocumento}"
+			styleClass="overrideSelect" widgetVar="estadoDocumento">
+			<f:selectItem itemLabel="-- Seleccione un estado --" itemValue="" />
+			<f:selectItem itemLabel="Enviado" itemValue="ENVD" />
+			<f:selectItem itemLabel="Recuperado" itemValue="RECP"/>
+			<f:selectItem itemLabel="En tramite" itemValue="TRAM" />
+			<f:selectItem itemLabel="Firmado" itemValue="FIRM" />
+			<f:selectItem itemLabel="Rechazado" itemValue="RECH" />
+			<f:selectItem itemLabel="Pendiente de circuito" itemValue="PEND" />
+		</p:selectOneMenu>
+
+		<p:outputLabel for="sistemaOrigen" value="Sistema Origen:" />
+		<p:selectOneMenu id="sistemaOrigen"
+			value="#{documentosBean.origenDocumento}"
+			styleClass="overrideSelect" widgetVar="sistemaOrigen">			
+			<f:selectItems value="#{documentosBean.listBackoffice}" var="backoffice" itemLabel="#{backoffice.descripcion}" itemValue="#{backoffice.codigo}"/>
+		</p:selectOneMenu>
+
+<!-- listBackoffice -->
+
+<!-- 		<h:outputLabel for="numeroExpediente" value="Número de Expediente:" /> -->
+<!-- 		<p:inputText id="numeroExpediente" -->
+<!-- 			value="#{documentosBean.numeroExpediente}" required="false" /> -->
+
+		<h:outputLabel for="nombreDocumento" value="Nombre de Documento:" />
+		<p:inputText id="nombreDocumento"
+			value="#{documentosBean.nombreDocumento}" required="false" />
+
+		<h:outputLabel for="asuntoDocumento" value="Asunto de Documento:" />
+		<p:inputText id="asuntoDocumento"
+			value="#{documentosBean.asuntoDocumento}" required="false" />
+
+		<p:panel id="footer-wrapper" styleClass="footer-wrapper"></p:panel>
+
+		<div id="button-search">
+			<p:commandButton value="Buscar" styleClass="buscar"
+				actionListener="#{documentosController.filtrar}"
+				update=":mainForm:tablaDocumentos" />
+			<p:commandButton value="Limpiar" styleClass="limpiar"
+				actionListener="#{documentosController.cleanFilter}"
+				update=":mainForm:tablaDocumentos :formFilter" onclick="cleanForm();"/>
+		</div>
+	</h:form>
+</div>
+
+</ui:composition>
+</html>

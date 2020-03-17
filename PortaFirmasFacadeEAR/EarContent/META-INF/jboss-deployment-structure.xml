@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.1">
+ 	<ear-subdeployments-isolated>false</ear-subdeployments-isolated>
+
+	<deployment>
+		<dependencies>
+			<!-- module name="org.apache.cxf" export="true" / -->
+			<module name="org.hibernate" export="true" />
+			<module name="org.apache.commons.lang3" export="true" />
+			<module name="org.apache.axis" export="true" />
+			<module name="com.opencanarias.api.security" export="true" />
+			<!-- module name="org.apache.commons.beanutils" export="true" /-->
+			<!-- <module name="org.jboss.ws.native.jbossws-native-core" export="true" /> -->
+			<!--module name="org.apache.oro" export="true"  / -->
+			<!-- <module name="org.apache.santuario.xmlsec" export="true" />-->
+			<!--module name="org.apache.xerces" export="true" / -->
+			<!--module name="javax.imageio" export="true" / -->
+		</dependencies>
+	</deployment>
+</jboss-deployment-structure>

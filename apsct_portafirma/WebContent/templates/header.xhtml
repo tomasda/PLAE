@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+<ui:composition>
+			<div id="header-nav">
+				<div id="back">
+					<h:commandLink action="#{generalController.goBack}"
+						onclick="statusDialog.show();">
+						<i class="fa fa-arrow-left fa-2x"></i>
+					</h:commandLink>
+				</div>
+				<div id="logo" class="navigator">
+					<p:graphicImage url="#{commonBean.logoHeader}" alt="logo" />
+				</div>
+				<div id="action-application">
+					<p:outputLabel value="Portafirmas"/> 
+				</div>				
+				<div id="action-title" class="mobile">
+					<h2><p:outputLabel value="#{titulo}"/></h2>
+				</div>
+			</div>
+			<div id="header-info">
+				<div id="info-version">
+					<p:outputLabel style="font-weight:bold" value="Versión: "/> 
+					<p:outputLabel id="version" value="#{documentosBean.version}"></p:outputLabel>
+				</div>	
+				<div id="info-entorno">
+					<p:outputLabel style="font-weight:bold" value="Entorno: "/>
+					<p:outputLabel id="entorno" value="#{documentosBean.entorno}"></p:outputLabel>
+				</div>	
+			</div>			
+			<p:dialog id="statusDialog" widgetVar="statusDialog" modal="true"
+				draggable="false" closable="false" resizable="false"
+				showHeader="false">
+				<ui:insert name="spin">
+					<ui:include src="spin.xhtml" />
+				</ui:insert>
+				<!-- <i class="fa fa-circle-o-notch fa-spin"></i> -->
+			</p:dialog>
+			<p:dialog id="messageDialog" widgetVar="messageDialog" modal="true"
+				draggable="false" resizable="false" closable="true">
+				<p:outputLabel value="#{ausenciaBean.message}" />
+			</p:dialog>
+			
+			<div class="navigator title-content">
+				<h2><p:outputLabel value="#{titulo}"/></h2>
+			</div>
+</ui:composition>
+</html>
