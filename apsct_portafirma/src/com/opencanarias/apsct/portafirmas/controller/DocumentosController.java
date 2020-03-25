@@ -295,8 +295,8 @@ public class DocumentosController implements Serializable{
 		//UsuarioBean usuarioBean = (UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN);
 		documentosBean.setTitulo(param);
 
-		List<DocumentoPortafirmas> listaDocumentos = Services.getSrvPortafirmasFacadeRemote().buscarPorBandeja(((UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN)).getNumIdentificacion(),
-				param.toUpperCase(), null);
+		List<DocumentoPortafirmas> listaDocumentos = Services.getSrvPortafirmasFacadeRemote().buscarPorBandeja(usuarioBean.getNumIdentificacion(),param.toUpperCase(), null);
+		//Services.getSrvPortafirmasFacadeRemote().buscarPorBandeja(((UsuarioBean) FacesUtils.getSessionBean(Constantes.USUARIO_BEAN)).getNumIdentificacion(),param.toUpperCase(), null);
 		documentosBean.setDocumentosList(listaDocumentos);
 		LoggerUtils.showInfo(logger, "[" + param.toUpperCase() + "]: " + Constantes.INFO_TOTAL_DOCUMENTS + listaDocumentos.size(), FacadeBean.USUARIO_PORTAFIRMAS, usuarioBean.getUsername());
 		if (documentosBean.getSelectedDocs() != null) {

@@ -25,7 +25,7 @@ import es.apt.ae.facade.dto.UsuarioItem;
 import es.apt.ae.facade.entities.portafirmas.Ausencia;
 import es.apt.ae.facade.entities.portafirmas.Persona;
 
-@Named
+@Named(value="usuarioBean")
 @SessionScoped
 public class UsuarioBean implements Serializable{
 	
@@ -47,6 +47,10 @@ public class UsuarioBean implements Serializable{
 	private List<Persona> listRevisiones;
 	private List<Persona> listSustitucion;
 
+	public String test() {
+		return "|TEST vulue|";
+	}
+	
 	public void create() {
 		
 		if (StringUtils.isNullOrEmpty(username)) {

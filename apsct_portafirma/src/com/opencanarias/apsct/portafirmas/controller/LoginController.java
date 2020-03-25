@@ -62,7 +62,7 @@ public class LoginController implements Serializable {
 			result = Constantes.LOGINERROR;
 		} else {
 			FacesContext context = FacesContext.getCurrentInstance();
-			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+			//HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 			LoggerUtils.showInfo(logger, "Accediendo a la aplicacion...", FacadeBean.USUARIO_PORTAFIRMAS, loginBean.getUsername());
 			try {
 				/*
@@ -77,8 +77,8 @@ public class LoginController implements Serializable {
 				LoggerUtils log = new LoggerUtils();
 				User login = log.doLogin(loginBean.getUsername(), loginBean.getPassword());
 				if (null!=login) {
-
-				Principal principal =  setPrincipal(login);//(Principal) context.getExternalContext().getUserPrincipal();
+					setUsuarioBean(login);
+					//Principal principal =  setPrincipal(login);//(Principal) context.getExternalContext().getUserPrincipal();
 
 //				if (null != principal.getName()){
 					result = Constantes.INDEX;
@@ -116,6 +116,15 @@ public class LoginController implements Serializable {
 		}
 
 		return result;
+	}
+
+	private void setUsuarioBean(User login) {
+		usuarioBean.setNumIdentificacion(login.getCarLicense());
+		usuarioBean.setUsername(login.getUsername());
+		usuarioBean.setNombre(login.getCn());
+		usuarioBean.setMail(login.getEmail());
+		usuarioBean.setApellido1(login.getGivenName());
+		
 	}
 
 	private Principal setPrincipal(User login) {
